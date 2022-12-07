@@ -1,14 +1,14 @@
-import React, {ReactNode, useEffect, useRef, useState} from 'react';
+import React, {FunctionComponent, ReactNode, useEffect, useRef, useState} from 'react';
 import Fade from "./Fade";
 import * as rank from "../../image/Rank_set1/Rank_High/rank_high_18.png";
 import * as mockupPC from "../../image/mockup-pc.png";
 
-type CardProps = {
+type Props = {
     heading: string,
     children: ReactNode
 }
 
-const Card = ({heading, children,}: CardProps) => {
+const Card: FunctionComponent<Props> = ({heading, children,}) => {
     const cardRef = useRef();
     const [isVisible, setIsVisible] = useState(false);
     const ratio = 0.05;
