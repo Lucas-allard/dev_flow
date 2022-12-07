@@ -1,13 +1,13 @@
 import './scrollDown.scss';
-import React from 'react';
+import React, {FunctionComponent} from 'react';
 import {Link} from 'react-scroll';
 
-type ScrollDownProps = {
-    className: string|null,
+type Props = {
+    className: string | null,
     path: string,
 }
 
-const ScrollDown = ({className, path}: ScrollDownProps) => {
+const ScrollDown: FunctionComponent<Props> = ({className, path}) => {
 
     return (
         <Link
@@ -17,7 +17,7 @@ const ScrollDown = ({className, path}: ScrollDownProps) => {
             offset={0}
             duration={800}
         >
-            <div className={`scroll-down-cta ${className ? className : ""}`} >
+            <div className={`scroll-down-cta ${className ? className : ""}`}>
                 <span></span>
             </div>
             <div className="info-cta">
