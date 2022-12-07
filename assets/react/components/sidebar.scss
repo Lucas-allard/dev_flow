@@ -1,9 +1,45 @@
+@import 'assets/styles/variables';
+
 .sidebar {
   display: flex;
   flex-direction: column;
   flex: 0.25;
+  background-color: $bg-dark;
+  height: 100vh;
 
   .sidebar__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    color: white;
+    border-bottom: 3px solid #26282c;
+  }
 
+  .sidebar__channels {
+    flex: 1;
+
+    .sidebar__channelsHeader {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      background-color: $bg-dark;
+      color: gray;
+
+      .sidebar__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    .sidebar__addChannel {
+      cursor: pointer;
+
+      &:hover {
+        color: white
+      }
+    }
   }
 }

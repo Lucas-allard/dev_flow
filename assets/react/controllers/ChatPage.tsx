@@ -7,7 +7,7 @@ import {createRoot} from "react-dom/client";
 
 function ChatPage() {
     return (
-        <div>
+        <div className="">
             {/* Sidebar */}
             <Sidebar/>
 
