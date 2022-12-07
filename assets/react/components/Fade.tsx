@@ -1,14 +1,14 @@
 import './fade.scss';
-import React, {ReactNode} from 'react';
+import React, {FunctionComponent, ReactNode} from 'react';
 
-type FadeProps = {
+type Props = {
     visible: boolean,
     children: ReactNode,
     duration: number,
     translateValue?: number
 }
 
-const Fade = ({visible, children, duration = 300, translateValue = -200}: FadeProps) => {
+const Fade: FunctionComponent<Props> = ({visible, children, duration = 300, translateValue = -200}) => {
     let style: { transform: null | string; transitionProperty: string; transitionDuration: string; opacity: null | number } = {
         transitionDuration: `${duration}ms`,
         transitionProperty: "opacity transform",
