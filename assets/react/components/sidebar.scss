@@ -5,7 +5,12 @@
   flex-direction: column;
   flex: 0.25;
   background-color: $bg-dark;
-  height: 100vh;
+  border-right: 3px solid #26282c;
+  max-height: 100vh;
+
+  .MuiSvgIcon-root {
+    font-size: 2.6rem;
+  }
 
   .sidebar__top {
     display: flex;
@@ -14,32 +19,32 @@
     padding: 20px;
     color: white;
     border-bottom: 3px solid #26282c;
+
+    h3 {
+      padding-left: 10px;
+    }
   }
 
-  .sidebar__channels {
-    flex: 1;
+  .sidebar__middle {
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 
-    .sidebar__channelsHeader {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px;
-      background-color: $bg-dark;
-      color: gray;
-
-      .sidebar__header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
+    &::-webkit-scrollbar {
+      display: none;
     }
+  }
 
-    .sidebar__addChannel {
-      cursor: pointer;
+  .sidebar__profile {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px;
+    border-top: 3px solid #26282c;
 
-      &:hover {
-        color: white
-      }
+    .sidebar__profileInfo {
+      padding-left: 15px;
+
     }
   }
 }

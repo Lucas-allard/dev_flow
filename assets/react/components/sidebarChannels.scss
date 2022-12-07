@@ -1,0 +1,28 @@
+@import "assets/styles/variables";
+
+.sidebar__channels {
+  flex: 1;
+
+  .sidebar__channelsHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: $bg-dark;
+    color: gray;
+
+    .sidebar__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  .sidebar__addChannel {
+    cursor: pointer;
+
+    &:hover {
+      color: white
+    }
+  }
+}

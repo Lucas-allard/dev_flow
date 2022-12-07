@@ -3,5 +3,10 @@
 {% block title %}Hello ChatController!{% endblock %}
 
 {% block body %}
+
+    {% block header %}
+        {% include "./header/_header.html.twig" %}
+    {% endblock %}
+
     <div id="chat"></div>
 {% endblock %}

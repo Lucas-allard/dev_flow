@@ -4,16 +4,17 @@ import {store} from '../store/store';
 import Sidebar from "../components/Sidebar";
 import Chat from "../components/Chat";
 import {createRoot} from "react-dom/client";
+import './chatPage.scss';
 
 function ChatPage() {
     return (
-        <div className="">
-            {/* Sidebar */}
-            <Sidebar/>
+        <main>
+            <div className="chat__page">
+                <Sidebar/>
+                <Chat/>
+            </div>
+        </main>
 
-            {/* Chat */}
-            <Chat/>
-        </div>
 
     );
 }
