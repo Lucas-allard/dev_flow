@@ -1,13 +1,13 @@
-import React, {ReactNode} from 'react';
+import React, {FunctionComponent, ReactNode} from 'react';
 import './button.scss'
 
-type ButtonProps = {
+type Props = {
     className: string,
     route: string,
     children: ReactNode,
 }
 
-function Button({className, route, children}: ButtonProps) {
+const Button: FunctionComponent<Props> = ({className, route, children}) => {
     return (
         <div>
             <a href={route} className={`button ${className ? className : ""}`}>{children}</a>
