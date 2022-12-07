@@ -1,0 +1,170 @@
+@import "variables";
+
+.container-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: $bg-dark;
+
+  .box {
+    position: relative;
+    width: 380px;
+    background: #1c1c1c;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0 20px;
+
+    &:before, &:after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 380px;
+      height: 420px;
+      background: linear-gradient(0deg, transparent, $color-green, $color-green);
+      transform-origin: bottom right;
+      animation: animateForm 4s linear infinite;
+    }
+
+    &:after {
+      animation-delay: -2s;
+    }
+
+    form {
+      position: absolute;
+      background: #29292d;
+      inset: 2px;
+      z-index: 1;
+      padding: 50px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+
+      h2 {
+        font-family: $font-secondary;
+        color: $color-green;
+        text-align: center;
+        letter-spacing: 0.1em;
+      }
+
+      .inputBox {
+        position: relative;
+        width: 300px;
+        margin-top: 35px;
+        z-index: 1;
+
+        input {
+          position: relative;
+          width: 100%;
+          padding: 20px 10px 10px;
+          background: transparent;
+          border: none;
+          outline: none;
+          color: #23242a;
+          font-size: 1em;
+          letter-spacing: 0.05em;
+          z-index: 2;
+
+          div {
+            display: none;
+          }
+        }
+
+        span {
+          position: absolute;
+          left: 0;
+          padding: 20px 0px 10px;
+          color: #8f8f8f;
+          letter-spacing: 0.05em;
+          transition: 0.5s;
+        }
+
+        input:valid ~ span,
+        input:focus ~ span, {
+          color: $color-green;
+          transform: translateY(-34px);
+          font-size: 0.75em;
+        }
+
+        i {
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          width: 90%;
+          height: 2px;
+          background: $color-green;
+          border-radius: 4px;
+          transition: 0.5s;
+          pointer-events: none;
+        }
+
+        input:valid ~ i,
+        input:focus ~ i, {
+          height: 44px;
+        }
+      }
+
+      .checkBox {
+        position: relative;
+        width: 300px;
+        margin-top: 35px;
+        margin-bottom: 10px;
+        z-index: 1;
+
+        span {
+          padding: 20px 0 10px;
+          color: $color-green;
+          letter-spacing: 0.05em;
+          font-size: 0.75em;
+        }
+      }
+
+      .links {
+        display: flex;
+        justify-content: space-between;
+
+        a {
+          margin: 10px 0;
+          font-size: 0.75em;
+          color: #8f8f8f;
+
+          &:hover, &:nth-child(2) {
+            color: $color-green
+          }
+        }
+      }
+
+      input[type="submit"] {
+        border: none;
+        outline: none;
+        background: $color-green;
+        color: #fafafa;
+        padding: 11px 25px;
+        width: 100px;
+        margin-top: 10px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-family: $font-secondary;
+        cursor: pointer;
+
+        &:active {
+          opacity: 0.8;
+        }
+      }
+
+      .message {
+        margin: 1rem 0;
+        color: white
+      }
+    }
+  }
+
+  .box.form-login {
+    height: 420px;
+  }
+
+  .box.form-register {
+    height: 520px;
+  }
+}

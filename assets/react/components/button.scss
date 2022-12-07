@@ -1,0 +1,42 @@
+@import "assets/styles/variables";
+@import "assets/styles/animation";
+
+.button {
+  border-radius: $border-radius-xl;
+  padding: 1rem 2rem;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.button.button-redirect {
+  background-color: $bg-dark;
+  color: white;
+  transition: all 0.3s linear;
+
+  &:hover {
+    background-color: red;
+  }
+}
+
+.button.button-cta {
+  background-color: $bg-dark;
+  color: white;
+  transition: all 0.3s linear;
+
+  &:hover {
+    background-color: gray;
+    animation: pulsation_btn .8s ease-out;
+  }
+}
+
+.button.button-cta.code-rain {
+  background-color: #f1f2f3;
+  color: $bg-dark;
+  transition: all 0.3s linear;
+
+  &:hover {
+    background-color: #20c20e;
+    color: white;
+    animation: pulsation_btn_green .8s ease-out
+  }
+}

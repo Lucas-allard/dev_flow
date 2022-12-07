@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+
+    {% block header %}
+        {% include "./header/_header.html.twig" %}
+    {% endblock %}
+
+    <main>
+        <section class="container-form">
+            <div class="box form-register">
+                {{ form_start(registrationForm) }}
+                <h2>
+                    Inscription
+                </h2>
+                <div class="inputBox">
+                    {{ form_widget(registrationForm.username, {
+                        label: false
+                    }) }}
+                    <span>Nom d'utilisateur</span>
+                    <i></i>
+                </div>
+                <div class="inputBox">
+                    {{ form_widget(registrationForm.email, {
+                        label: false
+                    }) }}
+                    <span>Adresse Email</span>
+                    <i></i>
+                </div>
+                <div class="inputBox">
+                    {{ form_widget(registrationForm.plainPassword, {
+                        label: false
+                    }) }}
+                    <span>Mot de passe</span>
+                    <i></i>
+                </div>
+                <div class="checkBox">
+                    {{ form_widget(registrationForm.RGPDConsent, {
+                        label: false,
+                    } ) }}
+                    <span>J'accepter la politique de confidentialité</span>
+                </div>
+                <input type="submit" class="btn" value="m'inscrire"/>
+                {{ form_end(registrationForm) }}
+            </div>
+        </section>
+    </main>
+{% endblock %}

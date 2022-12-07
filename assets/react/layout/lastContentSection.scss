@@ -1,0 +1,143 @@
+@import "assets/styles/variables";
+
+#home-section {
+  scroll-behavior: smooth;
+}
+
+.home-section {
+  color: white;
+  padding-top: 50px;
+  padding-bottom: 125px;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+
+  .home-header {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 1rem;
+
+    .cta {
+      display: flex;
+      flex-direction: column;
+
+      .cta-register {
+        order: 3;
+        display: flex;
+
+        @media (max-width: 380px) {
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+
+        div {
+          margin: 40px;
+        }
+      }
+
+      .cta-content {
+        order: 2;
+        padding: 10px 15px;
+      }
+    }
+  }
+
+  .home-overview {
+    padding: 20px;
+    color: $bg-dark;
+
+    .courses-overview,
+    .articles-overview,
+    .tricks-overview {
+      padding: 2rem 1rem 1rem;
+      margin: 30px 30px 60px;
+      color: #fafafa;
+      background-color: hsla(114, 87%, 41%, 0.5);
+      backdrop-filter: blur(5px);
+      box-shadow: hsla(114, 87%, 41%, 0.4) 5px 5px, hsla(114, 87%, 41%, 0.3) 10px 10px, hsla(114, 87%, 41%, 0.2) 15px 15px, hsla(114, 87%, 41%, 0.1) 20px 20px, hsla(114, 87%, 41%, 0.05) 25px 25px;
+      border-radius: $border-radius-xl;
+      position: relative;
+
+      h3 {
+        position: absolute;
+        top: -20px;
+        padding: 5px 10px;
+        color: white;
+        background-color: $color-green-opacity-less;
+        border-radius: 15px;
+        transition: all 0.3s ease-out;
+
+        &:hover {
+          transform: scale(1.1);
+          animation: pulsation_btn_green 0.6s linear;
+
+        }
+      }
+
+      .overview-content {
+        display: flex;
+        align-items: center;
+
+        img {
+          width: 40px;
+          transition: transform 0.2s ease-out;
+
+          &:hover {
+            transform: scale(1.1);
+          }
+        }
+
+        div p {
+          font-weight: 600;
+          margin-left: 30px;
+
+          em {
+            font-weight: 400;
+          }
+        }
+      }
+
+      .overview-content:nth-child(odd) {
+        border-bottom: 1px solid $color-green;
+        border-top: 1px solid $color-green;
+      }
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-section {
+    height: 100vh;
+    max-height: 850px;
+    padding-bottom: 300px;
+
+    .home-header {
+      width: 50%;
+      position: absolute;
+      left: 100px
+    }
+
+    .home-overview .courses-overview {
+      position: absolute;
+      top: 150px;
+      right: 100px;
+      width: 450px;
+    }
+
+    .home-overview .articles-overview {
+      position: absolute;
+      top: 400px;
+      right: 100px;
+      width: 350px;
+    }
+
+    .home-overview .tricks-overview {
+      position: absolute;
+      top: 400px;
+      right: 500px;
+      width: 400px;
+    }
+  }
+}

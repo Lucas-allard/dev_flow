@@ -1,0 +1,308 @@
+@import "assets/styles/variables";
+
+.gamification-section {
+  padding: 50px 10px 150px;
+
+  h2 {
+    margin-left: 4rem;
+  }
+  .badges-overview {
+    position: relative;
+    order: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 30px;
+
+    .badge-card {
+
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4rem;
+
+      .card {
+        background: url("../../image/mockup-pc.png") center no-repeat;
+        background-size: cover;
+        height: 600px;
+        width: 1000px;
+        position: relative;
+
+        .feature-overview {
+          position: absolute;
+          top: 10%;
+          left: 18%;
+
+          .template {
+            display: flex;
+            align-items: center;
+
+            span {
+              margin: 1rem;
+              width: 10px;
+              height: 10px;
+              border-radius: 50%;
+
+              &:first-child {
+                background-color: #FF5F56;
+              }
+
+              &:nth-child(2) {
+                background-color: #FFBD2E;
+              }
+
+              &:last-child {
+                background-color: #27C93F;
+              }
+            }
+          }
+        }
+
+        .badge-detail {
+          position: absolute;
+          bottom: 50px;
+          left: 50%;
+          top: 65%;
+          transform: translate(-50%, -50%);
+          width: 66.5%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-around;
+          background-color: rgba(13, 12, 12, 0.4);
+
+
+          h3 {
+            order: 2;
+            margin: 0;
+            font-family: $font-secondary;
+            color: white;
+          }
+
+          div {
+            background-color: white;
+            border-radius: 50%;
+            width: 75px;
+            height: 75px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            img {
+              width: 50px;
+            }
+          }
+        }
+      }
+
+      .content {
+        width: 30%;
+
+        .animate-text {
+          line-height: 2;
+          word-spacing: 16px;
+        }
+      }
+
+      &:nth-child(2) .card {
+        order: 2
+      }
+
+      &:nth-child(2) .content {
+        order: 1
+      }
+
+      //.card {
+      //  flex: 1;
+      //  margin: 20px 10px 0 0;
+      //  display: flex;
+      //  flex-direction: column;
+      //  border-radius: 5px;
+      //  position: relative;
+      //
+      //  img {
+      //    position: absolute;
+      //    top: 0;
+      //    left: 0;
+      //    width: 400px;
+      //  }
+      //
+      //  .badge-exemple {
+      //    display: flex;
+      //    flex-direction: column;
+      //    align-items: center;
+      //    order: 2;
+      //    color: white;
+      //    background-color: hsla(114, 87%, 41%, 0.5);
+      //    backdrop-filter: blur(5px);
+      //    padding: 10px;
+      //
+      //
+      //    h3 {
+      //      order: 2;
+      //      padding: 10px 0 0;
+      //      margin: 0;
+      //      font-size: 1.6rem;
+      //      text-align: center;
+      //      font-family: $font-secondary;
+      //      font-weight: 700;
+      //      text-transform: uppercase;
+      //    }
+      //
+      //    div {
+      //      order: 1;
+      //      background-color: #fafafa;
+      //      border-radius: 50%;
+      //      padding: 10px;
+      //      width: 75px;
+      //    }
+      //  }
+
+      //  .feature-overview {
+      //    height: 200px;
+      //    background-color: #FEFEFE;
+      //
+      //    .template {
+      //      display: flex;
+      //      align-items: center;
+      //
+      //      span {
+      //        margin: 1rem;
+      //        width: 10px;
+      //        height: 10px;
+      //        border-radius: 50%;
+      //
+      //        &:first-child {
+      //          background-color: #FF5F56;
+      //        }
+      //
+      //        &:nth-child(2) {
+      //          background-color: #FFBD2E;
+      //        }
+      //
+      //        &:last-child {
+      //          background-color: #27C93F;
+      //        }
+      //      }
+      //    }
+      //  }
+      //}
+      //
+      //.content {
+      //  flex: 1;
+      //  margin: 20px 0 0 10px;
+      //
+      //}
+      //
+      //@media (min-width: 1024px) {
+      //
+      //  flex-direction: row;
+      //  margin: 40px;
+      //
+      //  .card {
+      //    margin-right: 40px;
+      //  }
+      //  .content {
+      //    margin-left: 40px;
+      //    display: flex;
+      //    justify-content: center;
+      //    align-items: center;
+      //
+      //    .animate-text {
+      //      line-height: 2;
+      //      word-spacing: 16px;
+      //    }
+      //  }
+      //
+      //  &:nth-child(2) {
+      //    .content {
+      //      order: 1;
+      //      margin-left: 0;
+      //      margin-right: 40px;
+      //    }
+      //
+      //    .card {
+      //      margin-right: 0;
+      //      margin-left: 40px;
+      //      order: 2;
+      //    }
+      //  }
+      //}
+    }
+  }
+}
+
+@media (max-width: 1023px) {
+
+}
+
+
+.animated-circle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100vh;
+
+  .circle-item {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background-color: $color-green-opacity-less;
+    backdrop-filter: blur(2px);
+    box-shadow: 0 0 5px 5px $color-green-opacity-less;
+
+    &:first-child {
+      top: 150px;
+      left: 20px;
+    }
+
+    &:nth-child(2) {
+      top: 300px;
+      right: 20px;
+    }
+
+    &:nth-child(3) {
+      top: 500px;
+      left: 40px;
+    }
+
+    &:nth-child(4) {
+      top: 450px;
+      right: 100px;
+    }
+
+    &:nth-child(5) {
+      top: 550px;
+      left: 50px;
+    }
+
+    &:nth-child(6) {
+      top: 350px;
+      right: 50px;
+    }
+
+    &:nth-child(7) {
+      top: 700px;
+      right: 50px;
+    }
+
+    &:nth-child(3n+1) {
+      background-color: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(2px);
+      box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.4);
+    }
+
+    &:nth-child(4n+1) {
+      background-color: rgba(255, 0, 0, 0.4);
+      backdrop-filter: blur(2px);
+      box-shadow: 0 0 5px 5px rgba(255, 0, 0, 0.4);
+    }
+  }
+
+}

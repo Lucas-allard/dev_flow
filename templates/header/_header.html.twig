@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <header class="header">
+        <nav class="header-inner">
+            <a href="/" class="nav-icon" aria-label="visiter la page d'accueil" aria-current="page">
+                <img src={{ asset("./images/logo-dev-flow-white.png") }} alt="logo"/>
+            </a>
+            <div class="main-navlinks">
+                <input type="checkbox" id="hamburger-button">
+                <label for="hamburger-button">
+                    <span class="burger"></span>
+                    <span class="burger"></span>
+                    <span class="burger"></span>
+                </label>
+                <div class="navlinks-container">
+                    <a href="{{ path("home") }}" aria-current="page">
+                        <span></span>
+                        <span>Accueil</span>
+                    </a>
+                    <a href="{{ path("labo_index") }}">
+                        <span></span>
+                        <span>Le Labo</span>
+                    </a>
+                    <a href="#">
+                        <span></span>
+                        <span>Articles</span>
+                    </a>
+                    <a href="{{ path("chat") }}">
+                        <span></span>
+                        <span>Chat</span>
+                    </a>
+                    {% if app.user is null %}
+                        <a href="#" class="disabled-link">
+                            <span></span>
+                            <span>Profil</span>
+                        </a>
+                    {% else %}
+                        <a href="#">
+                            <span></span>
+                            <span>Profil</span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="nav-authentication">
+                {% if app.user is null %}
+                    <a href="#" class="sign-user" aria-label="page de connexion">
+                        <i class="fa-solid fa-user"></i>
+                    </a>
+                {% endif %}
+                <div class="sign-btns">
+                    {% if app.user is null %}
+                        <a href="/connexion" aria-label="connexion">
+                            <span></span>
+                            <span>Connexion</span>
+                        </a>
+                        <a href="/inscription" aria-label="inscription">
+                            <span></span>
+                            <span>Inscription</span>
+                        </a>
+                    {% else %}
+                        <a href="/deconnexion" aria-label="deconnexion">
+                            <span></span>
+                            <span>Deconnexion</span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>
+{% endblock %}

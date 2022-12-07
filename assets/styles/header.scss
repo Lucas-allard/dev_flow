@@ -1,0 +1,220 @@
+@import "variables";
+
+$transition_link: 0.14s ease-in-out;
+
+.header {
+  font-family: $font-secondary;
+  font-size: 2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background-color: $bg-dark;
+  color: white;
+
+  .header-inner {
+    position: fixed;
+    z-index: 4;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    background-color: $bg-dark;
+
+    .nav-icon {
+      display: flex;
+      align-items: center;
+      margin-right: 20px;
+
+      span {
+        margin-left: 10px;
+        font-size: 2.5rem;
+      }
+
+      img {
+        width: 60px;
+      }
+    }
+
+
+    .main-navlinks input {
+      display: none;
+    }
+  }
+
+  .nav-authentication {
+    margin-left: auto;
+
+    .sign-user {
+      display: none;
+    }
+  }
+
+  .navlinks-container {
+    position: relative;
+  }
+
+  .navlinks-container a,
+  .nav-authentication .sign-btns a {
+    margin: 0 10px;
+    padding: 5px 10px;
+    display: inline-block;
+    position: relative;
+  }
+
+  .navlinks-container span:first-child,
+  .nav-authentication .sign-btns span:first-child, {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: transparent;
+    transition: all 0.3s linear 0s;
+  }
+
+  .navlinks-container span:last-child,
+  .nav-authentication .sign-btns span:last-child {
+    position: relative;
+  }
+
+  .navlinks-container a:hover span:first-child,
+  .nav-authentication .sign-btns a:hover span:first-child {
+    width: 100%;
+    background-color: $color-green;
+    border-radius: $border-radius-xl
+  }
+
+  .navlinks-container a.disabled-link {
+    pointer-events: none;
+    opacity: 0.6;
+
+    span:first-child {
+      background-color: grey;
+      border-radius: $border-radius-xl;
+      width: 100%;
+    }
+  }
+
+  img {
+    width: 60px;
+  }
+}
+
+
+@media (max-width: 910px) {
+  .header .header-inner {
+    padding: 15px 20px;
+
+    .nav-icon {
+      z-index: 1;
+    }
+
+    .main-navlinks {
+      order: 3;
+
+      input {
+        display: block;
+        width: 40px;
+        height: 32px;
+        position: absolute;
+        top: -7px;
+        left: -5px;
+
+        cursor: pointer;
+
+        opacity: 0;
+        z-index: 2;
+
+        -webkit-touch-callout: none;
+      }
+
+      .burger {
+        display: block;
+        width: 33px;
+        height: 4px;
+        margin-bottom: 5px;
+        position: relative;
+
+        background: white;
+        border-radius: 3px;
+
+        z-index: 1;
+
+        transform-origin: 4px 0;
+
+        transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0),
+        background 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0),
+        opacity 0.55s ease;
+      }
+
+      .burger:first-child {
+        transform-origin: 0 0;
+      }
+
+      .burger:nth-last-child(2) {
+        transform-origin: 0 100%;
+      }
+
+      input:checked ~ .burger {
+        opacity: 1;
+        transform: rotate(45deg);
+      }
+
+
+      input:checked ~ label .burger:nth-child(1) {
+        opacity: 1;
+        transform: rotate(45deg) translate(2px, 0) ;
+      }
+
+      input:checked ~ label .burger:nth-child(2) {
+        opacity: 0;
+      }
+
+      input:checked ~ label .burger:nth-child(3) {
+        transform: rotate(-45deg) translate(-3px, 0);
+      }
+
+      .navlinks-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        height: 100vh;
+        width: 100%;
+        background-color: $bg-dark;
+        transform: translateY(-100%);
+        transition: transform 0.4s linear;
+
+        a {
+          font-size: 4vh;
+          margin: 1em;
+        }
+      }
+
+      input:checked ~ .navlinks-container {
+        transform: none;
+      }
+
+    }
+
+    .nav-authentication {
+      order: 2;
+      margin-right: 2rem;
+
+      .sign-user {
+        display: block;
+        position: relative;
+        font-size: 2.4rem;
+        cursor: pointer;
+      }
+
+
+      .sign-btns {
+        display: none;
+      }
+    }
+  }
+}
+
+
