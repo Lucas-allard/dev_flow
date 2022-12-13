@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from 'react';
+import React from 'react';
 import "./chatHeader.scss";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import EditLocationIcon from '@mui/icons-material/EditLocation';
@@ -7,9 +7,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import SendIcon from '@mui/icons-material/Send';
 import HelpIcon from '@mui/icons-material/Help';
 
-type Props = {}
 
-const ChatHeader: FunctionComponent<Props> = (props) => {
+
+const ChatHeader = (props) => {
     return (
         <div className="chatHeader">
             <div className="chatHeader__left">

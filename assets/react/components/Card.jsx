@@ -1,19 +1,13 @@
-import React, {FunctionComponent, ReactNode, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Fade from "./Fade";
-import * as rank from "../../image/Rank_set1/Rank_High/rank_high_18.png";
-import * as mockupPC from "../../image/mockup-pc.png";
+import rank from "../../image/Rank_set1/Rank_High/rank_high_18.png";
 
-type Props = {
-    heading: string,
-    children: ReactNode
-}
-
-const Card: FunctionComponent<Props> = ({heading, children,}) => {
+const Card = ({heading, children,}) => {
     const cardRef = useRef();
     const [isVisible, setIsVisible] = useState(false);
     const ratio = 0.05;
 
-    const callbackFunction = (entries: any[], observer: { unobserve: (arg0: never) => void; }) => {
+    const callbackFunction = (entries, observer) => {
         entries.forEach(entry => {
             if (cardRef.current && (entry.intersectionRatio > ratio)) {
                 console.log("hello")
@@ -23,8 +17,7 @@ const Card: FunctionComponent<Props> = ({heading, children,}) => {
         })
     }
 
-    let options: { root: null; rootMargin: string; threshold: number };
-    options = {
+    const options = {
         root: null,
         rootMargin: "0px",
         threshold: 1.0

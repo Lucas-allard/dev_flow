@@ -3,7 +3,7 @@ import React from 'react';
 import Button from "../components/Button";
 import {FaGithub, FaLinkedinIn} from "react-icons/fa";
 import {BiMessageAltDetail} from "@react-icons/all-files/bi/BiMessageAltDetail";
-import * as logoBlack from "../../image/logo-dev-flow-black.png"
+import logoBlack from "../../image/logo-dev-flow-black.png"
 import ScrollDown from "../components/ScrollDown";
 import AnimatedText from "react-animated-text-content";
 

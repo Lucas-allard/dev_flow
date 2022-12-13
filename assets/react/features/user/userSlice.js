@@ -1,27 +1,29 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import type { RootState } from '../../store/store'
+import {createSlice} from '@reduxjs/toolkit'
 
 // Define a type for the slice state
-interface UserState {
 
-}
 
 // Define the initial state using that type
-const initialState: UserState = {
-}
+const initialState = {}
 
 export const userSlice = createSlice({
     name: 'user',
     // `createSlice` will infer the state type from the `initialState` argument
     initialState,
     reducers: {
+        login: (state, action) => {
+            state.user = action.payload
+        },
 
+        logout: (state) => {
+            state.user = null
+        }
     }
 })
 
-export const {  } = userSlice.actions
+export const {login, logout} = userSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
-export const selectCount = (state: RootState) => state.user
+export const selectUser = (state) => state.user.user
 
 export default userSlice.reducer

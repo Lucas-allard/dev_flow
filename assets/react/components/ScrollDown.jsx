@@ -1,13 +1,8 @@
 import './scrollDown.scss';
-import React, {FunctionComponent} from 'react';
+import React from 'react';
 import {Link} from 'react-scroll';
 
-type Props = {
-    className: string | null,
-    path: string,
-}
-
-const ScrollDown: FunctionComponent<Props> = ({className, path}) => {
+const ScrollDown = ({className, path}) => {
 
     return (
         <Link

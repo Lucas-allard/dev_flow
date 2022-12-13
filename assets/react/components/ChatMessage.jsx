@@ -1,10 +1,9 @@
-import React, {FunctionComponent} from 'react';
+import React from'react';
 import "./chatMessage.scss"
 import Avatar from '@mui/material/Avatar';
 
-type Props = {}
 
-const ChatMessage: FunctionComponent<Props> = (props) => {
+const ChatMessage = (props) => {
     return (
         <div className="message">
             <Avatar/>

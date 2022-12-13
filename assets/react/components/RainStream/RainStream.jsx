@@ -8,11 +8,9 @@ import {
     minIntervalDelay
 } from "../../utils/rainStream";
 
-type RainStreamProps = {
-    height: number
-}
 
-const RainStream = ({height}: RainStreamProps) => {
+
+const RainStream = ({height}) => {
     const [stream, setStream] = useState([]);
     const [intervalDelay, setIntervalDelay] = useState(null);
     const [paddingTop, setPaddingTop] = useState(stream.length * -70);

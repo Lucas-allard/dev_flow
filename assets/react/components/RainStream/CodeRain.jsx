@@ -15,9 +15,7 @@ const CodeRain = () => {
 
 
     const streamCount = containerSize ? Math.floor(containerSize.width / 14) : 0;
-    // @ts-ignore
-    // @ts-ignore
-    // @ts-ignore
+
     return (
         <div
             style={{

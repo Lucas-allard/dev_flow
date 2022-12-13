@@ -8,5 +8,5 @@
         {% include "./header/_header.html.twig" %}
     {% endblock %}
 
-    <div id="chat"></div>
+    <div style="position: relative" {{ react_component('ChatApp', {user: userData}) }}></div>
 {% endblock %}
