@@ -5,7 +5,6 @@ import {FaGithub, FaLinkedinIn} from "react-icons/fa";
 import {BiMessageAltDetail} from "@react-icons/all-files/bi/BiMessageAltDetail";
 import logoBlack from "../../image/logo-dev-flow-black.png"
 import ScrollDown from "../components/ScrollDown";
-import AnimatedText from "react-animated-text-content";
 
 
 const HeroSection = () => {
@@ -23,22 +22,14 @@ const HeroSection = () => {
                         </div>
                     </div>
                     <div className='hero-content'>
-                        <span style={{display: "block", padding: "4rem"}}>
-                            <AnimatedText
-                                type='words'
-                                interval={0.1}
-                                duration={0.5}
-                                animation={{
-                                    y: '100px',
-                                    ease: 'ease',
-                                }}
-                            >Texte de présentation sur moi : Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                        <p>
+                            Texte de présentation sur moi : Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                             Ad
                             alias consectetur et ex laboriosam magnam molestias officiis perspiciatis repudiandae.
                             Ab
                             consectetur eligendi expedita facere ipsa iure molestias nulla reiciendis sapiente.
-                        </AnimatedText>
-                        </span>
+
+                        </p>
                         <div className="hero-helpers">
                             <Button className="button-cta"
                                     route={'https://www.linkedin.com/in/lucasallard97/'}><FaLinkedinIn/></Button>

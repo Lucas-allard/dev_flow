@@ -3,10 +3,18 @@
   flex-direction: column;
   justify-content: space-between;
   flex: 0.75;
-  height: 100vh;
+  min-height: calc(100vh - 90px);
+  max-height: calc(100vh - 290px);
 
   .chat__messages {
     flex: 1;
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .chat__messages::-webkit-scrollbar {
+    display: none;
   }
 
   .chat__input {
@@ -33,8 +41,19 @@
         padding: 20px;
       }
 
-      .chat__inputBtn  {
+      .chat__inputBtn {
         display: none;
+      }
+
+      .react-input-emoji--button {
+        padding-left: 4rem;
+
+        svg {
+          fill: #D3D3D3;
+        }
+      }
+      .react-emoji-picker--wrapper {
+        overflow: initial;
       }
     }
 

@@ -3,6 +3,7 @@
 .sidebar {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   flex: 0.25;
   background-color: $bg-dark;
   border-right: 3px solid #26282c;
@@ -26,6 +27,7 @@
   }
 
   .sidebar__middle {
+    flex: 1;
     overflow-y: scroll;
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */

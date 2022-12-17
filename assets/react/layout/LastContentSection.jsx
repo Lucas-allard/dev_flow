@@ -1,15 +1,13 @@
 import './lastContentSection.scss';
 import React from 'react';
 import Button from "../components/Button";
-import * as logoJS from '../../image/logo-js.png';
-import * as logoHTML from '../../image/logo-html.png';
-import * as logoCSS from '../../image/logo-css.png';
+import logoJS from '../../image/logo-js.png';
+import logoHTML from '../../image/logo-html.png';
+import logoCSS from '../../image/logo-css.png';
 import ScrollDown from "../components/ScrollDown";
-import AnimatedText from "react-animated-text-content";
 import CodeRain from "../components/RainStream/CodeRain";
 
 const LastContentSection = () => {
-    // @ts-ignore
     return (
         <section className="container init-width position-relative" id="last-content-section">
             <CodeRain/>
@@ -17,19 +15,11 @@ const LastContentSection = () => {
                 <div className="home-header">
                     <div className="cta">
                         <h2>
-                            <AnimatedText
-                                type='words'
-                                interval={0.04}
-                                duration={0.8}
-                                animation={{
-                                    y: '100px',
-                                    ease: 'ease',
-                                }}
-                            >
+                            <p>
                                 Dev Flow c'est une plateforme d'apprentissage mais c'est avant tout une plateforme
                                 d'entraide
                                 !
-                            </AnimatedText>
+                            </p>
                         </h2>
                         <div className="cta-register">
                             <Button className="button-cta code-rain" route="/inscription">S'inscrire</Button>
@@ -37,20 +27,12 @@ const LastContentSection = () => {
                         </div>
                         <div className="cta-content">
                             <a href="#">
-                                <AnimatedText
-                                    type='chars'
-                                    interval={0.04}
-                                    duration={0.8}
-                                    animation={{
-                                        y: '100px',
-                                        ease: 'ease',
-                                    }}
-                                >
+                                <p>
                                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto
                                     asperiores delectus
                                     dicta ea exercitationem fugiat, illum iure laboriosam maxime porro quaerat, quisquam
                                     reprehenderit suscipit tempore ut veniam veritatis voluptatibus voluptatum.
-                                </AnimatedText>
+                                </p>
                             </a>
                         </div>
                     </div>

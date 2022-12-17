@@ -10,13 +10,12 @@ const ChatPage = (user) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log(user)
-        if (user) {
-            dispatch(login(user))
-        } else {
+        // console.log(user.user)
+        if (!user) {
             dispatch(logout);
         }
-    }, [])
+        dispatch(login(user.user))
+    }, [user])
 
 
     return (
