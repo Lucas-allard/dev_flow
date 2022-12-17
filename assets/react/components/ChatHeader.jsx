@@ -8,8 +8,7 @@ import SendIcon from '@mui/icons-material/Send';
 import HelpIcon from '@mui/icons-material/Help';
 
 
-
-const ChatHeader = (props) => {
+const ChatHeader = ({channelName}) => {
     return (
         <div className="chatHeader">
             <div className="chatHeader__left">
@@ -17,7 +16,7 @@ const ChatHeader = (props) => {
                     <span className="chatHeader__hash">
                         #
                     </span>
-                    Html
+                    {channelName}
                 </h3>
             </div>
 

@@ -1,19 +1,20 @@
-import React from'react';
+import React from 'react';
 import "./chatMessage.scss"
 import Avatar from '@mui/material/Avatar';
 
 
-const ChatMessage = (props) => {
+const ChatMessage = ({userPicture, fullname, timestamp, message}) => {
+    console.log(userPicture)
     return (
         <div className="message">
-            <Avatar/>
+            <Avatar src={userPicture}/>
 
             <div className="message__info">
                 <h4>
-                    People Name
-                    <span className="message__timestamp">Timestamp</span>
+                    {fullname}
+                    <span className="message__timestamp">{timestamp}</span>
                 </h4>
-                <p>message</p>
+                <p>{message}</p>
             </div>
         </div>
     );
