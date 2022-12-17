@@ -1,37 +1,55 @@
 import React, {useEffect, useState} from 'react';
 import './sidebar.scss'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import SidebarChannel from "./SidebarChannel";
 import SidebarChannels from "./SidebarChannels";
 import {selectUser} from "../features/user/userSlice";
 import {useSelector} from "react-redux";
-import db from "../../firebase";
-
+import {db} from "../../firebase";
+import {onSnapshot, query, collection, addDoc, orderBy} from "firebase/firestore";
+import Avatar from "@mui/material/Avatar";
+import AddIcon from "@mui/icons-material/Add";
 
 const Sidebar = () => {
     const user = useSelector(selectUser);
-    const [channels, setChannels] = useState([]);
+    const [categoriesChannels, setCategoriesChannels] = useState([]);
+
+    const getCategoriesChannels = async () => {
+
+        const q = query(
+            collection(db, `categoriesChannels`),
+            orderBy("timestamp", "asc")
+        );
+        onSnapshot(q, (querySnapshot) => {
+            setCategoriesChannels([]);
+            querySnapshot.forEach((doc) => {
+                setCategoriesChannels(
+                    (category) => [
+                        ...category,
+                        {
+                            id: doc.id,
+                            name: doc.data().name
+                        }
+                    ]
+                )
+            });
+        });
+    }
 
     useEffect(() => {
-        db.collection("channels").onSnapshot((snapshot) => (
-            setChannels(
-                // @ts-ignore
-                snapshot.docs.map(doc => ({
-                        id: doc.id,
-                        channel: doc.data()
-                    }
-                ))
-            )
-        ))
+        getCategoriesChannels()
     }, [])
 
-    const handleAddChannel = () => {
-        const channelName = prompt('saisir le nom du nouveau channel');
-
-        if (channelName) {
-            db.collection("channels").add({
-                channelName: channelName
+    const handleAddCategoryChannel = async () => {
+        const category = prompt('Saisir le nom de la nouvelle catégorie de channel')
+        try {
+            const docRef = await addDoc(collection(db, "categoriesChannels"), {
+                name: category,
+                timestamp: new Date()
             });
+
+            console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+            console.error("Error adding document: ", e);
         }
     }
 
@@ -39,33 +57,30 @@ const Sidebar = () => {
         <div className="sidebar">
             <div className="sidebar__top">
                 <h3>Labo Chat</h3>
+                <AddIcon className="sidebar__addChannel" onClick={handleAddCategoryChannel}/>
                 <ExpandMoreIcon/>
             </div>
 
             <div className="sidebar__middle">
-                <SidebarChannels
-                    channelsHeading="Général"
-                    children={
-                        <div className="sidebar__channelsList">
-                            {channels.map((channel, id) =>
-                                <SidebarChannel
-                                    channelName={channel.channelName} channelId={channel.channelId}/>
-                            )}
-                        </div>
-                    }
-                    addChannel={handleAddChannel}/>
+                {categoriesChannels.map((category, id) =>
+                    <SidebarChannels
+                        categoryName={category.name}
+                        categoryId={category.id}
+                        key={category.id}
+                    />
+                )}
             </div>
 
-            {/*{user &&*/}
-            {/*    <div className="sidebar__profile">*/}
+            {user &&
+                <div className="sidebar__profile">
 
-            {/*        <Avatar alt="profil picture" src={user.profilPicture}/>*/}
-            {/*        <div className="sidebar__profileInfo">*/}
-            {/*            <h3>{user.fullname}</h3>*/}
-            {/*            <p>#{user.id.substring(0, 8)}</p>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*}*/}
+                    <Avatar alt="profil picture" src={user.profilPicture}/>
+                    <div className="sidebar__profileInfo">
+                        <h3>{user.fullname}</h3>
+                        <p>#{user.id.substring(0, 8)}</p>
+                    </div>
+                </div>
+            }
         </div>
     );
 }

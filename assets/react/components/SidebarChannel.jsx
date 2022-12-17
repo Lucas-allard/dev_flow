@@ -1,11 +1,12 @@
 import React from 'react';
 import './sidebarChannel.scss'
 
-const SidebarChannel = (props) => {
+const SidebarChannel = ({onHandleChangeChannel, channelName, id}) => {
+
     return (
-        <div className="sidebarChannel">
+        <div className="sidebarChannel" onClick={() => onHandleChangeChannel(channelName, id)}>
             <h4>
-                <span className="sidebarChannel__hash">#</span>{props.channelName}
+                <span className="sidebarChannel__hash">#</span>{channelName}
             </h4>
         </div>
     );
