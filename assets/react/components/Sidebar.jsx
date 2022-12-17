@@ -12,6 +12,7 @@ import AddIcon from "@mui/icons-material/Add";
 const Sidebar = () => {
     const user = useSelector(selectUser);
     const [categoriesChannels, setCategoriesChannels] = useState([]);
+    const admin = user?.roles.includes('ROLE_ADMIN');
 
     const getCategoriesChannels = async () => {
 
@@ -39,6 +40,10 @@ const Sidebar = () => {
         getCategoriesChannels()
     }, [])
 
+    useEffect(() => {
+        console.log(admin)
+    }, [admin])
+
     const handleAddCategoryChannel = async () => {
         const category = prompt('Saisir le nom de la nouvelle catégorie de channel')
         try {
@@ -57,7 +62,7 @@ const Sidebar = () => {
         <div className="sidebar">
             <div className="sidebar__top">
                 <h3>Labo Chat</h3>
-                <AddIcon className="sidebar__addChannel" onClick={handleAddCategoryChannel}/>
+                {admin && <AddIcon className="sidebar__addChannel" onClick={handleAddCategoryChannel}/>}
                 <ExpandMoreIcon/>
             </div>
 

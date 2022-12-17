@@ -5,13 +5,17 @@ import AddIcon from "@mui/icons-material/Add";
 import {addDoc, collection, getDocs, onSnapshot, orderBy, query} from "firebase/firestore";
 import {db} from "../../firebase";
 import SidebarChannel from "./SidebarChannel";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {setChannel} from "../features/channel/channelSlice";
+import {selectUser} from "../features/user/userSlice";
 
 
 const SidebarChannels = ({categoryName, categoryId}) => {
     const [channels, setChannels] = useState([]);
     const dispatch = useDispatch();
+    const user = useSelector(selectUser);
+    const admin = user?.roles.includes('ROLE_ADMIN');
+
 
     const getChannels = async () => {
         const q = query(
@@ -67,7 +71,7 @@ const SidebarChannels = ({categoryName, categoryId}) => {
                     <ExpandMoreIcon/>
                     <h4>{categoryName}</h4>
                 </div>
-                <AddIcon className="sidebar__addChannel" onClick={() => handleAddChannel(categoryId)}/>
+                {admin && <AddIcon className="sidebar__addChannel" onClick={() => handleAddChannel(categoryId)}/>}
             </div>
 
             <div className="sidebar__channelsList">

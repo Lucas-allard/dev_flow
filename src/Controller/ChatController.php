@@ -19,6 +19,7 @@ class ChatController extends AbstractController
             "fullname" => $this->getUser()->getFullName(),
             "id" => $this->getUser()->getGoogleId(),
             "profilPicture" => $this->getUser()->getProfilPicture(),
+            "roles" => $this->getUser()->getRoles(),
         ];
 
         return $this->render('chat/index.html.twig', [
