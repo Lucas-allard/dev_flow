@@ -105,7 +105,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     public function start(Request $request, AuthenticationException $authException = null): Response
     {
         return new RedirectResponse(
-            '/connect/google', // might be the site, where users choose their oauth provider
+            '/connexion', // might be the site, where users choose their oauth provider
             Response::HTTP_TEMPORARY_REDIRECT
         );
     }

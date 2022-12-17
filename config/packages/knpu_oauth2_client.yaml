@@ -9,7 +9,7 @@ knpu_oauth2_client:
       client_secret: '%env(GOOGLE_CLIENT_SECRET)%'
       # a route name you'll create
       redirect_route: connect_google_check
-      redirect_params: { }
+      redirect_params: {}
       use_state: true
       # Optional value for sending access_type parameter. More detail: https://developers.google.com/identity/protocols/OpenIDConnect#authenticationuriparameters
       # access_type: null

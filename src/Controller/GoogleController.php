@@ -2,44 +2,30 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use http\Env\Response;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\Provider\GoogleClient;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
-use League\OAuth2\Client\Provider\GoogleUser;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class GoogleController extends AbstractController
 {
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
     /**
      * Link to this controller to start the "connect" process
      *
      * @Route("/connect/google", name="connect_google_start")
      */
-    public function connectAction(ClientRegistry $clientRegistry)
+    public function connectAction(ClientRegistry $clientRegistry): RedirectResponse
     {
         // on Symfony 3.3 or lower, $clientRegistry = $this->get('knpu.oauth2.registry');
 
         // will redirect to Facebook!
         return $clientRegistry
             ->getClient('google') // key used in config/packages/knpu_oauth2_client.yaml
-            ->redirect();
+            ->redirect(['profile', 'email']);
     }
 
     /**
@@ -67,14 +53,6 @@ class GoogleController extends AbstractController
             var_dump($e->getMessage());
             die;
         }
-
-        // now, $token contains the data from Google
-        // you can use this to create your own user account
-
-
-        // ...
-
-        return $this->redirectToRoute('home');
     }
 
 }
