@@ -58,17 +58,33 @@ function Chat() {
     )
 
     const sendMessage = async () => {
-
         const message = {
             timestamp: new Date(),
             content: input,
             user: user
         }
 
+        const data = {
+            'content': message.content,
+            'id': user.id,
+            'timestamp': message.timestamp,
+        };
+
+        console.log(user.csrfToken)
         try {
+            axios.defaults["x-csrf-token"] = user.csrfToken;
+            const options = {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded',
+                },
+                data: data,
+                url: "https://localhost:8000/chat/send",
+            };
             const docRef = await addDoc(collection(db, `categoriesChannels/${channel.categoryId}/channels/${channel.channelId}/messages`), message);
-            const symRef = await axios.post('http://localhost:8000/add-message-to-current-user', JSON.stringify(message))
+            const symRef = await axios(options)
             setInput('');
+            console.log(symRef)
 
             console.log("Document written with ID: ", docRef.id);
         } catch (e) {
@@ -115,7 +131,7 @@ function Chat() {
                     <div className="chat__input">
                         <AddCircleIcon/>
 
-                        <form onSubmit={sendMessage}>
+                        <form onSubmit={sendMessage} encType="multipart/form-data">
                             <InputEmoji
                                 value={input}
                                 onChange={setInput}

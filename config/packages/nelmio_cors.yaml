@@ -1,0 +1,31 @@
+nelmio_cors:
+    paths:
+        '/chat':
+            origin_regex: true
+            allow_origin: [ '%env(CORS_ALLOW_ORIGIN)%' ] # You probably want to change this regex to match your real domain
+            allow_methods: [ 'GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE' ]
+            allow_headers: [ 'Content-Type', 'Authorization' ]
+            expose_headers: [ 'Link' ]
+            max_age: 3600
+        '/connect/google':
+            origin_regex: true
+            allow_origin: [ '%env(CORS_ALLOW_ORIGIN)%' ] # You probably want to change this regex to match your real domain
+            allow_methods: [ 'GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE' ]
+            allow_headers: [ 'Content-Type', 'Authorization' ]
+            expose_headers: [ 'Link' ]
+            max_age: 3600
+        '/connect/google/check':
+            origin_regex: true
+            allow_origin: [ '%env(CORS_ALLOW_ORIGIN)%' ] # You probably want to change this regex to match your real domain
+            allow_methods: [ 'GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE' ]
+            allow_headers: [ 'Content-Type', 'Authorization' ]
+            expose_headers: [ 'Link' ]
+            max_age: 3600
+    defaults:
+        origin_regex: true
+        allow_origin: ['%env(CORS_ALLOW_ORIGIN)%']
+        allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
+        allow_headers: ['Content-Type', 'Authorization']
+        expose_headers: ['Link']
+        max_age: 3600
+

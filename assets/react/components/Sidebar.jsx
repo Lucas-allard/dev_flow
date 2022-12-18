@@ -40,7 +40,6 @@ const Sidebar = () => {
         getCategoriesChannels()
     }, [])
 
-
     const handleAddCategoryChannel = async () => {
         const category = prompt('Saisir le nom de la nouvelle catégorie de channel')
         try {
@@ -85,7 +84,7 @@ const Sidebar = () => {
                     }
                     <div className="sidebar__profileInfo">
                         <h3>{user.fullname}</h3>
-                        <p>#{user.id.substring(0, 8)}</p>
+                        {/*<p>#{user.id.substring(0, 8)}</p>*/}
                     </div>
                 </div>
             }
