@@ -44,6 +44,21 @@
     padding: 20px;
     border-top: 3px solid #26282c;
 
+    .sidebar__avatar {
+      height: 40px;
+      width: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      background-color: #512DA8;
+
+      p {
+        font-size: 2rem;
+        font-weight: 700;
+      }
+    }
+
     .sidebar__profileInfo {
       padding-left: 15px;
 

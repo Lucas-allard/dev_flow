@@ -76,7 +76,13 @@ const Sidebar = () => {
             {user &&
                 <div className="sidebar__profile">
 
-                    <Avatar alt="profil picture" src={user.profilPicture}/>
+                    {user.profilPicture ?
+                        <Avatar alt="profil picture" src={user.profilPicture}/>
+                        :
+                    <div className="sidebar__avatar">
+                        <p>{user.fullname[0].toUpperCase()}</p>
+                    </div>
+                    }
                     <div className="sidebar__profileInfo">
                         <h3>{user.fullname}</h3>
                         <p>#{user.id.substring(0, 8)}</p>
