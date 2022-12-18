@@ -14,6 +14,7 @@ import {selectUser} from "../features/user/userSlice";
 import moment from "moment/moment";
 import InputEmoji from 'react-input-emoji'
 import {selectSearch} from "../features/search/searchSlice";
+import axios from "axios";
 
 function Chat() {
     const [messages, setMessages] = useState([]);
@@ -51,15 +52,22 @@ function Chat() {
         });
     }
 
-    const sendMessage = async () => {
-        console.log(input)
-        try {
-            const docRef = await addDoc(collection(db, `categoriesChannels/${channel.categoryId}/channels/${channel.channelId}/messages`), {
-                timestamp: new Date(),
-                content: input,
-                user: user
-            });
+    const searchMessages = () => messages.filter((message) =>
+        message.message.includes(search.value)
+        || message.fullname.includes(search.value)
+    )
 
+    const sendMessage = async () => {
+
+        const message = {
+            timestamp: new Date(),
+            content: input,
+            user: user
+        }
+
+        try {
+            const docRef = await addDoc(collection(db, `categoriesChannels/${channel.categoryId}/channels/${channel.channelId}/messages`), message);
+            const symRef = await axios.post('http://localhost:8000/add-message-to-current-user', JSON.stringify(message))
             setInput('');
 
             console.log("Document written with ID: ", docRef.id);
@@ -67,11 +75,6 @@ function Chat() {
             console.error("Error adding document: ", e);
         }
     }
-
-    const searchMessages = () => messages.filter((message) =>
-        message.message.includes(search.value)
-        || message.fullname.includes(search.value)
-    )
 
 
     useEffect(() => {
@@ -90,11 +93,6 @@ function Chat() {
 
 
     }, [search])
-
-    useEffect(() => {
-        console.log(messages)
-
-    }, [messages])
 
     return (
         <div className="chat">

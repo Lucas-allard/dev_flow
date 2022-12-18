@@ -49,11 +49,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?string $googleId = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ChatMessage::class, orphanRemoval: true)]
+    private Collection $chatMessages;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->courses = new ArrayCollection();
 //        $this->badges = new ArrayCollection();
+$this->chatMessages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -263,6 +267,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setGoogleId(?string $googleId): self
     {
         $this->googleId = $googleId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ChatMessage>
+     */
+    public function getChatMessages(): Collection
+    {
+        return $this->chatMessages;
+    }
+
+    public function addChatMessage(ChatMessage $chatMessage): self
+    {
+        if (!$this->chatMessages->contains($chatMessage)) {
+            $this->chatMessages->add($chatMessage);
+            $chatMessage->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChatMessage(ChatMessage $chatMessage): self
+    {
+        if ($this->chatMessages->removeElement($chatMessage)) {
+            // set the owning side to null (unless already changed)
+            if ($chatMessage->getUser() === $this) {
+                $chatMessage->setUser(null);
+            }
+        }
 
         return $this;
     }

@@ -33,6 +33,7 @@
         "@reduxjs/toolkit": "^1.9.0",
         "@types/react-redux": "^7.1.24",
         "@use-it/interval": "^1.0.0",
+        "axios": "^1.2.1",
         "firebase": "^9.15.0",
         "moment": "^2.29.4",
         "react": "^18.2.0",
