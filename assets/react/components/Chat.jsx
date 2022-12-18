@@ -13,17 +13,19 @@ import {db} from "../../firebase";
 import {selectUser} from "../features/user/userSlice";
 import moment from "moment/moment";
 import InputEmoji from 'react-input-emoji'
+import {selectSearch} from "../features/search/searchSlice";
 
 function Chat() {
     const [messages, setMessages] = useState([]);
-    const channel = useSelector(selectChannel)
-    const user = useSelector(selectUser)
-    const [input, setInput] = useState("")
+    const channel = useSelector(selectChannel);
+    const user = useSelector(selectUser);
+    const search = useSelector(selectSearch);
+    const [input, setInput] = useState("");
 
-    const getMessage = async () => {
+    const getMessages = async () => {
 
         if (!channel) {
-            return
+            return;
         }
 
         const q = query(
@@ -49,14 +51,6 @@ function Chat() {
         });
     }
 
-    useEffect(() => {
-        getMessage();
-    }, [channel])
-
-    useEffect(() => {
-        console.log(messages);
-    }, [messages])
-
     const sendMessage = async () => {
         console.log(input)
         try {
@@ -64,7 +58,7 @@ function Chat() {
                 timestamp: new Date(),
                 content: input,
                 user: user
-            })
+            });
 
             setInput('');
 
@@ -73,6 +67,34 @@ function Chat() {
             console.error("Error adding document: ", e);
         }
     }
+
+    const searchMessages = () => messages.filter((message) =>
+        message.message.includes(search.value)
+        || message.fullname.includes(search.value)
+    )
+
+
+    useEffect(() => {
+        getMessages();
+    }, [channel])
+
+    useEffect(() => {
+        if (search) {
+            const searchResult = searchMessages()
+            if (searchResult.length > 0) {
+                setMessages(searchResult)
+            }
+        } else {
+            getMessages()
+        }
+
+
+    }, [search])
+
+    useEffect(() => {
+        console.log(messages)
+
+    }, [messages])
 
     return (
         <div className="chat">

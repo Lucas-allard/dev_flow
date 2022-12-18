@@ -40,9 +40,6 @@ const Sidebar = () => {
         getCategoriesChannels()
     }, [])
 
-    useEffect(() => {
-        console.log(admin)
-    }, [admin])
 
     const handleAddCategoryChannel = async () => {
         const category = prompt('Saisir le nom de la nouvelle catégorie de channel')

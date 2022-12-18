@@ -4,7 +4,6 @@ import Avatar from '@mui/material/Avatar';
 
 
 const ChatMessage = ({userPicture, fullname, timestamp, message}) => {
-    console.log(userPicture)
     return (
         <div className="message">
             <Avatar src={userPicture}/>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import "./chatHeader.scss";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import EditLocationIcon from '@mui/icons-material/EditLocation';
@@ -6,9 +6,27 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import SendIcon from '@mui/icons-material/Send';
 import HelpIcon from '@mui/icons-material/Help';
+import {useDispatch} from "react-redux";
+import {setSearch} from "../features/search/searchSlice";
 
 
 const ChatHeader = ({channelName}) => {
+    const [searchValue, setSearchValue] = useState("");
+    const dispatch = useDispatch();
+
+    const handleChange = (e) => {
+        e.preventDefault();
+        setSearchValue(e.target.value)
+
+
+        if (searchValue.length > 3) {
+
+            dispatch(setSearch({value: searchValue}))
+        } else {
+            dispatch(setSearch(null))
+        }
+    }
+
     return (
         <div className="chatHeader">
             <div className="chatHeader__left">
@@ -26,7 +44,7 @@ const ChatHeader = ({channelName}) => {
                 <PeopleAltIcon/>
 
                 <div className="chatHeader__search">
-                    <input placeholder="Search" type="text"/>
+                    <input placeholder="Search" type="text" onChange={handleChange}/>
                     <SearchIcon/>
                 </div>
 
