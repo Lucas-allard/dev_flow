@@ -16,11 +16,16 @@ security:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
     main:
-      #            lazy: true
-      custom_authenticator:
-          - App\Security\GoogleAuthenticator
-      #            provider: app_user_provider
-      #            custom_authenticator: App\Security\UserAuthenticator
+      lazy: true
+      entry_point: form_login
+      form_login:
+
+        login_path: app_login
+        check_path: app_login
+        enable_csrf: true
+      #      custom_authenticator:
+      #        - App\Security\GoogleAuthenticator
+
       logout:
         path: app_logout
         # where to redirect after logout

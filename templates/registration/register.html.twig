@@ -15,6 +15,9 @@
                 <h2>
                     Inscription
                 </h2>
+                {% if form_errors(registrationForm.plainPassword) %}
+                    {{ form_errors(registrationForm.plainPassword) }}
+                {% endif %}
                 <div class="inputBox">
                     {{ form_widget(registrationForm.username, {
                         label: false
@@ -42,7 +45,9 @@
                     } ) }}
                     <span>J'accepter la politique de confidentialité</span>
                 </div>
-                <input type="submit" class="btn" value="m'inscrire"/>
+                <div class="action__btn">
+                    <input type="submit" class="btn" value="M'inscrire"/>
+                </div>
                 {{ form_end(registrationForm) }}
             </div>
         </section>

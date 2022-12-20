@@ -28,14 +28,12 @@
                         </div>
                     {% endif %}
                     <div class="inputBox">
-                        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" required="required"
-                               autocomplete="email" required autofocus>
+                        <input type="text" id="username" name="_username" value="{{ last_username }}">
                         <span>Email</span>
                         <i></i>
                     </div>
                     <div class="inputBox">
-                        <input type="password" name="password" id="inputPassword" autocomplete="current-password"
-                               required>
+                        <input type="password" id="password" name="_password">
                         <span>Mot de passe</span>
                         <i></i>
                     </div>
@@ -43,7 +41,13 @@
                         <a href="#">Mot de passe oublié</a>
                         <a href={{ path("inscription") }}>Inscription</a>
                     </div>
-                    <input type="submit" value="connexion">
+                    <div class="action__btn">
+                        <input type="submit" value="Connexion">
+                        <button type="button">
+                            <a href="{{ path("connect_google_start") }}">GOOGLE</a>
+                        </button>
+                    </div>
+
                     <input type="hidden" name="_csrf_token"
                            value="{{ csrf_token('authenticate') }}"
                     >

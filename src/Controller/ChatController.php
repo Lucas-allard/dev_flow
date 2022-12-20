@@ -2,23 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\ChatMessage;
 use App\Repository\ChatMessageRepository;
 use App\Repository\UserRepository;
 use App\Services\AddMessageToCurrentUser;
-use DateTime;
-use phpDocumentor\Reflection\Types\This;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Csrf\CsrfToken;
-use Symfony\Component\Security\Csrf\CsrfTokenManager;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+
 
 class ChatController extends AbstractController
 {
@@ -31,12 +25,10 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @param CsrfTokenManagerInterface $csrfTokenManager
-     * @param SessionInterface $session
      * @return Response
      */
     #[Route('/chat', name: 'chat')]
+    #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
         $csrfToken = $this->csrfTokenManager->getToken("send");
@@ -59,7 +51,6 @@ class ChatController extends AbstractController
      * @param UserRepository $userRepository
      * @param ChatMessageRepository $chatMessageRepository
      * @param AddMessageToCurrentUser $service
-     * @param TokenStorageInterface $tokenStorage
      * @return Response
      */
     #[Route('/chat/send', name: 'chat_send')]
@@ -68,24 +59,17 @@ class ChatController extends AbstractController
         UserRepository          $userRepository,
         ChatMessageRepository   $chatMessageRepository,
         AddMessageToCurrentUser $service,
-        TokenStorageInterface   $tokenStorage
-    ): Response
+): Response
     {
-        $submitedToken = urldecode($request->request->get("csrfToken"));
+        $messageData = json_decode($request->getContent(), true);
 
+        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('chat', $messageData["user"]["csrfToken"]))) {
 
-        if (
-            $request->request->get("content")
-            && $request->request->get("id")
-            && $request->request->get("timestamp")
-            && !$this->csrfTokenManager->isTokenValid(new CsrfToken('chat', $submitedToken))
-        ) {
-            $service->sendMessage($request, $userRepository, $chatMessageRepository);
+            $service->sendMessage($messageData, $userRepository, $chatMessageRepository);
 
-            return (new Response())->setStatusCode("201", "Message ajouté à l'utilisateur courrant avec succès");
+            return (new Response())->setStatusCode("201", "Created");
         } else {
             return (new Response())->setStatusCode("500", "Erreur serveur");
         }
-
     }
 }

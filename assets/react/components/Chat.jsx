@@ -40,11 +40,10 @@ function Chat() {
                     (message) => [
                         ...message,
                         {
-                            id: doc.id,
                             timestamp: moment(doc.data().timestamp.toDate().toUTCString()).locale("fr").format('ll'),
-                            userPicture: doc.data().user.profilPicture,
-                            fullname: doc.data().user.fullname,
-                            message: doc.data().content,
+                            userPicture: doc.data().profilPicture,
+                            fullname: doc.data().fullname,
+                            message: doc.data().message,
                         }
                     ]
                 )
@@ -58,35 +57,28 @@ function Chat() {
     )
 
     const sendMessage = async () => {
-        const message = {
-            timestamp: new Date(),
-            content: input,
-            user: user
-        }
-
         const data = {
-            'content': message.content,
-            'id': user.id,
-            'timestamp': message.timestamp,
+            message: input,
+            user: user,
+            id: user.id,
+            collection: `categoriesChannels/${channel.categoryId}/channels/${channel.channelId}/messages`
         };
 
-        console.log(user.csrfToken)
         try {
             axios.defaults["x-csrf-token"] = user.csrfToken;
             const options = {
                 method: 'POST',
                 headers: {
-                    'content-type': 'application/x-www-form-urlencoded',
+                    'content-type': 'application/json',
                 },
-                data: data,
+                data: JSON.stringify(data),
                 url: "https://localhost:8000/chat/send",
             };
-            const docRef = await addDoc(collection(db, `categoriesChannels/${channel.categoryId}/channels/${channel.channelId}/messages`), message);
-            const symRef = await axios(options)
-            setInput('');
+            // const docRef = await addDoc(collection(db, `categoriesChannels/${channel.categoryId}/channels/${channel.channelId}/messages`), message);
+            const symRef = await axios(options);
             console.log(symRef)
+            setInput('');
 
-            console.log("Document written with ID: ", docRef.id);
         } catch (e) {
             console.error("Error adding document: ", e);
         }
@@ -106,9 +98,11 @@ function Chat() {
         } else {
             getMessages()
         }
-
-
     }, [search])
+
+    useEffect(() => {
+        console.log(user)
+    }, [user])
 
     return (
         <div className="chat">
@@ -117,13 +111,13 @@ function Chat() {
                     <ChatHeader channelName={channel.channelName}/>
 
                     <div className="chat__messages">
-                        {messages.map(message =>
+                        {messages.map((message, id) =>
                             <ChatMessage
                                 timestamp={message.timestamp}
                                 userPicture={message.userPicture}
                                 fullname={message.fullname}
                                 message={message.message}
-                                key={message.id}
+                                key={id}
                             />
                         )}
                     </div>
@@ -131,7 +125,7 @@ function Chat() {
                     <div className="chat__input">
                         <AddCircleIcon/>
 
-                        <form onSubmit={sendMessage} encType="multipart/form-data">
+                        <form onSubmit={sendMessage}>
                             <InputEmoji
                                 value={input}
                                 onChange={setInput}
