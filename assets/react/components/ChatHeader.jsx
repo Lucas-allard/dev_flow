@@ -20,7 +20,7 @@ const ChatHeader = ({channelName}) => {
 
 
         if (searchValue.length > 3) {
-
+            console.log(searchValue)
             dispatch(setSearch({value: searchValue}))
         } else {
             dispatch(setSearch(null))

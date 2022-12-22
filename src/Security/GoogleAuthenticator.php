@@ -5,32 +5,46 @@ namespace App\Security;
 use App\Entity\User;
 
 // your user entity
+use App\EventListener\LoginListener;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use League\OAuth2\Client\Provider\GoogleUser;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationEntrypointInterface
 {
     private $clientRegistry;
     private $entityManager;
     private $router;
+    private EventDispatcherInterface $eventDispatcher;
+    private LoginListener $loginListener;
 
-    public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router)
+    public function __construct(
+        ClientRegistry           $clientRegistry,
+        EntityManagerInterface   $entityManager,
+        RouterInterface          $router,
+        EventDispatcherInterface $eventDispatcher,
+        LoginListener            $loginListener
+    )
     {
         $this->clientRegistry = $clientRegistry;
         $this->entityManager = $entityManager;
         $this->router = $router;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->loginListener = $loginListener;
     }
 
     public function supports(Request $request): ?bool
@@ -44,7 +58,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         $client = $this->clientRegistry->getClient('google');
         $accessToken = $this->fetchAccessToken($client);
 
-        return new SelfValidatingPassport(
+        $passport = new SelfValidatingPassport(
             new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
                 /** @var GoogleUser $googleUser */
                 $googleUser = $client->fetchUserFromToken($accessToken);
@@ -78,10 +92,19 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                 return $user;
             })
         );
+        // Création de l'événement d'authentification interactive
+        $event = new InteractiveLoginEvent($request, new PreAuthenticatedToken($passport->getUser(), 'google', $passport->getUser()->getRoles()));
+        // Dispatch de l'événement d'authentification interactive
+        $this->eventDispatcher->dispatch($event);
+        // Appel de votre event listener
+        $this->loginListener->onSecurityInteractiveLogin($event);
+
+        return $passport;
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+
         // change "app_homepage" to some route in your app
         $targetUrl = $this->router->generate('home');
 

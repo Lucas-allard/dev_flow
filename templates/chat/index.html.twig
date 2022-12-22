@@ -7,6 +7,6 @@
     {% block header %}
         {% include "./header/_header.html.twig" %}
     {% endblock %}
-
-    <div style="position: relative" {{ react_component('ChatApp', {user: userData}) }}></div>
+    {{ dump(users) }}
+    <div style="position: relative" {{ react_component('App', {user: userData, users: users}) }}></div>
 {% endblock %}

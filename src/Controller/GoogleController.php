@@ -2,14 +2,15 @@
 
 namespace App\Controller;
 
-use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\Provider\GoogleClient;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 class GoogleController extends AbstractController
 {
@@ -35,7 +36,10 @@ class GoogleController extends AbstractController
      *
      * @Route("/connect/google/check", name="connect_google_check")
      */
-    public function connectCheckAction(Request $request, ClientRegistry $clientRegistry)
+    public function connectCheckAction(
+        Request                  $request,
+        ClientRegistry           $clientRegistry,
+        EventDispatcherInterface $eventDispatcher)
     {
         // on Symfony 3.3 or lower, $clientRegistry = $this->get('knpu.oauth2.registry');
 
@@ -46,6 +50,8 @@ class GoogleController extends AbstractController
             // the exact class depends upon which provider you're using
             /** @var GoogleClient $client */
             $token = $client->getAccessToken();
+
+            // Déclenchement de l'événement InteractiveLoginEvent
 
         } catch (IdentityProviderException $e) {
             // something went wrong!

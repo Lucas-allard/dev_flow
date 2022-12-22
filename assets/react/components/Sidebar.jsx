@@ -1,26 +1,30 @@
 import React, {useEffect, useState} from 'react';
 import './sidebar.scss'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SidebarChannels from "./SidebarChannels";
 import {selectUser} from "../features/user/userSlice";
-import {useSelector} from "react-redux";
-import {db} from "../../firebase";
-import {onSnapshot, query, collection, addDoc, orderBy} from "firebase/firestore";
+import {useDispatch, useSelector} from "react-redux";
+import {onSnapshot} from "firebase/firestore";
 import Avatar from "@mui/material/Avatar";
 import AddIcon from "@mui/icons-material/Add";
+import categoriesChannelsAPI from "../services/categoriesChannelsAPI";
+import {setIsSelectPrivateMessage} from "../features/privateMessage/privateMessageSlice";
 
 const Sidebar = () => {
     const user = useSelector(selectUser);
+    const dispatch = useDispatch();
     const [categoriesChannels, setCategoriesChannels] = useState([]);
+    const [expandCategories, setExpandCategories] = useState(false);
+    const [expandPrivateChat, setExpandPrivateChat] = useState(false);
     const admin = user?.roles.includes('ROLE_ADMIN');
 
-    const getCategoriesChannels = async () => {
+    useEffect(() => {
+        getCategoriesChannels()
+    }, [])
 
-        const q = query(
-            collection(db, `categoriesChannels`),
-            orderBy("timestamp", "asc")
-        );
-        onSnapshot(q, (querySnapshot) => {
+    const getCategoriesChannels = async () => {
+        onSnapshot(categoriesChannelsAPI.getCategoriesChannels(), (querySnapshot) => {
             setCategoriesChannels([]);
             querySnapshot.forEach((doc) => {
                 setCategoriesChannels(
@@ -36,19 +40,10 @@ const Sidebar = () => {
         });
     }
 
-    useEffect(() => {
-        getCategoriesChannels()
-    }, [])
-
     const handleAddCategoryChannel = async () => {
         const category = prompt('Saisir le nom de la nouvelle catégorie de channel')
         try {
-            const docRef = await addDoc(collection(db, "categoriesChannels"), {
-                name: category,
-                timestamp: new Date()
-            });
-
-            console.log("Document written with ID: ", docRef.id);
+            await categoriesChannelsAPI.addCategoryChannel(category)
         } catch (e) {
             console.error("Error adding document: ", e);
         }
@@ -56,21 +51,54 @@ const Sidebar = () => {
 
     return (
         <div className="sidebar">
-            <div className="sidebar__top">
+            <div className="sidebar__top" onClick={() => setExpandCategories(!expandCategories)}>
                 <h3>Labo Chat</h3>
                 {admin && <AddIcon className="sidebar__addChannel" onClick={handleAddCategoryChannel}/>}
-                <ExpandMoreIcon/>
+                {!expandCategories &&
+                    <KeyboardArrowLeftIcon/>
+                }
+                {expandCategories &&
+                    <KeyboardArrowDownIcon/>
+                }
             </div>
-
-            <div className="sidebar__middle">
-                {categoriesChannels.map((category, id) =>
-                    <SidebarChannels
-                        categoryName={category.name}
-                        categoryId={category.id}
-                        key={category.id}
-                    />
-                )}
+            {expandCategories &&
+                <div className="sidebar__topOuter">
+                    {categoriesChannels.map((category) =>
+                        <SidebarChannels
+                            categoryName={category.name}
+                            categoryId={category.id}
+                            key={category.id}
+                        />
+                    )}
+                </div>
+            }
+            <div className="sidebar__top" onClick={() => setExpandPrivateChat(!expandPrivateChat)}>
+                <h3>Messages Privées</h3>
+                <AddIcon
+                    className="sidebar__addChannel"
+                    onClick={(event) => {
+                        event.stopPropagation();
+                        dispatch(setIsSelectPrivateMessage(true));
+                    }}
+                />
+                {!expandPrivateChat &&
+                    <KeyboardArrowLeftIcon/>
+                }
+                {expandPrivateChat &&
+                    <KeyboardArrowDownIcon/>
+                }
             </div>
+            {expandPrivateChat &&
+                <div className="sidebar__topOuter">
+                    {categoriesChannels.map((category) =>
+                        <SidebarChannels
+                            categoryName={category.name}
+                            categoryId={category.id}
+                            key={category.id}
+                        />
+                    )}
+                </div>
+            }
 
             {user &&
                 <div className="sidebar__profile">
@@ -78,9 +106,9 @@ const Sidebar = () => {
                     {user.profilPicture ?
                         <Avatar alt="profil picture" src={user.profilPicture}/>
                         :
-                    <div className="sidebar__avatar">
-                        <p>{user.fullname[0].toUpperCase()}</p>
-                    </div>
+                        <div className="sidebar__avatar">
+                            <p>{user.fullname[0].toUpperCase()}</p>
+                        </div>
                     }
                     <div className="sidebar__profileInfo">
                         <h3>{user.fullname}</h3>

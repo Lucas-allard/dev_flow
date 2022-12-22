@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -51,6 +52,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: ChatMessage::class, orphanRemoval: true)]
     private Collection $chatMessages;
+
+    #[ORM\Column]
+    private ?bool $isLogged = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $lastActivity = null;
 
     public function __construct()
     {
@@ -297,6 +304,30 @@ $this->chatMessages = new ArrayCollection();
                 $chatMessage->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isIsLogged(): ?bool
+    {
+        return $this->isLogged;
+    }
+
+    public function setIsLogged(bool $isLogged): self
+    {
+        $this->isLogged = $isLogged;
+
+        return $this;
+    }
+
+    public function getLastActivity(): ?\DateTimeInterface
+    {
+        return $this->lastActivity;
+    }
+
+    public function setLastActivity(\DateTimeInterface $lastActivity): self
+    {
+        $this->lastActivity = $lastActivity;
 
         return $this;
     }

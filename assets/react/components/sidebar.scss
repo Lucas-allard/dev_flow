@@ -1,9 +1,9 @@
 @import 'assets/styles/variables';
 
 .sidebar {
+  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   flex: 0.25;
   background-color: $bg-dark;
   border-right: 3px solid #26282c;
@@ -38,6 +38,9 @@
   }
 
   .sidebar__profile {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
     display: flex;
     align-items: center;
     justify-content: space-around;

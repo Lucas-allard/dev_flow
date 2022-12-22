@@ -1,20 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import './chat.scss'
-import ChatHeader from "./ChatHeader";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
-import GifIcon from '@mui/icons-material/Gif';
-import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
+import ChatHeader from "./ChatHeader";
 import ChatMessage from "./ChatMessage";
 import {useSelector} from "react-redux";
 import {selectChannel} from "../features/channel/channelSlice";
-import {addDoc, collection, onSnapshot, orderBy, query} from "firebase/firestore";
-import {db} from "../../firebase";
+import {onSnapshot} from "firebase/firestore";
 import {selectUser} from "../features/user/userSlice";
-import moment from "moment/moment";
-import InputEmoji from 'react-input-emoji'
 import {selectSearch} from "../features/search/searchSlice";
+import InputEmoji from 'react-input-emoji'
 import axios from "axios";
+import moment from "moment/moment";
+import channelMessagesAPI from "../services/channelMessagesAPI";
 
 function Chat() {
     const [messages, setMessages] = useState([]);
@@ -24,16 +21,10 @@ function Chat() {
     const [input, setInput] = useState("");
 
     const getMessages = async () => {
-
         if (!channel) {
             return;
         }
-
-        const q = query(
-            collection(db, `categoriesChannels/${channel.categoryId}/channels/${channel.channelId}/messages`),
-            orderBy("timestamp", "asc")
-        );
-        onSnapshot(q, (querySnapshot) => {
+        onSnapshot(channelMessagesAPI.getChannelsMessages(channel.categoryId, channel.channelId), (querySnapshot) => {
             setMessages([]);
             querySnapshot.forEach((doc) => {
                 setMessages(
@@ -63,20 +54,8 @@ function Chat() {
             id: user.id,
             collection: `categoriesChannels/${channel.categoryId}/channels/${channel.channelId}/messages`
         };
-
         try {
-            axios.defaults["x-csrf-token"] = user.csrfToken;
-            const options = {
-                method: 'POST',
-                headers: {
-                    'content-type': 'application/json',
-                },
-                data: JSON.stringify(data),
-                url: "https://localhost:8000/chat/send",
-            };
-            // const docRef = await addDoc(collection(db, `categoriesChannels/${channel.categoryId}/channels/${channel.channelId}/messages`), message);
-            const symRef = await axios(options);
-            console.log(symRef)
+            await channelMessagesAPI.addMessage(user, data)
             setInput('');
 
         } catch (e) {
@@ -91,6 +70,7 @@ function Chat() {
 
     useEffect(() => {
         if (search) {
+            console.log(search)
             const searchResult = searchMessages()
             if (searchResult.length > 0) {
                 setMessages(searchResult)
@@ -99,10 +79,6 @@ function Chat() {
             getMessages()
         }
     }, [search])
-
-    useEffect(() => {
-        console.log(user)
-    }, [user])
 
     return (
         <div className="chat">
