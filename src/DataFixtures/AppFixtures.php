@@ -5,14 +5,25 @@ namespace App\DataFixtures;
 use App\Entity\Category;
 use App\Entity\Course;
 use App\Entity\Author;
+use App\Entity\User;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Faker;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    private UserPasswordHasherInterface $hasher;
+
+    public function __construct(UserPasswordHasherInterface $hasher)
+    {
+        $this->hasher = $hasher;
+    }
+
     public function load(ObjectManager $manager): void
     {
+        $faker = Faker\Factory::create();
 
         for ($u = 0; $u < 2; $u++) {
             $author = new Author();
@@ -41,6 +52,18 @@ class AppFixtures extends Fixture
 
                 }
             }
+        }
+
+        for ($u = 0; $u < 30; $u++) {
+            $user = new User();
+            $password = $this->hasher->hashPassword($user, '0000');
+
+            $user->setFullName($faker->name())
+                ->setCreatedAt($faker->dateTimeBetween("-7 months", "now"))
+                ->setEmail($faker->email())
+                ->setPassword($password)
+                ->setIsLogged(false);
+            $manager->persist($user);
         }
         $manager->flush();
     }

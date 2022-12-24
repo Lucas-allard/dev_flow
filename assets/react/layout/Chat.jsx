@@ -1,28 +1,40 @@
 import React, {useEffect, useState} from 'react';
 import './chat.scss'
-import ChatHeader from "./ChatHeader";
-import ChatMessage from "./ChatMessage";
+import ChatHeader from "../components/ChatHeader";
+import ChatMessage from "../components/ChatMessage";
 import {useSelector} from "react-redux";
 import {selectChannel} from "../features/channel/channelSlice";
 import {onSnapshot} from "firebase/firestore";
-import {selectUser} from "../features/user/userSlice";
+import {selectUser, selectUserProfil} from "../features/user/userSlice";
 import {selectSearch} from "../features/search/searchSlice";
 import moment from "moment/moment";
 import channelMessagesAPI from "../services/channelMessagesAPI";
-import ChatInput from "./ChatInput";
+import ChatInput from "../components/ChatInput";
+import privatesMessagesChannelsAPI from "../services/privatesMessagesChannelsAPI";
 
 function Chat() {
     const [messages, setMessages] = useState([]);
+    const [privatesMessages, setPrivatesMessages] = useState([]);
     const channel = useSelector(selectChannel);
     const user = useSelector(selectUser);
     const search = useSelector(selectSearch);
     const [input, setInput] = useState("");
 
+    useEffect(() => {
+        setPrivatesMessages(null)
+        getMessages();
+    }, [channel?.categoryId])
+
+    useEffect(() => {
+        setMessages(null);
+        getPrivatesMessages();
+    }, [channel?.sender])
+
     const getMessages = async () => {
-        if (!channel) {
+        if (!channel?.categoryId) {
             return;
         }
-        onSnapshot(channelMessagesAPI.getChannelsMessages(channel.categoryId, channel.channelId), (querySnapshot) => {
+        onSnapshot(channelMessagesAPI.getChannelsMessages(channel.categoryId, channel.id), (querySnapshot) => {
             setMessages([]);
             querySnapshot.forEach((doc) => {
                 setMessages(
@@ -40,6 +52,32 @@ function Chat() {
         });
     }
 
+    const getPrivatesMessages = async () => {
+        if (!channel?.sender) {
+            return;
+        }
+        onSnapshot(privatesMessagesChannelsAPI.getPrivatesMessages(user.fullname, channel.sender), (querySnapshot) => {
+            setPrivatesMessages([]);
+            const uniqueMessages = new Set();
+            querySnapshot.forEach((doc) => {
+                if (!uniqueMessages.has(doc.data().message)) {
+                    uniqueMessages.add(doc.data().message);
+                    setPrivatesMessages(
+                        (message) => [
+                            ...message,
+                            {
+                                timestamp: moment(doc.data().timestamp.toDate().toUTCString()).locale("fr").format("LLL"),
+                                from: doc.data().from,
+                                to: doc.data().to,
+                                message: doc.data().message,
+                            }
+                        ]
+                    )
+                }
+            });
+        });
+    }
+
     const searchMessages = () => messages.filter((message) =>
         message.message.includes(search.value)
         || message.fullname.includes(search.value)
@@ -50,7 +88,7 @@ function Chat() {
             message: input,
             user: user,
             id: user.id,
-            collection: `categoriesChannels/${channel.categoryId}/channels/${channel.channelId}/messages`
+            collection: `categoriesChannels/${channel.categoryId}/channels/${channel.id}/messages`
         };
         try {
             await channelMessagesAPI.addMessage(user, data)
@@ -61,11 +99,24 @@ function Chat() {
         }
     }
 
+    const sendPrivateMessage = async () => {
+        const data = {
+            from: user.fullname,
+            to: channel.sender,
+            participants: [user.fullname, channel.sender],
+            message: input,
+            user: user,
+            collection: "privatesMessages"
+        };
+        try {
+            const response = await privatesMessagesChannelsAPI.addMessage(user, data)
+            console.log(response)
+            setInput('');
 
-    useEffect(() => {
-        getMessages();
-    }, [channel])
-
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    }
     useEffect(() => {
         if (search) {
             console.log(search)
@@ -82,10 +133,10 @@ function Chat() {
         <div className="chat">
             {channel &&
                 <>
-                    <ChatHeader channelName={channel.channelName}/>
+                    <ChatHeader channelName={channel.name || channel.sender}/>
 
                     <div className="chat__messages">
-                        {messages.map((message, id) =>
+                        {messages && messages.map((message, id) =>
                             <ChatMessage
                                 timestamp={message.timestamp}
                                 userPicture={message.userPicture}
@@ -94,14 +145,34 @@ function Chat() {
                                 key={id}
                             />
                         )}
+                        {privatesMessages && privatesMessages.map((message, id) =>
+                            <ChatMessage
+                                timestamp={message.timestamp}
+                                fullname={message.from}
+                                message={message.message}
+                                key={id}
+                            />
+                        )}
                     </div>
 
-                    <ChatInput
-                        classname="chat__input"
-                        sendMessage={sendMessage}
-                        input={input}
-                        setInput={setInput}
-                    />
+                    {messages &&
+                        <ChatInput
+                            classname="chat__input"
+                            sendMessage={sendMessage}
+                            input={input}
+                            setInput={setInput}
+                        />
+                    }
+
+                    {privatesMessages &&
+                        <ChatInput
+                            classname="chat__input"
+                            sendPrivateMessage={sendPrivateMessage}
+                            input={input}
+                            setInput={setInput}
+                        />
+                    }
+
                 </>
             }
         </div>

@@ -2,16 +2,16 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import React from "react";
 import InputEmoji from 'react-input-emoji'
 
-function ChatInput({classname, sendMessage, input, setInput,}) {
+function ChatInput({classname, sendMessage, sendPrivateMessage, input, setInput,}) {
     return (
         <div className={classname}>
             <AddCircleIcon/>
 
-            <form onSubmit={sendMessage}>
+            <form onSubmit={sendMessage ? sendMessage : sendPrivateMessage}>
                 <InputEmoji
                     value={input}
                     onChange={setInput}
-                    onEnter={sendMessage}
+                    onEnter={sendMessage ? sendMessage : sendPrivateMessage}
                     placeholder="Envoyer un message"
                 />
                 <input hidden={true}/>

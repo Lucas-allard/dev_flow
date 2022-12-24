@@ -9,7 +9,7 @@ export const privateMessageSlice = createSlice({
     // `createSlice` will infer the state type from the `initialState` argument
     initialState,
     reducers: {
-        setIsSelectPrivateMessage: (state, action) => {
+        selectPrivateMessage: (state, action) => {
             console.log(state)
             state.isSelectPrivateMessage = action.payload
             console.log(state)

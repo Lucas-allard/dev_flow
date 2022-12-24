@@ -3,14 +3,14 @@
 namespace App\Controller;
 
 use App\Repository\ChatMessageRepository;
-use App\Repository\ConnectedUserRepository;
 use App\Repository\UserRepository;
 use App\Services\AddMessageToCurrentUser;
+use App\Services\FirestoreService;
+use MrShan0\PHPFirestore\Fields\FirestoreTimestamp;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -21,11 +21,12 @@ class ChatController extends AbstractController
 
     /**
      * @param CsrfTokenManagerInterface $csrfTokenManager
+     * @param UserRepository $userRepository
      */
     public function __construct(
         private CsrfTokenManagerInterface $csrfTokenManager,
         private UserRepository            $userRepository,
-
+        private FirestoreService          $firestoreService
     )
     {
     }
@@ -53,7 +54,10 @@ class ChatController extends AbstractController
         foreach ($usersList as $user) {
             $users[] = [
                 'fullname' => $user->getFullName(),
-                'isConnected' => $user->isIsLogged()
+                'isConnected' => $user->isIsLogged(),
+                'profilPicture' => $user->getProfilPicture(),
+                "createdAt" => $user->getCreatedAt(),
+                "profilColor" => $user->getProfilColor()
             ];
         }
 
@@ -82,9 +86,47 @@ class ChatController extends AbstractController
 
             $service->sendMessage($messageData, $this->userRepository, $chatMessageRepository);
 
-            return (new Response())->setStatusCode("201", "Created");
+            $this->firestoreService->addDocument(
+                $messageData["collection"],
+                [
+                    "message" => $messageData["message"],
+                    "fullname" => $messageData["user"]["fullname"],
+                    "profilPicture" => $messageData["user"]["profilPicture"],
+                    "timestamp" => new FirestoreTimestamp(),
+                ]);
+
+            return new Response('', Response::HTTP_CREATED);
         } else {
-            return (new Response())->setStatusCode("500", "Erreur serveur");
+            return new Response('', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    #[Route('/chat/send/private', name: 'chat_send_private')]
+    public function sendPrivateMessage(
+        Request $request,
+    ): Response
+    {
+        $messageData = json_decode($request->getContent(), true);
+
+        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('chat', $messageData["user"]["csrfToken"]))) {
+
+            $this->firestoreService->addDocument(
+                $messageData["collection"],
+                [
+                    "from" => $messageData["from"],
+                    "to" => $messageData["to"],
+                    "participants" => $messageData["participants"],
+                    "message" => $messageData["message"],
+                    "timestamp" => new FirestoreTimestamp(),
+                ]);
+
+            return new Response('', Response::HTTP_CREATED);
+        } else {
+            return new Response('', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

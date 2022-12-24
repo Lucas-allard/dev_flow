@@ -11,10 +11,12 @@
     overflow-y: scroll;
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
+
   }
 
   .chat__messages::-webkit-scrollbar {
     display: none;
+
   }
 
   .chat__input {

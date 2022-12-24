@@ -5,9 +5,8 @@ import {createSlice} from '@reduxjs/toolkit'
 
 // Define the initial state using that type
 const initialState = {
-    channelId: "",
-    channelName: "",
-    categoryId: "",
+    id: "",
+    name: "",
 }
 
 export const channelSlice = createSlice({

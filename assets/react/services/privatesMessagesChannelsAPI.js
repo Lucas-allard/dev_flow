@@ -1,13 +1,22 @@
-import {collection, orderBy, query} from "firebase/firestore";
+import {collection, orderBy, query, where} from "firebase/firestore";
 import {db} from "../../firebase";
 import axios from "axios";
 
-const getPrivatesMessagesChannels = (userFullname) => {
+const getPrivatesMessagesChannels = (user) => {
     return query(
-        collection(db, `categoriesChannels`),
-        where()
+        collection(db, `privatesMessages`),
+        where('participants', 'array-contains', user),
         orderBy("timestamp", "asc")
     );
+}
+
+const getPrivatesMessages = (user, otherUser) => {
+    console.log(user, otherUser)
+    return query(
+        collection(db, `privatesMessages`),
+        where('participants', "array-contains", otherUser || user),
+        orderBy("timestamp", "asc")
+    )
 }
 
 const addMessage = async (user, data) => {
@@ -18,11 +27,11 @@ const addMessage = async (user, data) => {
             'content-type': 'application/json',
         },
         data: JSON.stringify(data),
-        url: "https://localhost:8000/chat/send",
+        url: "https://localhost:8000/chat/send/private",
     };
     return await axios(options);
 }
 
 export default {
-    getChannelsMessages, addMessage
+    getPrivatesMessagesChannels, getPrivatesMessages, addMessage
 }

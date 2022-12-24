@@ -6,7 +6,13 @@ import Avatar from '@mui/material/Avatar';
 const ChatMessage = ({userPicture, fullname, timestamp, message}) => {
     return (
         <div className="message">
-            <Avatar src={userPicture}/>
+            {userPicture ?
+                <Avatar alt="profil picture" src={userPicture}/>
+                :
+                <div className="sidebar__avatar">
+                    <p>{fullname[0].toUpperCase()}</p>
+                </div>
+            }
 
             <div className="message__info">
                 <h4>

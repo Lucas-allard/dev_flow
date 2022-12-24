@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Provider} from "react-redux";
 import {store} from '../store/store';
-import ChatPage from "../components/ChatPage";
+import ChatPage from "../layout/ChatPage";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import HomePage from "../components/HomePage";
 

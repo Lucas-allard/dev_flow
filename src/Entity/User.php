@@ -35,9 +35,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class)]
     private Collection $comments;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $username = null;
-
     #[ORM\ManyToMany(targetEntity: Course::class, inversedBy: 'users')]
     private Collection $courses;
 
@@ -53,18 +50,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: ChatMessage::class, orphanRemoval: true)]
     private Collection $chatMessages;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $isLogged = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $lastActivity = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $profilColor = null;
+
+
+    /**
+     * @throws \Exception
+     */
     public function __construct()
     {
+        $this->createdAt = new \DateTime();
+        $this->profilColor = '#' . dechex(random_int(0, 16777215));
         $this->comments = new ArrayCollection();
         $this->courses = new ArrayCollection();
-//        $this->badges = new ArrayCollection();
-$this->chatMessages = new ArrayCollection();
+        $this->badges = new ArrayCollection();
+        $this->chatMessages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -328,6 +337,30 @@ $this->chatMessages = new ArrayCollection();
     public function setLastActivity(\DateTimeInterface $lastActivity): self
     {
         $this->lastActivity = $lastActivity;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getProfilColor(): ?string
+    {
+        return $this->profilColor;
+    }
+
+    public function setProfilColor(?string $profilColor): self
+    {
+        $this->profilColor = $profilColor;
 
         return $this;
     }

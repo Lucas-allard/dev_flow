@@ -50,21 +50,21 @@ const SidebarChannels = ({categoryName, categoryId}) => {
 
     const handleChangeChannel = (channelName, channelId) => {
         dispatch(setChannel({
-            channelId: channelId,
-            channelName: channelName,
+            id: channelId,
+            name: channelName,
             categoryId: categoryId
         }))
     }
 
     return (
         <div className="sidebar__channels">
-            <div className="sidebar__channelsHeader">
+            <div className="sidebar__channelsHeader" onClick={() => setExpandChannels(!expandChannels)}>
                 <div className="sidebar__header">
                     {!expandChannels &&
-                        <KeyboardArrowRightIcon onClick={() => setExpandChannels(!expandChannels)}/>
+                        <KeyboardArrowRightIcon/>
                     }
                     {expandChannels &&
-                        <KeyboardArrowDownIcon onClick={() => setExpandChannels(!expandChannels)}/>
+                        <KeyboardArrowDownIcon/>
                     }
                     <h4>{categoryName}</h4>
                 </div>

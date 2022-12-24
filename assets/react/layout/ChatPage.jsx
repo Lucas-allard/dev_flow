@@ -1,15 +1,14 @@
 import React, {useEffect} from 'react';
-import Sidebar from "./Sidebar";
+import Sidebar from "../components/Sidebar";
 import Chat from "./Chat";
 import './chatPage.scss';
 import {login, logout, selectUsers, setUsersList} from "../features/user/userSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {selectIsPrivateMessage} from "../features/privateMessage/privateMessageSlice";
+import UsersList from "../components/UsersList";
 
 
 const ChatPage = ({user, users}) => {
-    const isSelectPrivateMessage = useSelector(selectIsPrivateMessage)
-    const _users = useSelector(selectUsers)
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -21,20 +20,15 @@ const ChatPage = ({user, users}) => {
 
 
     useEffect(() => {
-        console.log(users)
         dispatch(setUsersList(users))
     }, [users])
-
-    useEffect(() => {
-        console.log(_users)
-    }, [_users])
-
 
     return (
         <main>
             <div className="chat__page">
                 <Sidebar/>
                 <Chat/>
+                <UsersList/>
             </div>
         </main>
 
