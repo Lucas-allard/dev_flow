@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import "./chatHeader.scss";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import EditLocationIcon from '@mui/icons-material/EditLocation';
@@ -15,17 +15,18 @@ const ChatHeader = ({channelName}) => {
     const dispatch = useDispatch();
 
     const handleChange = (e) => {
+        console.log(e.target.value)
         e.preventDefault();
         setSearchValue(e.target.value)
+    }
 
-
+    useEffect(() => {
         if (searchValue.length > 3) {
-            console.log(searchValue)
             dispatch(setSearch({value: searchValue}))
         } else {
             dispatch(setSearch(null))
         }
-    }
+    }, [searchValue])
 
     return (
         <div className="chatHeader">

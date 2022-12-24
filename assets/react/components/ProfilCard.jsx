@@ -2,12 +2,14 @@ import './profilCard.scss';
 import React, {useState} from 'react';
 import ChatInput from "./ChatInput";
 import moment from "moment/moment";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../features/user/userSlice";
 import privatesMessagesChannelsAPI from "../services/privatesMessagesChannelsAPI";
+import {setChannel} from "../features/channel/channelSlice";
 
-function ProfilCard({userProfil}) {
+function ProfilCard({userProfil, setIsActiveProfilCard}) {
     const user = useSelector(selectUser)
+    const dispatch = useDispatch()
     const [input, setInput] = useState("");
 
     const sendMessage = async () => {
@@ -20,9 +22,14 @@ function ProfilCard({userProfil}) {
             collection: "privatesMessages"
         };
         try {
-            await privatesMessagesChannelsAPI.addMessage(user, data)
-            setInput('');
-
+            const {status} = await privatesMessagesChannelsAPI.addMessage(user, data)
+            if (status === 201) {
+                setInput('');
+                setIsActiveProfilCard(false)
+                dispatch(setChannel({
+                    sender: userProfil.fullname,
+                }))
+            }
         } catch (e) {
             console.error("Error adding document: ", e);
         }

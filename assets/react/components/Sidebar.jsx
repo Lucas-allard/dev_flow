@@ -52,10 +52,8 @@ const Sidebar = () => {
         });
     };
 
-    const handleSelectPrivateMessage = async (sender, id) => {
-        console.log(sender)
+    const handleSelectPrivateMessage = async (sender) => {
         dispatch(setChannel({
-            id: id,
             sender: sender,
         }))
     }

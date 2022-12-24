@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import './chat.scss'
 import ChatHeader from "../components/ChatHeader";
 import ChatMessage from "../components/ChatMessage";
 import {useSelector} from "react-redux";
-import {selectChannel} from "../features/channel/channelSlice";
+import {selectChannel, setChannel} from "../features/channel/channelSlice";
 import {onSnapshot} from "firebase/firestore";
 import {selectUser, selectUserProfil} from "../features/user/userSlice";
 import {selectSearch} from "../features/search/searchSlice";
@@ -78,11 +78,6 @@ function Chat() {
         });
     }
 
-    const searchMessages = () => messages.filter((message) =>
-        message.message.includes(search.value)
-        || message.fullname.includes(search.value)
-    )
-
     const sendMessage = async () => {
         const data = {
             message: input,
@@ -109,25 +104,37 @@ function Chat() {
             collection: "privatesMessages"
         };
         try {
-            const response = await privatesMessagesChannelsAPI.addMessage(user, data)
-            console.log(response)
-            setInput('');
-
+            const {status} = await privatesMessagesChannelsAPI.addMessage(user, data)
+            if (status === 201) {
+                setInput('');
+            }
         } catch (e) {
             console.error("Error adding document: ", e);
         }
     }
+
+    const searchResult = useMemo(() => {
+        if (messages && search) return messages.filter((message) =>
+            message.message.includes(search.value) || message.fullname.includes(search.value)
+        );
+    }, [messages, search]);
+
+    const searchPrivateResult = useMemo(() => {
+        if (privatesMessages && search) return privatesMessages.filter((message) => message.message.includes(search.value));
+    }, [privatesMessages, search]);
+
     useEffect(() => {
         if (search) {
-            console.log(search)
-            const searchResult = searchMessages()
-            if (searchResult.length > 0) {
-                setMessages(searchResult)
+            if (searchResult) {
+                setMessages(searchResult);
+            } else if (searchPrivateResult) {
+                setPrivatesMessages(searchPrivateResult);
             }
         } else {
-            getMessages()
+            getMessages();
+            getPrivatesMessages();
         }
-    }, [search])
+    }, [search]);
 
     return (
         <div className="chat">

@@ -46,7 +46,7 @@ function UsersList() {
                 )}
             </ul>
             {isActiveProfilCard &&
-                <ProfilCard userProfil={selectedUser}/>
+                <ProfilCard userProfil={selectedUser} setIsActiveProfilCard={setIsActiveProfilCard}/>
 
             }
         </div>
