@@ -33,7 +33,7 @@
     form {
       flex: 1;
 
-      input {
+      div {
         color: lightgray;
         background-color: transparent;
         width: 100%;
@@ -41,24 +41,30 @@
         border: none;
         font-size: large;
         padding: 20px;
+        //overflow-y: scroll;
+        //-ms-overflow-style: none; /* IE and Edge */
+        //scrollbar-width: none; /* Firefox */
+        resize: none;
+      }
+
+      textarea::-webkit-scrollbar {
+        display: none;
+
       }
 
       .chat__inputBtn {
         display: none;
       }
 
-      .react-input-emoji--button {
-        padding-left: 4rem;
 
-        svg {
-          fill: #D3D3D3;
-        }
-      }
-      .react-emoji-picker--wrapper {
-        overflow: initial;
-      }
     }
 
+    .chat__inputEmoji,
+    .chat__inputGif {
+      position: absolute;
+      bottom: 100px;
+      right: 0;
+    }
 
     .MuiSvgIcon-root {
       font-size: 3rem;

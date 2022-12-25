@@ -11,7 +11,6 @@ const getPrivatesMessagesChannels = (user) => {
 }
 
 const getPrivatesMessages = (user, otherUser) => {
-    console.log(user, otherUser)
     return query(
         collection(db, `privatesMessages`),
         where('participants', "array-contains", otherUser || user),

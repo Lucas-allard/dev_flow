@@ -20,6 +20,7 @@
     p {
       font-size: 2rem;
       font-weight: 700;
+
     }
   }
 
@@ -32,6 +33,11 @@
 
     h4 {
       margin: 0;
+    }
+
+    p {
+      white-space: pre-wrap;
+
     }
 
     .message__timestamp {

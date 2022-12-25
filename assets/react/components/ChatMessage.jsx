@@ -19,7 +19,9 @@ const ChatMessage = ({userPicture, fullname, timestamp, message}) => {
                     {fullname}
                     <span className="message__timestamp">{timestamp}</span>
                 </h4>
-                <p>{message}</p>
+                <p
+                    dangerouslySetInnerHTML={{__html: message}}
+                />
             </div>
         </div>
     );

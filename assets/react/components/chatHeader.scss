@@ -23,7 +23,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex: 0.5;
+    flex: 0.25;
 
     .MuiSvgIcon-root {
       margin: 5px;
@@ -36,10 +36,16 @@
     }
 
     .chatHeader__search {
+      position: relative;
       display: flex;
       align-items: center;
       border-radius: 3px;
       padding: 3px;
+
+      svg:nth-child(2) {
+        position: absolute;
+        right: 0;
+      }
 
       input {
         background-color: transparent;

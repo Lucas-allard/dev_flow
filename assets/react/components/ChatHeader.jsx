@@ -6,12 +6,14 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import SendIcon from '@mui/icons-material/Send';
 import HelpIcon from '@mui/icons-material/Help';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {setSearch} from "../features/search/searchSlice";
+import {displayUsersList, isDisplayUsersList} from "../features/user/userSlice";
 
 
 const ChatHeader = ({channelName}) => {
     const [searchValue, setSearchValue] = useState("");
+    const isUsersList = useSelector(isDisplayUsersList)
     const dispatch = useDispatch();
 
     const handleChange = (e) => {
@@ -41,15 +43,11 @@ const ChatHeader = ({channelName}) => {
 
             <div className="chatHeader__right">
                 <NotificationsIcon/>
-                <EditLocationIcon/>
-                <PeopleAltIcon/>
-
+                <PeopleAltIcon onClick={() => dispatch(displayUsersList(!isUsersList))}/>
                 <div className="chatHeader__search">
                     <input placeholder="Search" type="text" onChange={handleChange}/>
                     <SearchIcon/>
                 </div>
-
-                <SendIcon/>
                 <HelpIcon/>
             </div>
         </div>

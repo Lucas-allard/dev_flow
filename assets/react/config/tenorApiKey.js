@@ -1,0 +1,1 @@
+export const TENOR_API_KEY = "AIzaSyDa9-SKedINK6IqUg5yTtoduyphjAWvQiM";

@@ -3,13 +3,13 @@ import './chat.scss'
 import ChatHeader from "../components/ChatHeader";
 import ChatMessage from "../components/ChatMessage";
 import {useSelector} from "react-redux";
-import {selectChannel, setChannel} from "../features/channel/channelSlice";
+import {selectChannel} from "../features/channel/channelSlice";
 import {onSnapshot} from "firebase/firestore";
-import {selectUser, selectUserProfil} from "../features/user/userSlice";
+import {selectUser} from "../features/user/userSlice";
 import {selectSearch} from "../features/search/searchSlice";
 import moment from "moment/moment";
-import channelMessagesAPI from "../services/channelMessagesAPI";
 import ChatInput from "../components/ChatInput";
+import channelMessagesAPI from "../services/channelMessagesAPI";
 import privatesMessagesChannelsAPI from "../services/privatesMessagesChannelsAPI";
 
 function Chat() {
@@ -78,28 +78,34 @@ function Chat() {
         });
     }
 
-    const sendMessage = async () => {
+    const sendMessage = async (e) => {
+        e.preventDefault;
         const data = {
-            message: input,
+            message: input.replace(/\n/g, '<br />'),
             user: user,
             id: user.id,
             collection: `categoriesChannels/${channel.categoryId}/channels/${channel.id}/messages`
         };
+        console.log(data)
         try {
-            await channelMessagesAPI.addMessage(user, data)
-            setInput('');
-
+            const {status} = await channelMessagesAPI.addMessage(user, data)
+            if (status === 201) {
+                setInput('');
+                return status
+            }
         } catch (e) {
             console.error("Error adding document: ", e);
         }
     }
 
-    const sendPrivateMessage = async () => {
+    const sendPrivateMessage = async (e) => {
+        e.preventDefault()
+
         const data = {
             from: user.fullname,
             to: channel.sender,
             participants: [user.fullname, channel.sender],
-            message: input,
+            message: input.replace(/\n/g, '<br />'),
             user: user,
             collection: "privatesMessages"
         };
