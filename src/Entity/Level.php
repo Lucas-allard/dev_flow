@@ -2,34 +2,35 @@
 
 namespace App\Entity;
 
-use App\Repository\CategoryRepository;
+use App\Repository\LevelRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CategoryRepository::class)]
-class Category
+#[ORM\Entity(repositoryClass: LevelRepository::class)]
+class Level
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 100)]
     private ?string $name = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Course::class, orphanRemoval: true)]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'level')]
+    private Collection $users;
+
+    #[ORM\OneToMany(mappedBy: 'level', targetEntity: Course::class, orphanRemoval: true)]
     private Collection $courses;
 
     public function __construct()
     {
+        $this->users = new ArrayCollection();
         $this->courses = new ArrayCollection();
     }
 
@@ -50,19 +51,6 @@ class Category
         return $this;
     }
 
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): self
-    {
-        $this->slug = $slug;
-
-        return $this;
-    }
-
-
     public function getDescription(): ?string
     {
         return $this->description;
@@ -71,6 +59,33 @@ class Category
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addLevel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeLevel($this);
+        }
 
         return $this;
     }
@@ -87,7 +102,7 @@ class Category
     {
         if (!$this->courses->contains($course)) {
             $this->courses->add($course);
-            $course->setCategory($this);
+            $course->setLevel($this);
         }
 
         return $this;
@@ -97,8 +112,8 @@ class Category
     {
         if ($this->courses->removeElement($course)) {
             // set the owning side to null (unless already changed)
-            if ($course->getCategory() === $this) {
-                $course->setCategory(null);
+            if ($course->getLevel() === $this) {
+                $course->setLevel(null);
             }
         }
 
