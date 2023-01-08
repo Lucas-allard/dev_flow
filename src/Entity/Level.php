@@ -25,9 +25,13 @@ class Level
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'level')]
     private Collection $users;
 
+    #[ORM\OneToMany(mappedBy: 'level', targetEntity: Courses::class, orphanRemoval: true)]
+    private Collection $courses;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->courses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -81,6 +85,36 @@ class Level
     {
         if ($this->users->removeElement($user)) {
             $user->removeLevel($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Courses>
+     */
+    public function getCourses(): Collection
+    {
+        return $this->courses;
+    }
+
+    public function addCourse(Courses $course): self
+    {
+        if (!$this->courses->contains($course)) {
+            $this->courses->add($course);
+            $course->setLevel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCourse(Courses $course): self
+    {
+        if ($this->courses->removeElement($course)) {
+            // set the owning side to null (unless already changed)
+            if ($course->getLevel() === $this) {
+                $course->setLevel(null);
+            }
         }
 
         return $this;
