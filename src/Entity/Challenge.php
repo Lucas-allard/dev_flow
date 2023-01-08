@@ -35,6 +35,10 @@ class Challenge
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'challenges')]
     private Collection $users;
 
+    #[ORM\OneToOne(inversedBy: 'challenge', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Trophy $trophy = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -125,6 +129,18 @@ class Challenge
     public function removeUser(User $user): self
     {
         $this->users->removeElement($user);
+
+        return $this;
+    }
+
+    public function getTrophy(): ?Trophy
+    {
+        return $this->trophy;
+    }
+
+    public function setTrophy(Trophy $trophy): self
+    {
+        $this->trophy = $trophy;
 
         return $this;
     }

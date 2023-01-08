@@ -28,6 +28,9 @@ class Trophy
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
+    #[ORM\OneToOne(mappedBy: 'trophy', cascade: ['persist', 'remove'])]
+    private ?Challenge $challenge = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -94,6 +97,23 @@ class Trophy
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getChallenge(): ?Challenge
+    {
+        return $this->challenge;
+    }
+
+    public function setChallenge(Challenge $challenge): self
+    {
+        // set the owning side of the relation if necessary
+        if ($challenge->getTrophy() !== $this) {
+            $challenge->setTrophy($this);
+        }
+
+        $this->challenge = $challenge;
 
         return $this;
     }
