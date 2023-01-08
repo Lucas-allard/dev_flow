@@ -4,10 +4,11 @@ namespace App\DataFixtures;
 
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -21,9 +22,19 @@ class UserFixtures extends Fixture
             $user->setFullName($faker->name);
             $user->setCreatedAt($faker->dateTimeBetween('-6 months'));
             $user->setGoogleId($faker->uuid);
-
+            for ($c = 0; $c < rand(1, 5); $c++) {
+                $user->addCourse($this->getReference('course_' . rand(0, 39)));
+            }
             // create reference for later use
             $this->addReference('user_' . $u, $user);
         }
     }
+
+    public function getDependencies(): array
+    {
+        return array(
+            CourseFixtures::class,
+        );
+    }
 }
+
