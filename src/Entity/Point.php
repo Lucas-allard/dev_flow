@@ -30,6 +30,9 @@ class Point
     #[ORM\OneToOne(inversedBy: 'point', cascade: ['persist', 'remove'])]
     private ?Course $course = null;
 
+    #[ORM\OneToOne(mappedBy: 'point', cascade: ['persist', 'remove'])]
+    private ?Challenge $challenge = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -91,6 +94,23 @@ class Point
     public function setCourse(?Course $course): self
     {
         $this->course = $course;
+
+        return $this;
+    }
+
+    public function getChallenge(): ?Challenge
+    {
+        return $this->challenge;
+    }
+
+    public function setChallenge(Challenge $challenge): self
+    {
+        // set the owning side of the relation if necessary
+        if ($challenge->getPoint() !== $this) {
+            $challenge->setPoint($this);
+        }
+
+        $this->challenge = $challenge;
 
         return $this;
     }
