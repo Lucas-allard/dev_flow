@@ -69,6 +69,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Challenge::class, mappedBy: 'users')]
     private Collection $challenges;
 
+    #[ORM\ManyToMany(targetEntity: Trophy::class, mappedBy: 'users')]
+    private Collection $trophies;
+
 
     /**
      * @throws Exception
@@ -82,6 +85,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->courses = new ArrayCollection();
         $this->points = new ArrayCollection();
         $this->challenges = new ArrayCollection();
+        $this->trophies = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -367,6 +371,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->challenges->removeElement($challenge)) {
             $challenge->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Trophy>
+     */
+    public function getTrophies(): Collection
+    {
+        return $this->trophies;
+    }
+
+    public function addTrophy(Trophy $trophy): self
+    {
+        if (!$this->trophies->contains($trophy)) {
+            $this->trophies->add($trophy);
+            $trophy->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrophy(Trophy $trophy): self
+    {
+        if ($this->trophies->removeElement($trophy)) {
+            $trophy->removeUser($this);
         }
 
         return $this;
