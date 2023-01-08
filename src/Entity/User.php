@@ -66,6 +66,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Point::class, orphanRemoval: true)]
     private Collection $points;
 
+    #[ORM\ManyToMany(targetEntity: Challenge::class, mappedBy: 'users')]
+    private Collection $challenges;
+
 
     /**
      * @throws Exception
@@ -78,6 +81,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->level = new ArrayCollection();
         $this->courses = new ArrayCollection();
         $this->points = new ArrayCollection();
+        $this->challenges = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -336,6 +340,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if ($point->getUser() === $this) {
                 $point->setUser(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Challenge>
+     */
+    public function getChallenges(): Collection
+    {
+        return $this->challenges;
+    }
+
+    public function addChallenge(Challenge $challenge): self
+    {
+        if (!$this->challenges->contains($challenge)) {
+            $this->challenges->add($challenge);
+            $challenge->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChallenge(Challenge $challenge): self
+    {
+        if ($this->challenges->removeElement($challenge)) {
+            $challenge->removeUser($this);
         }
 
         return $this;
