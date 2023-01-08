@@ -60,6 +60,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Level::class, inversedBy: 'users')]
     private Collection $level;
 
+    #[ORM\ManyToMany(targetEntity: Courses::class, inversedBy: 'users')]
+    private Collection $courses;
+
 
     /**
      * @throws Exception
@@ -70,6 +73,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->profilColor = '#' . dechex(random_int(0, 16777215));
         $this->chatMessages = new ArrayCollection();
         $this->level = new ArrayCollection();
+        $this->courses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -275,6 +279,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeLevel(Level $level): self
     {
         $this->level->removeElement($level);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Courses>
+     */
+    public function getCourses(): Collection
+    {
+        return $this->courses;
+    }
+
+    public function addCourse(Courses $course): self
+    {
+        if (!$this->courses->contains($course)) {
+            $this->courses->add($course);
+        }
+
+        return $this;
+    }
+
+    public function removeCourse(Courses $course): self
+    {
+        $this->courses->removeElement($course);
 
         return $this;
     }
