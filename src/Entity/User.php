@@ -5,7 +5,9 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -23,28 +25,47 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column]
-    private array $roles = [];
+    private array $roles = ['ROLE_USER'];
 
     /**
      * @var string The hashed password
      */
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?string $password = null;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class)]
-    private Collection $comments;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $fullName = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $username = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $profilPicture = null;
 
-    #[ORM\ManyToMany(targetEntity: Course::class, inversedBy: 'users')]
-    private Collection $courses;
+    #[ORM\Column(nullable: true)]
+    private ?string $googleId = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ChatMessage::class, orphanRemoval: true)]
+    private Collection $chatMessages;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $isLogged = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $lastActivity = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $profilColor = null;
+
+
+    /**
+     * @throws Exception
+     */
     public function __construct()
     {
-        $this->comments = new ArrayCollection();
-        $this->courses = new ArrayCollection();
-//        $this->badges = new ArrayCollection();
+        $this->createdAt = new \DateTime();
+        $this->profilColor = '#' . dechex(random_int(0, 16777215));
+        $this->chatMessages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -71,7 +92,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -96,7 +117,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -116,108 +137,116 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
-
-    /**
-     * @return Collection<int, Comment>
-     */
-    public function getComments(): Collection
+    public function getFullName(): ?string
     {
-        return $this->comments;
+        return $this->fullName;
     }
 
-    public function addComment(Comment $comment): self
+    public function setFullName(?string $fullName): self
     {
-        if (!$this->comments->contains($comment)) {
-            $this->comments->add($comment);
-            $comment->setUser($this);
+        $this->fullName = $fullName;
+
+        return $this;
+    }
+
+    public function getProfilPicture(): ?string
+    {
+        return $this->profilPicture;
+    }
+
+    public function setProfilPicture(?string $profilPicture): self
+    {
+        $this->profilPicture = $profilPicture;
+
+        return $this;
+    }
+
+    public function getGoogleId(): ?string
+    {
+        return $this->googleId;
+    }
+
+    public function setGoogleId(?string $googleId): self
+    {
+        $this->googleId = $googleId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ChatMessage>
+     */
+    public function getChatMessages(): Collection
+    {
+        return $this->chatMessages;
+    }
+
+    public function addChatMessage(ChatMessage $chatMessage): self
+    {
+        if (!$this->chatMessages->contains($chatMessage)) {
+            $this->chatMessages->add($chatMessage);
+            $chatMessage->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeComment(Comment $comment): self
+    public function removeChatMessage(ChatMessage $chatMessage): self
     {
-        if ($this->comments->removeElement($comment)) {
+        if ($this->chatMessages->removeElement($chatMessage)) {
             // set the owning side to null (unless already changed)
-            if ($comment->getUser() === $this) {
-                $comment->setUser(null);
+            if ($chatMessage->getUser() === $this) {
+                $chatMessage->setUser(null);
             }
         }
 
         return $this;
     }
 
-    public function getUsername(): ?string
+    public function isIsLogged(): ?bool
     {
-        return $this->username;
+        return $this->isLogged;
     }
 
-    public function setUsername(string $username): self
+    public function setIsLogged(bool $isLogged): self
     {
-        $this->username = $username;
+        $this->isLogged = $isLogged;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Course>
-     */
-    public function getCourses(): Collection
+    public function getLastActivity(): ?\DateTimeInterface
     {
-        return $this->courses;
+        return $this->lastActivity;
     }
 
-    public function addCourse(Course $course): self
+    public function setLastActivity(\DateTimeInterface $lastActivity): self
     {
-        if (!$this->courses->contains($course)) {
-            $this->courses->add($course);
-        }
+        $this->lastActivity = $lastActivity;
 
         return $this;
     }
 
-    public function removeCourse(Course $course): self
+    public function getCreatedAt(): ?\DateTimeInterface
     {
-        $this->courses->removeElement($course);
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getDegree(): ?Degree
+    public function getProfilColor(): ?string
     {
-        return $this->degree;
+        return $this->profilColor;
     }
 
-    public function setDegree(?Degree $degree): self
+    public function setProfilColor(?string $profilColor): self
     {
-        $this->degree = $degree;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Badge>
-     */
-    public function getBadges(): Collection
-    {
-        return $this->badges;
-    }
-
-    public function addBadge(Badge $badge): self
-    {
-        if (!$this->badges->contains($badge)) {
-            $this->badges->add($badge);
-            $badge->addUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBadge(Badge $badge): self
-    {
-        if ($this->badges->removeElement($badge)) {
-            $badge->removeUser($this);
-        }
+        $this->profilColor = $profilColor;
 
         return $this;
     }

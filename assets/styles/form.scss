@@ -5,7 +5,7 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: $bg-dark;
+  background: $color-dark;
 
   .box {
     position: relative;
@@ -135,27 +135,35 @@
         }
       }
 
-      input[type="submit"] {
-        border: none;
-        outline: none;
-        background: $color-green;
-        color: #fafafa;
-        padding: 11px 25px;
-        width: 100px;
-        margin-top: 10px;
-        border-radius: 4px;
-        font-weight: 600;
-        font-family: $font-secondary;
-        cursor: pointer;
+      .action__btn {
+        display: flex;
 
-        &:active {
-          opacity: 0.8;
+        input[type="submit"], button {
+          margin-right: 2rem;
+          border: none;
+          outline: none;
+          background: $color-green;
+          color: #fafafa;
+          padding: 11px 25px;
+          min-width: 100px;
+          height: 40px;
+          margin-top: 10px;
+          border-radius: 4px;
+          font-weight: 600;
+          font-family: $font-secondary;
+          cursor: pointer;
+
+          &:active {
+            opacity: 0.8;
+          }
         }
+
       }
+
 
       .message {
         margin: 1rem 0;
-        color: white
+        color: white;
       }
     }
   }

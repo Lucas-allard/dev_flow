@@ -1,0 +1,22 @@
+@import "assets/styles/variables";
+
+.sidebarChannel:hover > h4 {
+  color: white;
+  background-color: #333333;
+}
+
+.sidebarChannel > h4 {
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+  margin: 0;
+  color: gray;
+  background-color: $color-dark;
+  cursor: pointer;
+
+  .sidebarChannel__hash {
+    font-size: 3rem;
+    padding: 8px;
+  }
+}
+

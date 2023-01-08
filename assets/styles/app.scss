@@ -11,14 +11,13 @@ html {
 }
 
 body {
-  background-color: white;
   font-size: 1.6rem;
   font-family: $font-primary;
 
   main {
-    background-color: #121212;
-    color: white;
-    padding: 6em 0;
+    background-color: $color-dark;
+    color: $color-white;
+    padding-top: 6em;
   }
 
   h1, h2 h3, h4, h5, h6 {
@@ -26,19 +25,30 @@ body {
     margin: 2rem 0;
   }
 
+  h1,
+  h2,
+  p {
+    // Font minimum, preferred and maximum value
+    font-size: clamp(var(--min), var(--val), var(--max));
+  }
+
+  // Font size variables
   h1 {
+    --min: 2em; // minimum value
+    --val: 5vw; // preferred value = 5% viewport width
+    --max: 3em; // maximum value
   }
 
   h2 {
-    font-size: 2.4rem;
-
-    @media (min-width: 767px) {
-      font-size: 4rem;
-    }
+    --min: 1.5em; /* minimum value */
+    --val: 4vw; /* preferred value = 4% viewport width */
+    --max: 2.25em; /* maximum value */
   }
 
-  h3 {
-    font-size: 2rem;
+  p {
+    --min: 1rem; // minimum value
+    --val: 2.5vw; // preferred value = 2.5% viewport width
+    --max: 1.125em; // maximum value
   }
 
   p {
@@ -66,36 +76,6 @@ body {
   .container {
     max-width: 1200px;
     margin: 0 auto;
-  }
-
-  .container.init-width {
-    max-width: initial;
-    width: 100%;
-  }
-
-  .container.bg-dark {
-    background-color: $bg-dark;
-    color: #fff;
-  }
-
-  .container.bg-white {
-    background-color: white;
-    color: $bg-dark;
-  }
-
-  .container.bg-linear {
-    color: white;
-    background-color: #FFDEE9;
-    background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);
-
-  }
-
-
-  .position-relative {
-    position: relative;
-    @media (min-width: 1024px) {
-      padding-bottom: 120px;
-    }
   }
 }
 

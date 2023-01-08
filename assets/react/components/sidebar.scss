@@ -1,9 +1,72 @@
+@import 'assets/styles/variables';
+
 .sidebar {
+  position: relative;
   display: flex;
   flex-direction: column;
   flex: 0.25;
+  background-color: $color-dark;
+  border-right: 3px solid #26282c;
+  max-height: 100vh;
+
+  .MuiSvgIcon-root {
+    font-size: 2.6rem;
+  }
 
   .sidebar__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    color: white;
+    border-bottom: 3px solid #26282c;
 
+    h3 {
+      padding-left: 10px;
+    }
+  }
+
+  .sidebar__middle {
+    flex: 0.9;
+    overflow-y: scroll;
+    max-height: calc(100vh - 90px);
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .sidebar__profile {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px;
+    border-top: 3px solid #26282c;
+    background-color: $color-dark;
+
+    .sidebar__avatar {
+      height: 40px;
+      width: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      background-color: #512DA8;
+
+      p {
+        font-size: 2rem;
+        font-weight: 700;
+      }
+    }
+
+    .sidebar__profileInfo {
+      padding-left: 15px;
+
+    }
   }
 }

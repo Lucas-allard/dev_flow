@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+
+    {% block header %}
+        {% include "./header/_header.html.twig" %}
+    {% endblock %}
+
+    <main>
+        <section class="container-form">
+            <div class="box form-login">
+                <form method="post">
+                    <h2>
+                        Connexion
+                    </h2>
+                    {% if error %}
+                        <div class="message">
+                            <p>Email/Mot de passe invalide</p>
+                        </div>
+                    {% endif %}
+
+                    {% if app.user %}
+                        <div class="message">
+                            <p>Vous êtes déjà connecté {{ app.user.userIdentifier }}, <a
+                                        href="{{ path('app_logout') }}">Déconnexion</a></p>
+                        </div>
+                    {% endif %}
+                    <div class="inputBox">
+                        <input type="text" id="username" name="_username" value="{{ last_username }}">
+                        <span>Email</span>
+                        <i></i>
+                    </div>
+                    <div class="inputBox">
+                        <input type="password" id="password" name="_password">
+                        <span>Mot de passe</span>
+                        <i></i>
+                    </div>
+                    <div class="links">
+                        <a href="#">Mot de passe oublié</a>
+                        <a href={{ path("inscription") }}>Inscription</a>
+                    </div>
+                    <div class="action__btn">
+                        <input type="submit" value="Connexion">
+                        <button type="button">
+                            <a href="{{ path("connect_google_start") }}">GOOGLE</a>
+                        </button>
+                    </div>
+
+                    <input type="hidden" name="_csrf_token"
+                           value="{{ csrf_token('authenticate') }}"
+                    >
+                </form>
+            </div>
+        </section>
+    </main>
+
+
+
+    {#
+    Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+    See https://symfony.com/doc/current/security/remember_me.html
+
+    <div class="checkbox mb-3">
+        <label>
+            <input type="checkbox" name="_remember_me"> Remember me
+        </label>
+    </div>
+    #}
+
+
+
+{% endblock %}

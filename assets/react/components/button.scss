@@ -9,8 +9,8 @@
 }
 
 .button.button-redirect {
-  background-color: $bg-dark;
-  color: white;
+  background-color: $color-dark;
+  color: $color-white;
   transition: all 0.3s linear;
 
   &:hover {
@@ -19,9 +19,12 @@
 }
 
 .button.button-cta {
-  background-color: $bg-dark;
-  color: white;
+  background-color: $color-white;
+  color: $color-dark;
   transition: all 0.3s linear;
+  width: 100%;
+  display: block;
+  text-align: center;
 
   &:hover {
     background-color: gray;
@@ -30,13 +33,13 @@
 }
 
 .button.button-cta.code-rain {
-  background-color: #f1f2f3;
-  color: $bg-dark;
+  background-color: $color-white;
+  color: $color-dark;
   transition: all 0.3s linear;
 
   &:hover {
-    background-color: #20c20e;
-    color: white;
+    background-color: $color-green;
+    color: $color-white;
     animation: pulsation_btn_green .8s ease-out
   }
 }

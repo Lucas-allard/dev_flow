@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class LaboController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(CategoryRepository $categoryRepository, CourseRepository $courseRepository): Response
+    public function index(CategoryRepository $categoryRepository, $courseRepository): Response
     {
         $categories = $categoryRepository->findAll();
         $courses = $courseRepository->findAll();

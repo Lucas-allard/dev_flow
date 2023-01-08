@@ -1,0 +1,64 @@
+.users__chat {
+  flex: 0.20;
+  max-height: calc(100vh - 90px);
+  border-left: 3px solid #26282c;
+  overflow-y: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .users__list {
+
+    .users__listItem {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      cursor: pointer;
+      position: relative;
+
+      &:hover {
+        background-color: #333333;
+
+      }
+
+
+      span:nth-child(1) {
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: red;
+        z-index: 2;
+      }
+
+      span.connected {
+        background-color: #20c20e;
+      }
+
+      span:nth-child(2) {
+        margin-right: 10px;
+      }
+    }
+  }
+
+  .sidebar__avatar {
+    height: 40px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #512DA8;
+
+    p {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+  }
+}
+

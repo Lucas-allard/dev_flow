@@ -31,12 +31,7 @@
                         <span></span>
                         <span>Chat</span>
                     </a>
-                    {% if app.user is null %}
-                        <a href="#" class="disabled-link">
-                            <span></span>
-                            <span>Profil</span>
-                        </a>
-                    {% else %}
+                    {% if app.user %}
                         <a href="#">
                             <span></span>
                             <span>Profil</span>
@@ -52,7 +47,7 @@
                 {% endif %}
                 <div class="sign-btns">
                     {% if app.user is null %}
-                        <a href="/connexion" aria-label="connexion">
+                        <a href="{{ path('app_login') }}" aria-label="connexion">
                             <span></span>
                             <span>Connexion</span>
                         </a>

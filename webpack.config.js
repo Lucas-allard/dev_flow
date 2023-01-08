@@ -61,9 +61,6 @@ Encore
 
     // uncomment if you use TypeScript
 
-
-    .enableTypeScriptLoader((loaderRule) => {
-    })
     // uncomment if you use React
     .enableReactPreset()
 

@@ -3,5 +3,10 @@
 {% block title %}Hello ChatController!{% endblock %}
 
 {% block body %}
-    <div id="chat"></div>
+
+    {% block header %}
+        {% include "./header/_header.html.twig" %}
+    {% endblock %}
+
+    <div style="position: relative" {{ react_component('App', {user: userData, users: users}) }}></div>
 {% endblock %}

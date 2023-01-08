@@ -1,0 +1,82 @@
+@import "assets/styles/variables";
+
+.profil__card {
+  position: absolute;
+  top: 50%;
+  right: 10%;
+  transform: translate(-50%, -50%);
+  background-color: #29292d;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  color: #D3D3D3;
+  min-width: 400px;
+
+  .profil__cardHeader {
+    height: 50px;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+  }
+
+  .profil__cardContent {
+    margin: 10px;
+    padding: 10px;
+    background-color: #444444;
+
+    h3 {
+      padding: 10px 0;
+      border-bottom: 1px solid #29292d;
+    }
+
+    .profil__cardCreatedAt,
+    .profil__cardRoles {
+      padding: 10px 0;
+
+      p:first-child {
+        text-transform: uppercase;
+        font-weight: 700;
+        padding-bottom: 5px;
+      }
+    }
+
+    .profil__cardInput {
+      color: lightgray;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px;
+      border-top: 1px solid #29292d;
+      background-color: #29292d;
+      border-radius: 5px;
+
+      form {
+        flex: 1;
+
+        input {
+          color: lightgray;
+          background-color: transparent;
+          width: 100%;
+          outline: none;
+          border: none;
+          font-size: large;
+          padding: 20px;
+        }
+
+        .chat__inputBtn {
+          display: none;
+        }
+
+        .react-input-emoji--button {
+          padding-left: 4rem;
+
+          svg {
+            fill: #D3D3D3;
+          }
+        }
+
+        .react-emoji-picker--wrapper {
+          overflow: initial;
+        }
+      }
+    }
+  }
+}
