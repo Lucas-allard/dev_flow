@@ -11,7 +11,6 @@ html {
 }
 
 body {
-  background-color: white;
   font-size: 1.6rem;
   font-family: $font-primary;
 
@@ -47,9 +46,9 @@ body {
   }
 
   p {
-    --min: 1em; // minimum value
+    --min: 1rem; // minimum value
     --val: 2.5vw; // preferred value = 2.5% viewport width
-    --max: 1.5em; // maximum value
+    --max: 1.125em; // maximum value
   }
 
   p {
