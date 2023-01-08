@@ -57,6 +57,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profilColor = null;
 
+    #[ORM\ManyToMany(targetEntity: Level::class, inversedBy: 'users')]
+    private Collection $level;
+
 
     /**
      * @throws Exception
@@ -66,6 +69,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->createdAt = new \DateTime();
         $this->profilColor = '#' . dechex(random_int(0, 16777215));
         $this->chatMessages = new ArrayCollection();
+        $this->level = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -247,6 +251,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfilColor(?string $profilColor): self
     {
         $this->profilColor = $profilColor;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Level>
+     */
+    public function getLevel(): Collection
+    {
+        return $this->level;
+    }
+
+    public function addLevel(Level $level): self
+    {
+        if (!$this->level->contains($level)) {
+            $this->level->add($level);
+        }
+
+        return $this;
+    }
+
+    public function removeLevel(Level $level): self
+    {
+        $this->level->removeElement($level);
 
         return $this;
     }
