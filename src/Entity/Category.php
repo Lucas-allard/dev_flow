@@ -25,7 +25,7 @@ class Category
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Courses::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Course::class, orphanRemoval: true)]
     private Collection $courses;
 
     public function __construct()
@@ -76,14 +76,14 @@ class Category
     }
 
     /**
-     * @return Collection<int, Courses>
+     * @return Collection<int, Course>
      */
     public function getCourses(): Collection
     {
         return $this->courses;
     }
 
-    public function addCourse(Courses $course): self
+    public function addCourse(Course $course): self
     {
         if (!$this->courses->contains($course)) {
             $this->courses->add($course);
@@ -93,7 +93,7 @@ class Category
         return $this;
     }
 
-    public function removeCourse(Courses $course): self
+    public function removeCourse(Course $course): self
     {
         if ($this->courses->removeElement($course)) {
             // set the owning side to null (unless already changed)

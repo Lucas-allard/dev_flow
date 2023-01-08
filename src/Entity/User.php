@@ -60,8 +60,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Level::class, inversedBy: 'users')]
     private Collection $level;
 
-    #[ORM\ManyToMany(targetEntity: Courses::class, inversedBy: 'users')]
+    #[ORM\ManyToMany(targetEntity: Course::class, inversedBy: 'users')]
     private Collection $courses;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Point::class, orphanRemoval: true)]
+    private Collection $points;
 
 
     /**
@@ -74,6 +77,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->chatMessages = new ArrayCollection();
         $this->level = new ArrayCollection();
         $this->courses = new ArrayCollection();
+        $this->points = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -284,14 +288,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Courses>
+     * @return Collection<int, Course>
      */
     public function getCourses(): Collection
     {
         return $this->courses;
     }
 
-    public function addCourse(Courses $course): self
+    public function addCourse(Course $course): self
     {
         if (!$this->courses->contains($course)) {
             $this->courses->add($course);
@@ -300,9 +304,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeCourse(Courses $course): self
+    public function removeCourse(Course $course): self
     {
         $this->courses->removeElement($course);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Point>
+     */
+    public function getPoints(): Collection
+    {
+        return $this->points;
+    }
+
+    public function addPoint(Point $point): self
+    {
+        if (!$this->points->contains($point)) {
+            $this->points->add($point);
+            $point->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePoint(Point $point): self
+    {
+        if ($this->points->removeElement($point)) {
+            // set the owning side to null (unless already changed)
+            if ($point->getUser() === $this) {
+                $point->setUser(null);
+            }
+        }
 
         return $this;
     }

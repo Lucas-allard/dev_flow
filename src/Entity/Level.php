@@ -25,7 +25,7 @@ class Level
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'level')]
     private Collection $users;
 
-    #[ORM\OneToMany(mappedBy: 'level', targetEntity: Courses::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'level', targetEntity: Course::class, orphanRemoval: true)]
     private Collection $courses;
 
     public function __construct()
@@ -91,14 +91,14 @@ class Level
     }
 
     /**
-     * @return Collection<int, Courses>
+     * @return Collection<int, Course>
      */
     public function getCourses(): Collection
     {
         return $this->courses;
     }
 
-    public function addCourse(Courses $course): self
+    public function addCourse(Course $course): self
     {
         if (!$this->courses->contains($course)) {
             $this->courses->add($course);
@@ -108,7 +108,7 @@ class Level
         return $this;
     }
 
-    public function removeCourse(Courses $course): self
+    public function removeCourse(Course $course): self
     {
         if ($this->courses->removeElement($course)) {
             // set the owning side to null (unless already changed)

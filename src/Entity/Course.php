@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CoursesRepository::class)]
-class Courses
+class Course
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -32,6 +32,9 @@ class Courses
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'courses')]
     private Collection $users;
+
+    #[ORM\OneToOne(mappedBy: 'course', cascade: ['persist', 'remove'])]
+    private ?Point $point = null;
 
     public function __construct()
     {
@@ -114,6 +117,28 @@ class Courses
         if ($this->users->removeElement($user)) {
             $user->removeCourse($this);
         }
+
+        return $this;
+    }
+
+    public function getPoint(): ?Point
+    {
+        return $this->point;
+    }
+
+    public function setPoint(?Point $point): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($point === null && $this->point !== null) {
+            $this->point->setCourse(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($point !== null && $point->getCourse() !== $this) {
+            $point->setCourse($this);
+        }
+
+        $this->point = $point;
 
         return $this;
     }
