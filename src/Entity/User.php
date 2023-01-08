@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -31,12 +32,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column(nullable: true)]
     private ?string $password = null;
-
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class)]
-    private Collection $comments;
-
-    #[ORM\ManyToMany(targetEntity: Course::class, inversedBy: 'users')]
-    private Collection $courses;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $fullName = null;
@@ -64,15 +59,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct()
     {
         $this->createdAt = new \DateTime();
         $this->profilColor = '#' . dechex(random_int(0, 16777215));
-        $this->comments = new ArrayCollection();
-        $this->courses = new ArrayCollection();
-        $this->badges = new ArrayCollection();
         $this->chatMessages = new ArrayCollection();
     }
 
@@ -145,112 +137,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
-
-    /**
-     * @return Collection<int, Comment>
-     */
-    public function getComments(): Collection
-    {
-        return $this->comments;
-    }
-
-    public function addComment(Comment $comment): self
-    {
-        if (!$this->comments->contains($comment)) {
-            $this->comments->add($comment);
-            $comment->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeComment(Comment $comment): self
-    {
-        if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
-            if ($comment->getUser() === $this) {
-                $comment->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getUsername(): ?string
-    {
-        return $this->username;
-    }
-
-    public function setUsername(string $username): self
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Course>
-     */
-    public function getCourses(): Collection
-    {
-        return $this->courses;
-    }
-
-    public function addCourse(Course $course): self
-    {
-        if (!$this->courses->contains($course)) {
-            $this->courses->add($course);
-        }
-
-        return $this;
-    }
-
-    public function removeCourse(Course $course): self
-    {
-        $this->courses->removeElement($course);
-
-        return $this;
-    }
-
-    public function getDegree(): ?Degree
-    {
-        return $this->degree;
-    }
-
-    public function setDegree(?Degree $degree): self
-    {
-        $this->degree = $degree;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Badge>
-     */
-    public function getBadges(): Collection
-    {
-        return $this->badges;
-    }
-
-    public function addBadge(Badge $badge): self
-    {
-        if (!$this->badges->contains($badge)) {
-            $this->badges->add($badge);
-            $badge->addUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBadge(Badge $badge): self
-    {
-        if ($this->badges->removeElement($badge)) {
-            $badge->removeUser($this);
-        }
-
-        return $this;
-    }
-
     public function getFullName(): ?string
     {
         return $this->fullName;

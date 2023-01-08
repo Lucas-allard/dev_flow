@@ -1,11 +1,10 @@
 import './gamificationSection.scss';
-import React, {useEffect, useRef, useState} from 'react';
+import React from 'react';
 import Card from "../components/Card";
 
 const GamificationSection = () => {
-    const ref = useRef();
     return (
-        <section className="container init-width bg-white position-relative" ref={ref}>
+        <section className="container">
             <div className="gamification-section">
                 <h2>Apprends, participe et aide d'autres personnes pour gagner des badges</h2>
                 <div className="badges-overview">

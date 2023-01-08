@@ -22,6 +22,7 @@ class ChatController extends AbstractController
     /**
      * @param CsrfTokenManagerInterface $csrfTokenManager
      * @param UserRepository $userRepository
+     * @param FirestoreService $firestoreService
      */
     public function __construct(
         private CsrfTokenManagerInterface $csrfTokenManager,
@@ -54,6 +55,8 @@ class ChatController extends AbstractController
         foreach ($usersList as $user) {
             $users[] = [
                 'fullname' => $user->getFullName(),
+                "display" => $user->getFullName(),
+                "id" => $user->getId(),
                 'isConnected' => $user->isIsLogged(),
                 'profilPicture' => $user->getProfilPicture(),
                 "createdAt" => $user->getCreatedAt(),
@@ -81,6 +84,12 @@ class ChatController extends AbstractController
     ): Response
     {
         $messageData = json_decode($request->getContent(), true);
+
+        $messageData['message'] = strip_tags($messageData['message'], '<br>,<img>');
+
+        $messageData['message'] = preg_replace('#<img(.*?)src="(.*?)"(.*?)>#', '<img src="$2" alt="gif">', $messageData['message']);
+
+        $messageData['message'] = htmlentities($messageData['message']);
 
         if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('chat', $messageData["user"]["csrfToken"]))) {
 
@@ -111,6 +120,12 @@ class ChatController extends AbstractController
     ): Response
     {
         $messageData = json_decode($request->getContent(), true);
+
+        $messageData['message'] = strip_tags($messageData['message'], '<br>,<img>');
+
+        $messageData['message'] = preg_replace('#<img(.*?)src="(.*?)"(.*?)>#', '<img src="$2" alt="gif">', $messageData['message']);
+
+        $messageData['message'] = htmlentities($messageData['message']);
 
         if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('chat', $messageData["user"]["csrfToken"]))) {
 

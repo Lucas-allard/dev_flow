@@ -5,35 +5,27 @@ import logoJS from '../../image/logo-js.png';
 import logoHTML from '../../image/logo-html.png';
 import logoCSS from '../../image/logo-css.png';
 import ScrollDown from "../components/ScrollDown";
-import CodeRain from "../components/RainStream/CodeRain";
 
 const LastContentSection = () => {
     return (
-        <section className="container init-width position-relative" id="last-content-section">
-            <CodeRain/>
+        <section id="last-content-section">
             <div className="home-section">
                 <div className="home-header">
                     <div className="cta">
                         <h2>
-                            <p>
-                                Dev Flow c'est une plateforme d'apprentissage mais c'est avant tout une plateforme
-                                d'entraide
-                                !
-                            </p>
+                            Rejoignez la communauté Dev Flow et devenez un expert en développement web !
                         </h2>
                         <div className="cta-register">
                             <Button className="button-cta code-rain" route="/inscription">S'inscrire</Button>
                             <Button className="button-cta code-rain" route='/labo'>Le Labo</Button>
                         </div>
                         <div className="cta-content">
-                            <a href="#">
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto
-                                    asperiores delectus
-                                    dicta ea exercitationem fugiat, illum iure laboriosam maxime porro quaerat, quisquam
-                                    reprehenderit suscipit tempore ut veniam veritatis voluptatibus voluptatum.
-                                </p>
-                            </a>
+                            <p>
+                                En vous inscrivant sur Dev Flow, vous aurez accès à une grande variété de cours,
+                                tutoriels et autres ressources pour vous aider à devenir un développeur accompli. Et si
+                                vous avez besoin de plus d'aide, vous pourrez également réserver un mentorat auprès de
+                                l'un de nos mentors expérimentés.
+                            </p>
                         </div>
                     </div>
                 </div>

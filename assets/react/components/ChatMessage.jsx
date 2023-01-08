@@ -1,6 +1,7 @@
 import React from 'react';
 import "./chatMessage.scss"
 import Avatar from '@mui/material/Avatar';
+import {htmlSpecialDecode} from "../utils/htmlSpecialDecode";
 
 
 const ChatMessage = ({userPicture, fullname, timestamp, message}) => {
@@ -20,7 +21,7 @@ const ChatMessage = ({userPicture, fullname, timestamp, message}) => {
                     <span className="message__timestamp">{timestamp}</span>
                 </h4>
                 <p
-                    dangerouslySetInnerHTML={{__html: message}}
+                    dangerouslySetInnerHTML={{__html: htmlSpecialDecode(message)}}
                 />
             </div>
         </div>

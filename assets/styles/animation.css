@@ -9,7 +9,7 @@
 
 @keyframes pulsation_btn_green {
     from {
-        box-shadow: 0 0 0 -3px hsla(0, 0%, 100%, 0), 0 0 0 0 hsl(114, 87%, 41%)
+        box-shadow: 0 0 0 -3px hsla(0, 0%, 100%, 0), 0 0 0 0 hsl(101, 35%, 48%)
     }
     to {
         box-shadow: 0 0 0 10px hsla(0, 0%, 100%, 0), 0 0 0 13px hsla(0, 0%, 100%, 0)

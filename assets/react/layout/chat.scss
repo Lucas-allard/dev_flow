@@ -31,6 +31,7 @@
     border-radius: 5px;
 
     form {
+      position: relative;
       flex: 1;
 
       div {
@@ -41,16 +42,36 @@
         border: none;
         font-size: large;
         padding: 20px;
-        //overflow-y: scroll;
-        //-ms-overflow-style: none; /* IE and Edge */
-        //scrollbar-width: none; /* Firefox */
         resize: none;
       }
 
-      textarea::-webkit-scrollbar {
-        display: none;
+      .chat__inputMentionsList {
+        position: absolute;
+        top: -100px;
+        height: 100px;
+        left: 0;
+        width: auto;
+        background: white;
+        border: 1px solid #ccc;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        z-index: 1;
+        overflow: scroll;
 
+        li {
+          padding: 8px 12px;
+          cursor: pointer;
+          font-size: 14px;
+          color: #444;
+
+          &:hover {
+            background: #eee;
+
+          }
+        }
       }
+
 
       .chat__inputBtn {
         display: none;

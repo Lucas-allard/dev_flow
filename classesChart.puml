@@ -1,0 +1,163 @@
+@startuml
+
+
+entity User {
+  id
+  name
+  email
+  password
+  level
+}
+
+entity Level {
+  id
+  name
+  description
+}
+
+entity Course {
+  id
+  title
+  description
+  language
+  level
+}
+
+entity Mentorship {
+  id
+  student
+  mentor
+  startDate
+  endDate
+}
+
+entity Category {
+  id
+  name
+  description
+}
+
+entity Channels {
+  id
+  name
+  description
+  category
+}
+
+entity ChatMessage {
+  id
+  user
+  message
+  date
+  channel
+}
+
+entity PrivateMessage {
+  id
+  sender
+  receiver
+  message
+  date
+}
+
+entity Project {
+  id
+  title
+  description
+  mentor
+  deadline
+}
+
+entity ProjectTracking {
+  id
+  project
+  student
+  progress
+  completionDate
+}
+
+entity Forum {
+  id
+  title
+  description
+  category
+  user
+}
+
+entity Comment {
+  id
+  forum
+  user
+  message
+  date
+}
+
+entity Payment {
+  id
+  user
+  mentorship
+  project
+  amount
+  date
+}
+
+entity Point {
+  id
+  user
+  value
+  description
+  date
+}
+
+entity Trophy {
+  id
+  user
+  name
+  description
+  date
+}
+
+entity Challenge {
+  id
+  name
+  description
+  startDate
+  endDate
+  reward
+}
+
+entity Role {
+  id
+  name
+  description
+}
+
+User -- Level : belongs
+User -- Course : takes
+User -- Mentorship : requests
+User -- Payment : makes
+User -- Point : earns
+User -- Trophy : wins
+User -- Challenge : participates
+User -- Role : has
+User -- Forum : posts
+User -- ChatMessage : posts
+User -- PrivateMessage : sends
+Course -- Level : belongs
+Course -- Category : belongs
+Mentorship -- Payment : requires
+Project -- Mentorship : requires
+Project -- ProjectTracking : has
+Project -- Payment : requires
+Forum -- Comment : has
+Forum -- Category : belongs
+Channels -- ChatMessage : has
+Channels -- Category : belongs
+ChatMessage -- User : belongs
+PrivateMessage -- User : belongs
+Point -- Trophy : unlocks
+Challenge -- Trophy : rewards
+
+
+
+@enduml

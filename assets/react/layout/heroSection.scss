@@ -1,3 +1,12 @@
+.hero-section-bg {
+  background-image: url("../../../public/images/homepage_hero.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  padding: 3rem 0;
+}
+
 .hero-section {
   display: flex;
   flex-direction: column;
@@ -10,15 +19,12 @@
     align-items: center;
     justify-content: center;
     transition: all 1s linear;
+    margin: 2rem auto;
 
     div {
       display: flex;
       justify-content: center;
       align-items: center;
-
-      img {
-        width: 150px;
-      }
     }
   }
 
@@ -66,33 +72,27 @@
 @media (min-width: 767px) {
 
   .hero-section {
-    padding-top: 100px;
-    padding-bottom: 150px;
+    padding: 5rem 5rem 150px;
 
     .hero-header {
       flex-direction: row;
-
-      div img {
-        width: 450px;
-      }
-    }
-
-    .hero-helpers {
-      grid-template-columns: repeat(5, 1fr);
-      margin: initial;
-
-      div:last-child {
-        grid-column: 4/7;
-        grid-row: 1;
-      }
     }
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1224px) {
 
   .hero-section {
-    padding-bottom: 50px;
+    max-width: 50%;
+
+    padding: 50px 5rem 5rem;
+
+    .hero-header {
+      flex-direction: row;
+    }
+
+    .hero-content {
+      padding: 3rem;
+    }
   }
 }
-

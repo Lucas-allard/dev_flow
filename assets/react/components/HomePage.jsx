@@ -9,7 +9,7 @@ export const HomePage = () => {
             <main>
                 <HeroSection/>
                 <LastContentSection/>
-                <GamificationSection/>
+                {/*<GamificationSection/>*/}
             </main>
     );
 }
