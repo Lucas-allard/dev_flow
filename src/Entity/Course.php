@@ -30,16 +30,17 @@ class Course
     #[ORM\JoinColumn(nullable: false)]
     private ?Level $level = null;
 
+    #[ORM\Column]
+    private ?int $points = null;
+
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'courses')]
     private Collection $users;
-
-    #[ORM\OneToOne(mappedBy: 'course', cascade: ['persist', 'remove'])]
-    private ?Point $point = null;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
@@ -94,6 +95,19 @@ class Course
         return $this;
     }
 
+
+    public function getPoints(): ?int
+    {
+        return $this->points;
+    }
+
+    public function setPoints(int $points): self
+    {
+        $this->points = $points;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, User>
      */
@@ -117,28 +131,6 @@ class Course
         if ($this->users->removeElement($user)) {
             $user->removeCourse($this);
         }
-
-        return $this;
-    }
-
-    public function getPoint(): ?Point
-    {
-        return $this->point;
-    }
-
-    public function setPoint(?Point $point): self
-    {
-        // unset the owning side of the relation if necessary
-        if ($point === null && $this->point !== null) {
-            $this->point->setCourse(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($point !== null && $point->getCourse() !== $this) {
-            $point->setCourse($this);
-        }
-
-        $this->point = $point;
 
         return $this;
     }

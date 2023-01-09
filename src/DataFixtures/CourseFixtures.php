@@ -16,6 +16,7 @@ class CourseFixtures extends Fixture implements DependentFixtureInterface
             $course = new Course();
             $course->setTitle($faker->sentence(6, true));
             $course->setContent($faker->paragraph(10, true));
+            $course->setPoints($faker->numberBetween(1, 15));
             $course->setCategory($this->getReference('category_' . rand(1, 5)));
             $course->setLevel($this->getReference('level_' . rand(1, 4)));
 
