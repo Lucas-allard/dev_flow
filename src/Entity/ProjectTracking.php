@@ -25,6 +25,9 @@ class ProjectTracking
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $completionDate = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $completionStatus = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -62,6 +65,18 @@ class ProjectTracking
     public function setCompletionDate(\DateTimeInterface $completionDate): self
     {
         $this->completionDate = $completionDate;
+
+        return $this;
+    }
+
+    public function getCompletionStatus(): ?string
+    {
+        return $this->completionStatus;
+    }
+
+    public function setCompletionStatus(string $completionStatus): self
+    {
+        $this->completionStatus = $completionStatus;
 
         return $this;
     }
