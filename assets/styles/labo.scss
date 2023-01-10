@@ -81,15 +81,35 @@ section h2 {
       p > em {
         margin-top: 1rem;
         font-weight: 900;
-        color: var(--clr);
       }
 
       &:hover {
         border: 1px solid var(--clr);
-        animation: bounce 1s 1 ease-out;
         filter: drop-shadow(0 0 40px var(--clr));
 
         p > em {
+        }
+      }
+
+      .courses__blockLinks {
+        display: flex;
+        padding-top: 1rem;
+        align-items: center;
+        font-size: 1.2rem;
+        font-weight: 900;
+
+        a {
+          margin: 0 1rem;
+          padding: 0.5rem 1rem;
+          color: $color-sand;
+          background-color: $color-green;
+          transition: all 0.15s;
+
+          &:hover {
+            background-color: $color-sand;
+            color: $color-dark;
+          }
+
         }
       }
     }
