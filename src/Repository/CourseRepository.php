@@ -91,39 +91,31 @@ class CourseRepository extends ServiceEntityRepository
             ->join('c.category', 'ca')
             ->join('c.level', 'l')
             ->orderBy('c.createdAt', 'DESC');
-
         if ($filterData->getQ()) {
             $query = $query
                 ->andWhere('c.title LIKE :q')
                 ->setParameter('q', $filterData->getQ());
         }
-
-
-
         if ($filterData->getCategory()) {
             $query = $query
                 ->andWhere('ca.name = :category')
                 ->setParameter('category', $filterData->getCategory()->getName());
         }
-
         if ($filterData->getLevel()) {
             $query = $query
                 ->andWhere('l.name = :level')
                 ->setParameter('level', $filterData->getLevel()->getName());
         }
-
         if ($filterData->getMinPoint()) {
             $query = $query
                 ->andWhere('c.points >= :minPoint')
                 ->setParameter('minPoint', $filterData->getMinPoint());
         }
-
         if ($filterData->getMaxPoint()) {
             $query = $query
                 ->andWhere('c.points <= :maxPoint')
                 ->setParameter('maxPoint', $filterData->getMaxPoint());
         }
-
         return $query->getQuery()->getResult();
     }
 

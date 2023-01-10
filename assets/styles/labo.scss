@@ -80,6 +80,7 @@ section h2 {
 
       p > em {
         margin-top: 1rem;
+        font-weight: 900;
         color: var(--clr);
       }
 
@@ -140,6 +141,7 @@ section h2 {
 
 .bowl__design {
   position: relative;
+  top: -100px;
   left: 0;
   right: 0;
   display: flex;

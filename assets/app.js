@@ -12,7 +12,8 @@ import './styles/header.scss';
 import './styles/form.scss';
 import './styles/labo.scss';
 import './styles/pagination.scss';
-;
+import './styles/searchForm.scss';
+
 
 
 // start the Stimulus application
