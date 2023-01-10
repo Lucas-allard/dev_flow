@@ -10,7 +10,7 @@ import './styles/normalize.css'
 import './styles/app.scss';
 import './styles/header.scss';
 import './styles/form.scss';
-import './styles/labo_categories.scss';
+import './styles/labo.scss';
 ;
 
 
