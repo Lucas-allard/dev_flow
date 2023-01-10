@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Data\CourseFilterData;
+use App\Data\SearchData;
+use App\Form\SearchCoursesFormType;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use App\Repository\LevelRepository;
@@ -32,8 +35,21 @@ class LaboController extends AbstractController
     public function index(Request $request): Response
     {
         $categories = $this->categoryRepository->findAll();
+
         $levels = $this->levelRepository->findAll();
-        $coursesData = $this->courseRepository->findCourses();
+
+        $filterData = new CourseFilterData();
+
+        $searchForm = $this->createForm(SearchCoursesFormType::class, $filterData);
+        $searchForm->handleRequest($request);
+
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+
+            $coursesData = $this->courseRepository->findBySearch($filterData);
+        } else {
+            $coursesData = $this->courseRepository->findCourses();
+
+        }
 
         $courses = $this->paginator->paginate(
             $coursesData,
@@ -43,6 +59,7 @@ class LaboController extends AbstractController
 
         return $this->render('labo/labo.html.twig', [
             "categories" => $categories,
+            "searchForm" => $searchForm->createView(),
             "levels" => $levels,
             "courses" => $courses,
         ]);
@@ -58,7 +75,18 @@ class LaboController extends AbstractController
     {
         $categories = $this->categoryRepository->findAll();
 
-        $coursesData = $this->courseRepository->findByCategory($category);
+        $filterData = new CourseFilterData();
+
+        $searchForm = $this->createForm(SearchCoursesFormType::class, $filterData);
+        $searchForm->handleRequest($request);
+
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+
+            $coursesData = $this->courseRepository->findBySearch($filterData);
+        } else {
+            $coursesData = $this->courseRepository->findByCategory($category);
+        }
+
         $courses = $this->paginator->paginate(
             $coursesData,
             $request->query->getInt('page', 1),
@@ -69,6 +97,7 @@ class LaboController extends AbstractController
             "categories" => $categories,
             "category" => $category,
             "courses" => $courses,
+            "searchForm" => $searchForm->createView(),
         ]);
     }
 
@@ -81,7 +110,19 @@ class LaboController extends AbstractController
     public function level(Request $request, string $level): Response
     {
         $levels = $this->levelRepository->findAll();
-        $coursesData = $this->courseRepository->findByLevel($level);
+
+        $filterData = new CourseFilterData();
+
+        $searchForm = $this->createForm(SearchCoursesFormType::class, $filterData);
+        $searchForm->handleRequest($request);
+
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+
+            $coursesData = $this->courseRepository->findBySearch($filterData);
+        } else {
+            $coursesData = $this->courseRepository->findByLevel($level);
+        }
+
 
         $courses = $this->paginator->paginate(
             $coursesData,
@@ -92,6 +133,7 @@ class LaboController extends AbstractController
         return $this->render('labo/labo_by_level.html.twig', [
             "levels" => $levels,
             "courses" => $courses,
+            "searchForm" => $searchForm->createView(),
         ]);
     }
 
