@@ -1,0 +1,35 @@
+<section class="courses__section">
+    <h2>Les derniers cours</h2>
+    <div class="courses__container">
+        {% for course in courses %}
+            <a href="">
+                <div class="courses__block" style="--clr: {{ course.category.color }}">
+                    <h3 style="color: {{ course.category.color }}">
+                        {{ course.category.name }}
+                    </h3>
+                    <p><em style="color: {{ course.level.color }}"> Niveau : {{ course.level.name }}</em></p>
+                    <h4>{{ course.title }}</h4>
+                    <p>{{ course.content| striptags | slice(0, 70) }} ...</p>
+                    <p><em>{{ course.createdAt|date("d-m-Y", "Europe/Paris") }}</em></p>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+    <div class="anim__absolute__right">
+        <div class="bowl__design">
+            <div class="shadow"></div>
+            <div class="bowl">
+                <div class="liquid"></div>
+            </div>
+        </div>
+    </div>
+    <div class="anim__absolute__left">
+        <div class="bowl__design">
+            <div class="shadow"></div>
+            <div class="bowl">
+                <div class="liquid"></div>
+            </div>
+        </div>
+    </div>
+    {{ knp_pagination_render(courses) }}
+</section>

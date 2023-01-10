@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Le Labo - {{ category }}{% endblock %}
+
+{% block body %}
+
+    {% block header %}
+        {% include "./header/_header.html.twig" %}
+    {% endblock %}
+
+    <main>
+        <section>
+            <h2>{{ category }}</h2>
+        </section>
+
+        {{ include('./labo/_courses.html.twig') }}
+    </main>
+
+{% endblock %}
