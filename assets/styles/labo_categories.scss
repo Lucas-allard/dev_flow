@@ -7,7 +7,9 @@ section h2 {
 .categories__container {
   padding: 4rem 0;
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
 
   a {
     background-color: $color-green-opacity-less;
@@ -15,27 +17,14 @@ section h2 {
     margin: 0.5rem;
     text-transform: uppercase;
     font-weight: 800;
+    width: max-content;
 
     &:hover {
       animation: pulsation_btn 0.6s 1 ease-out;
     }
-
-    &:nth-child(1) {
-      background-color: $color-html;
-
-    }
-
-    &:nth-child(2) {
-      background-color: $color-css;
-    }
-
-    &:nth-child(3) {
-      background-color: $color-javascript;
-    }
-
-    &:nth-child(4) {
-      background-color: $color-php;
-    }
+  }
+  @media (min-width: 768px) {
+    flex-direction: row;
   }
 }
 
@@ -44,11 +33,11 @@ section h2 {
 
   .courses__container {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(1, 1fr);
     gap: 10px;
     justify-content: center;
     margin: 0 auto;
-    padding-top: 50px;
+    padding: 50px 1rem 1rem;
     max-width: 1280px;
 
     .courses__block {
@@ -65,17 +54,20 @@ section h2 {
       z-index: 1;
       cursor: pointer;
       padding: 2em 1rem;
+      min-height: 100%;
 
       h3 {
         padding: 10px;
         margin-bottom: 0.5rem;
-        text-transform: uppercase;
         font-size: 1.4rem;
+        text-transform: Uppercase;
         transition: all 0.3s;
+        color: var(--clr);
       }
 
-      p:nth-child(2) {
-        text-transform: uppercase;
+      h4 {
+        padding: 0 10px;
+        font-weight: lighter;
       }
 
       p {
@@ -86,91 +78,30 @@ section h2 {
 
       p > em {
         margin-top: 1rem;
-        color: lightslategray;
-      }
-
-    }
-
-    .courses__block.html {
-
-      h3 {
-        color: $color-html;
+        color: var(--clr);
       }
 
       &:hover {
-        border: 1px solid $color-html;
+        border: 1px solid var(--clr);
         animation: bounce 1s 1 ease-out;
-        filter: drop-shadow(0 0 40px $color-html);
+        filter: drop-shadow(0 0 40px var(--clr));
 
         p > em {
-          color: $color-html;
         }
       }
-    }
-
-    .courses__block.css {
-
-      h3 {
-        color: $color-css;
-      }
-
-      &:hover {
-        border: 1px solid $color-css;
-        animation: bounce 1s 1 ease-out;
-        filter: drop-shadow(0 0 40px $color-css);
-
-        p > em {
-          color: $color-css;
-        }
-      }
-    }
-
-    .courses__block.javascript {
-
-      h3 {
-        color: $color-javascript;
-      }
-
-      &:hover {
-        border: 1px solid $color-javascript;
-        animation: bounce 1s 1 ease-out;
-        filter: drop-shadow(0 0 40px $color-javascript);
-
-        p > em {
-          color: $color-javascript;
-        }
-      }
-    }
-
-    .courses__block.php {
-
-      h3 {
-        color: $color-php;
-      }
-
-      &:hover {
-        border: 1px solid $color-php;
-        animation: bounce 1s 1 ease-out;
-        filter: drop-shadow(0 0 40px $color-php);
-
-        p > em {
-          color: $color-php;
-        }
-      }
-    }
-
-    @media (768px <= width <= 1024px) {
-      grid-template-columns: repeat(4, 1fr);
-    }
-    @media (650px <= width <= 767px) {
-      grid-template-columns: repeat(3, 1fr);
     }
     @media (401px <= width <= 649px) {
       grid-template-columns: repeat(2, 1fr);
     }
-    @media (0px <= width <= 400px) {
-      grid-template-columns: repeat(1, 1fr);
+
+    @media (650px <= width <= 767px) {
+      grid-template-columns: repeat(3, 1fr);
     }
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
   }
 
 }
