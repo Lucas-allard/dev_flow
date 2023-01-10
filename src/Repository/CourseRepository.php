@@ -46,7 +46,6 @@ class CourseRepository extends ServiceEntityRepository
             ->join('c.category', 'ca')
             ->join('c.level', 'l')
             ->orderBy('c.createdAt', 'DESC')
-            ->setMaxResults(16)
             ->getQuery()
             ->getResult();
     }
@@ -63,7 +62,6 @@ class CourseRepository extends ServiceEntityRepository
             ->andWhere('ca.name = :val')
             ->setParameter('val', $category)
             ->orderBy('c.createdAt', 'DESC')
-            ->setMaxResults(16)
             ->getQuery()
             ->getResult();
     }
@@ -82,7 +80,6 @@ class CourseRepository extends ServiceEntityRepository
             ->andWhere('l.name = :val')
             ->setParameter('val', $level)
             ->orderBy('c.createdAt', 'DESC')
-            ->setMaxResults(16)
             ->getQuery()
             ->getResult();
     }
