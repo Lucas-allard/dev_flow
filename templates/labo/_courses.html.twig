@@ -6,17 +6,26 @@
 
     <div class="courses__container">
         {% for course in courses %}
-            <a href="">
-                <div class="courses__block" style="--clr: {{ course.category.color }}">
-                    <h3 style="color: {{ course.category.color }}">
-                        {{ course.category.name }}
-                    </h3>
-                    <p><em style="color: {{ course.level.color }}"> Niveau : {{ course.level.name }}</em></p>
-                    <h4>{{ course.title }}</h4>
-                    <p>{{ course.content| striptags | slice(0, 70) }} ...</p>
-                    <p><em>{{ course.createdAt|date("d-m-Y", "Europe/Paris") }}</em></p>
+            <div class="courses__block" style="--clr: {{ course.category.color }}">
+                <h3 style="color: {{ course.category.color }}">
+                    {{ course.category.name }}
+                </h3>
+                <p><em style="color: {{ course.level.color }}"> Niveau : {{ course.level.name }}</em></p>
+                <p><em> Points : {{ course.points }}</em></p>
+                <h4>{{ course.title }}</h4>
+                <p>{{ course.content| striptags | slice(0, 70) }} ...</p>
+                <p><em>{{ course.createdAt|date("d-m-Y", "Europe/Paris") }}</em></p>
+                <div class="courses__blockLinks">
+                    {% if app.user %}
+                        {% if not app.user.hasCourse(course) %}
+                            <a href={{ path("labo_course_add", {course: course.id}) }}>Ajouter</a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-primary">Ajouter</a>
+                    {% endif %}
+                    <a href={{ path("labo_course_show", {course: course.id}) }}>Consulter</a>
                 </div>
-            </a>
+            </div>
         {% endfor %}
     </div>
     <div class="anim__absolute__right">
