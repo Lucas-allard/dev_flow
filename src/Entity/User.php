@@ -355,6 +355,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->courses;
     }
 
+    public function hasCourse($course): bool
+    {
+        return $this->courses->contains($course);
+    }
+
+
     public function addCourse(Course $course): self
     {
         if (!$this->courses->contains($course)) {
