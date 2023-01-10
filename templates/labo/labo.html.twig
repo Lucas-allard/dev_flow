@@ -13,7 +13,7 @@
             <h2>Les catégories du Labo</h2>
             <div class="categories__container">
                 {% for category in categories %}
-                    <a href="">{{ category.name }}</a>
+                    <a href="{{ path("labo_category", {category: category.name})  }}" style="background-color: {{ category.color }}">{{ category.name }}</a>
                 {% endfor %}
             </div>
         </section>
@@ -22,15 +22,12 @@
             <div class="courses__container">
                 {% for course in courses %}
                     <a href="">
-                        <div
-                                {% if course.category.name == "html" %} class="courses__block html"
-                                {% elseif course.category.name == "css" %} class="courses__block css"
-                                {% elseif course.category.name == "javascript" %} class="courses__block javascript"
-                                {% elseif course.category.name == "php" %} class="courses__block php"
-                                {% endif %}
-                        >
-                            <h3>{{ course.category.name }}</h3>
-                            <p>{{ course.title }}</p>
+                        <div class="courses__block" style="--clr: {{ course.category.color }}">
+                            <h3 style="color: {{ course.category.color }}">
+                                {{ course.category.name }}
+                            </h3>
+                            <p><em style="color: {{ course.level.color }}"> Niveau : {{ course.level.name }}</em></p>
+                            <h4>{{ course.title }}</h4>
                             <p>{{ course.content| striptags | slice(0, 70) }} ...</p>
                             <p><em>{{ course.createdAt|date("d-m-Y", "Europe/Paris") }}</em></p>
                         </div>
