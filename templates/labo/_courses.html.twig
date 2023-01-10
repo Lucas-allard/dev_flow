@@ -1,5 +1,9 @@
 <section class="courses__section">
     <h2>Les derniers cours</h2>
+
+    {{ include('./labo/_search_form.html.twig') }}
+
+
     <div class="courses__container">
         {% for course in courses %}
             <a href="">
