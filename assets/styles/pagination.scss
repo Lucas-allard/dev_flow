@@ -1,0 +1,43 @@
+@import 'assets/styles/variables';
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding: 4rem 0;
+
+  span {
+    padding: 1rem 2rem;
+    color: $color-dark;
+    background-color: $color-white;
+    border: 1px solid $color-dark;
+    font-weight: bolder;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: $color-dark;
+      color: $color-white;
+      border-top: 1px solid $color-white;
+      border-bottom: 1px solid $color-white;
+
+    }
+  }
+
+  span:first-child {
+    border-radius: 20px 0 0 20px;
+  }
+
+  span:last-child {
+    border-radius: 0 20px 20px 0;
+  }
+
+  span:first-child:hover {
+      border-left: 1px solid $color-white;
+
+  }
+
+  span:last-child:hover {
+      border-right: 1px solid $color-white;
+
+  }
+}
