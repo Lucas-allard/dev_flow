@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Le Labo - {{ category }}{% endblock %}
+{% block title %}Le Labo - catégorie{% endblock %}
 
 {% block body %}
 
@@ -10,7 +10,14 @@
 
     <main>
         <section>
-            <h2>{{ category }}</h2>
+            <h2>Les catégories</h2>
+            <div class="categories__container">
+                {% for category in categories %}
+                    <a href="{{ path("labo_by_category", {category: category.name}) }}"
+                       style="background-color: {{ category.color }}">{{ category.name }}</a>
+                {% endfor %}
+                <a href="{{ path("labo_index") }}">Tous</a>
+            </div>
         </section>
 
         {{ include('./labo/_courses.html.twig') }}
