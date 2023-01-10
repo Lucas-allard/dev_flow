@@ -54,7 +54,7 @@ class CourseRepository extends ServiceEntityRepository
     /**
      * @return Course[] Returns an array of Course objects
      */
-    public function findByCategory($category): array
+    public function findByCategory(string $category): array
     {
         return $this->createQueryBuilder('c')
             ->select('c', 'ca', 'l')
@@ -62,6 +62,25 @@ class CourseRepository extends ServiceEntityRepository
             ->join('c.level', 'l')
             ->andWhere('ca.name = :val')
             ->setParameter('val', $category)
+            ->orderBy('c.createdAt', 'DESC')
+            ->setMaxResults(16)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+    /**
+     * @param string $level
+     * @return array
+     */
+    public function findByLevel(string $level): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c', 'ca', 'l')
+            ->join('c.category', 'ca')
+            ->join('c.level', 'l')
+            ->andWhere('l.name = :val')
+            ->setParameter('val', $level)
             ->orderBy('c.createdAt', 'DESC')
             ->setMaxResults(16)
             ->getQuery()
