@@ -28,8 +28,7 @@ class LaboController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    #[
-        Route('/', name: 'index')]
+    #[Route('/', name: 'index')]
     public function index(Request $request): Response
     {
         $categories = $this->categoryRepository->findAll();
@@ -58,7 +57,7 @@ class LaboController extends AbstractController
     public function category(Request $request, string $category): Response
     {
         $categories = $this->categoryRepository->findAll();
-        $levels = $this->levelRepository->findAll();
+
         $coursesData = $this->courseRepository->findByCategory($category);
         $courses = $this->paginator->paginate(
             $coursesData,
@@ -66,9 +65,9 @@ class LaboController extends AbstractController
             16
         );
 
-        return $this->render('labo/labo.html.twig', [
+        return $this->render('labo/labo_by_category.html.twig', [
             "categories" => $categories,
-            "levels" => $levels,
+            "category" => $category,
             "courses" => $courses,
         ]);
     }
@@ -81,9 +80,33 @@ class LaboController extends AbstractController
     #[Route('/levels/{level}', name: 'by_level')]
     public function level(Request $request, string $level): Response
     {
-        $categories = $this->categoryRepository->findAll();
         $levels = $this->levelRepository->findAll();
         $coursesData = $this->courseRepository->findByLevel($level);
+
+        $courses = $this->paginator->paginate(
+            $coursesData,
+            $request->query->getInt('page', 1),
+            16
+        );
+
+        return $this->render('labo/labo_by_level.html.twig', [
+            "levels" => $levels,
+            "courses" => $courses,
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param string $category
+     * @param string $level
+     * @return Response
+     */
+    #[Route('/catégories/{category}/levels/{level}', name: 'by_category_and_level')]
+    public function categoryAndLevel(Request $request, string $category, string $level): Response
+    {
+        $categories = $this->categoryRepository->findAll();
+        $levels = $this->levelRepository->findAll();
+        $coursesData = $this->courseRepository->findByCategoryAndLevel($category, $level);
 
         $courses = $this->paginator->paginate(
             $coursesData,
