@@ -4,39 +4,88 @@ namespace App\Data;
 
 use App\Entity\Category;
 use App\Entity\Course;
+use App\Entity\Level;
 
-class SearchData
+class CourseFilterData
 {
     /**
-     * @var int
+     * @var string|null
      */
-    public $page = 1;
+    private ?string $q = "";
+
+    /** @var Category|null */
+    private ?Category $category = null;
+
+    /** @var Level|null */
+    private ?Level $level   = null;
+
+    /** @var int|null */
+    private ?int $minPoint = null;
+
+    /** @var int|null */
+    private ?int $maxPoint = null;
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function getLevel(): ?Level
+    {
+        return $this->level;
+    }
+
+    public function setLevel(?Level $level): self
+    {
+        $this->level = $level;
+
+        return $this;
+    }
+
+    public function getMinPoint(): ?int
+    {
+        return $this->minPoint;
+    }
+
+    public function setMinPoint(?int $minPoint): self
+    {
+        $this->minPoint = $minPoint;
+
+        return $this;
+    }
+
+    public function getMaxPoint(): ?int
+    {
+        return $this->maxPoint;
+    }
+
+    public function setMaxPoint(?int $maxPoint): self
+    {
+        $this->maxPoint = $maxPoint;
+
+        return $this;
+    }
 
     /**
-     * @var string
+     * @return string|null
      */
-    public $q = '';
+    public function getQ(): ?string
+    {
+        return $this->q;
+    }
 
     /**
-     * @var Category[]
+     * @param string|null $q
      */
-    public $categories = [];
-
-    public $
-
-    /**
-     * @var null|integer
-     */
-    public $minPoint;
-
-    /**
-     * @var null|integer
-     */
-    public $maxPoint;
-
-    /**
-     * @var boolean
-     */
-    public $promo = false;
-
+    public function setQ(?string $q): void
+    {
+        $this->q = $q;
+    }
 }
