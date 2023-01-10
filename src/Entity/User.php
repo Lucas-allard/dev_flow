@@ -60,7 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Challenge::class, mappedBy: 'users')]
     private Collection $challenges;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $points = null;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
