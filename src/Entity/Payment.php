@@ -14,9 +14,6 @@ class Payment
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'payments')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'payments')]
     #[ORM\JoinColumn(nullable: false)]
@@ -32,21 +29,17 @@ class Payment
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
+    #[ORM\ManyToOne(inversedBy: 'payments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $method = null;
+
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
     }
 
     public function getMentorship(): ?Mentorship
@@ -93,6 +86,30 @@ class Payment
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getMethod(): ?string
+    {
+        return $this->method;
+    }
+
+    public function setMethod(string $method): self
+    {
+        $this->method = $method;
 
         return $this;
     }

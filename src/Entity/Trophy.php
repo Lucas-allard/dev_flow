@@ -16,9 +16,6 @@ class Trophy
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'trophies')]
-    private Collection $users;
-
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
@@ -28,41 +25,22 @@ class Trophy
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\OneToOne(mappedBy: 'trophy', cascade: ['persist', 'remove'])]
+    #[ORM\Column(nullable: true)]
+    private ?int $requiredPoint = null;
+
+    #[ORM\OneToOne(inversedBy: 'trophy', cascade: ['persist', 'remove'])]
     private ?Challenge $challenge = null;
+
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'trophies')]
+    private Collection $users;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
     }
-
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
-
-    public function addUser(User $user): self
-    {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): self
-    {
-        $this->users->removeElement($user);
-
-        return $this;
     }
 
     public function getName(): ?string
@@ -101,19 +79,53 @@ class Trophy
         return $this;
     }
 
+    public function getRequiredPoint(): ?int
+    {
+        return $this->requiredPoint;
+    }
+
+    public function setRequiredPoint(?int $requiredPoint): self
+    {
+        $this->requiredPoint = $requiredPoint;
+
+        return $this;
+    }
+
     public function getChallenge(): ?Challenge
     {
         return $this->challenge;
     }
 
-    public function setChallenge(Challenge $challenge): self
+    public function setChallenge(?Challenge $challenge): self
     {
-        // set the owning side of the relation if necessary
-        if ($challenge->getTrophy() !== $this) {
-            $challenge->setTrophy($this);
+        $this->challenge = $challenge;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addTrophy($this);
         }
 
-        $this->challenge = $challenge;
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeTrophy($this);
+        }
 
         return $this;
     }

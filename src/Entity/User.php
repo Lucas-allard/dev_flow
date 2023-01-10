@@ -57,24 +57,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profilColor = null;
 
-    #[ORM\ManyToMany(targetEntity: Level::class, inversedBy: 'users')]
-    private Collection $level;
+    #[ORM\ManyToMany(targetEntity: Challenge::class, mappedBy: 'users')]
+    private Collection $challenges;
+
+    #[ORM\Column]
+    private ?int $points = null;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?Level $level = null;
+
+    #[ORM\ManyToMany(targetEntity: Trophy::class, inversedBy: 'users')]
+    private Collection $trophies;
 
     #[ORM\ManyToMany(targetEntity: Course::class, inversedBy: 'users')]
     private Collection $courses;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Point::class, orphanRemoval: true)]
-    private Collection $points;
-
-    #[ORM\ManyToMany(targetEntity: Challenge::class, mappedBy: 'users')]
-    private Collection $challenges;
-
-    #[ORM\ManyToMany(targetEntity: Trophy::class, mappedBy: 'users')]
-    private Collection $trophies;
-
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Payment::class)]
     private Collection $payments;
-
 
     /**
      * @throws Exception
@@ -84,11 +83,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->createdAt = new \DateTime();
         $this->profilColor = '#' . dechex(random_int(0, 16777215));
         $this->chatMessages = new ArrayCollection();
-        $this->level = new ArrayCollection();
-        $this->courses = new ArrayCollection();
-        $this->points = new ArrayCollection();
         $this->challenges = new ArrayCollection();
         $this->trophies = new ArrayCollection();
+        $this->courses = new ArrayCollection();
         $this->payments = new ArrayCollection();
     }
 
@@ -276,84 +273,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Level>
-     */
-    public function getLevel(): Collection
-    {
-        return $this->level;
-    }
-
-    public function addLevel(Level $level): self
-    {
-        if (!$this->level->contains($level)) {
-            $this->level->add($level);
-        }
-
-        return $this;
-    }
-
-    public function removeLevel(Level $level): self
-    {
-        $this->level->removeElement($level);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Course>
-     */
-    public function getCourses(): Collection
-    {
-        return $this->courses;
-    }
-
-    public function addCourse(Course $course): self
-    {
-        if (!$this->courses->contains($course)) {
-            $this->courses->add($course);
-        }
-
-        return $this;
-    }
-
-    public function removeCourse(Course $course): self
-    {
-        $this->courses->removeElement($course);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Point>
-     */
-    public function getPoints(): Collection
-    {
-        return $this->points;
-    }
-
-    public function addPoint(Point $point): self
-    {
-        if (!$this->points->contains($point)) {
-            $this->points->add($point);
-            $point->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removePoint(Point $point): self
-    {
-        if ($this->points->removeElement($point)) {
-            // set the owning side to null (unless already changed)
-            if ($point->getUser() === $this) {
-                $point->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Challenge>
      */
     public function getChallenges(): Collection
@@ -380,6 +299,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getPoints(): ?int
+    {
+        return $this->points;
+    }
+
+    public function setPoints(int $points): self
+    {
+        $this->points = $points;
+
+        return $this;
+    }
+
+    public function getLevel(): ?Level
+    {
+        return $this->level;
+    }
+
+    public function setLevel(?Level $level): self
+    {
+        $this->level = $level;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Trophy>
      */
@@ -392,7 +335,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->trophies->contains($trophy)) {
             $this->trophies->add($trophy);
-            $trophy->addUser($this);
         }
 
         return $this;
@@ -400,9 +342,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeTrophy(Trophy $trophy): self
     {
-        if ($this->trophies->removeElement($trophy)) {
-            $trophy->removeUser($this);
+        $this->trophies->removeElement($trophy);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Course>
+     */
+    public function getCourses(): Collection
+    {
+        return $this->courses;
+    }
+
+    public function addCourse(Course $course): self
+    {
+        if (!$this->courses->contains($course)) {
+            $this->courses->add($course);
         }
+
+        return $this;
+    }
+
+    public function removeCourse(Course $course): self
+    {
+        $this->courses->removeElement($course);
 
         return $this;
     }

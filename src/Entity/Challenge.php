@@ -28,21 +28,17 @@ class Challenge
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $endDate = null;
 
-    #[ORM\OneToOne(inversedBy: 'challenge', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Point $point = null;
+    #[ORM\OneToOne(mappedBy: 'challenge', cascade: ['persist', 'remove'])]
+    private ?Trophy $trophy = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'challenges')]
     private Collection $users;
-
-    #[ORM\OneToOne(inversedBy: 'challenge', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Trophy $trophy = null;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
@@ -97,14 +93,24 @@ class Challenge
         return $this;
     }
 
-    public function getPoint(): ?Point
+    public function getTrophy(): ?Trophy
     {
-        return $this->point;
+        return $this->trophy;
     }
 
-    public function setPoint(Point $point): self
+    public function setTrophy(?Trophy $trophy): self
     {
-        $this->point = $point;
+        // unset the owning side of the relation if necessary
+        if ($trophy === null && $this->trophy !== null) {
+            $this->trophy->setChallenge(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($trophy !== null && $trophy->getChallenge() !== $this) {
+            $trophy->setChallenge($this);
+        }
+
+        $this->trophy = $trophy;
 
         return $this;
     }
@@ -129,18 +135,6 @@ class Challenge
     public function removeUser(User $user): self
     {
         $this->users->removeElement($user);
-
-        return $this;
-    }
-
-    public function getTrophy(): ?Trophy
-    {
-        return $this->trophy;
-    }
-
-    public function setTrophy(Trophy $trophy): self
-    {
-        $this->trophy = $trophy;
 
         return $this;
     }

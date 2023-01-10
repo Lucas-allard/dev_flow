@@ -22,16 +22,15 @@ class Level
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'level')]
-    private Collection $users;
+    #[ORM\Column]
+    private ?int $requiredPoint = null;
 
-    #[ORM\OneToMany(mappedBy: 'level', targetEntity: Course::class, orphanRemoval: true)]
-    private Collection $courses;
+    #[ORM\OneToMany(mappedBy: 'level', targetEntity: User::class)]
+    private Collection $users;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
-        $this->courses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -63,6 +62,18 @@ class Level
         return $this;
     }
 
+    public function getRequiredPoint(): ?int
+    {
+        return $this->requiredPoint;
+    }
+
+    public function setRequiredPoint(int $requiredPoint): self
+    {
+        $this->requiredPoint = $requiredPoint;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, User>
      */
@@ -75,7 +86,7 @@ class Level
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
-            $user->addLevel($this);
+            $user->setLevel($this);
         }
 
         return $this;
@@ -84,39 +95,13 @@ class Level
     public function removeUser(User $user): self
     {
         if ($this->users->removeElement($user)) {
-            $user->removeLevel($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Course>
-     */
-    public function getCourses(): Collection
-    {
-        return $this->courses;
-    }
-
-    public function addCourse(Course $course): self
-    {
-        if (!$this->courses->contains($course)) {
-            $this->courses->add($course);
-            $course->setLevel($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCourse(Course $course): self
-    {
-        if ($this->courses->removeElement($course)) {
             // set the owning side to null (unless already changed)
-            if ($course->getLevel() === $this) {
-                $course->setLevel(null);
+            if ($user->getLevel() === $this) {
+                $user->setLevel(null);
             }
         }
 
         return $this;
     }
+
 }
