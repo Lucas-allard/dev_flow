@@ -1,0 +1,30 @@
+<div class="searchForm__container">
+        <details>
+                <summary>
+                        Recherche & filtres
+                </summary>
+
+                {{ form_start(searchForm) }}
+
+                <div class="searchForm__row query">
+                        {{ form_row(searchForm.q) }}
+                </div>
+                <div class="searchForm__row">
+                        {{ form_row(searchForm.category) }}
+                        {{ form_row(searchForm.level) }}
+                </div>
+                <div class="searchForm__row">
+                        {{ form_row(searchForm.minPoint) }}
+                        {{ form_row(searchForm.maxPoint) }}
+                </div>
+                <div class="searchForm__row">
+                        {{ form_row(searchForm.submit) }}
+                </div>
+
+
+                {{ form_end(searchForm) }}
+        </details>
+
+</div>
+
+
