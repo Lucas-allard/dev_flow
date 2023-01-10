@@ -4,11 +4,14 @@ namespace App\Controller;
 
 use App\Data\CourseFilterData;
 use App\Data\SearchData;
+use App\Entity\Course;
 use App\Form\SearchCoursesFormType;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use App\Repository\LevelRepository;
+use App\Repository\UserRepository;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -161,5 +164,31 @@ class LaboController extends AbstractController
             "levels" => $levels,
             "courses" => $courses,
         ]);
+    }
+
+    #[Route('/add/{course}', name: 'course_add')]
+    #[isGranted('ROLE_USER')]
+    public function addToUser(Course $course, UserRepository $userRepository): Response
+    {
+        $user = $this->getUser();
+
+//        if ($user->getCourses()->contains($course)) {
+//            $this->addFlash('danger', 'Ce cours est déjà dans votre liste');
+//        } else {
+//            $user->addCourse($course);
+//            $userRepository->save($user);
+//            $this->addFlash('success', 'Le cours a bien été ajouté à votre liste');
+//        }
+
+        $user->addCourse($course);
+
+        $userRepository->save($user, true);
+
+        return $this->redirectToRoute('labo_index');
+    }
+
+    #[Route('/show/{course}', name: 'course_show')]
+    public function show(Course $course, UserRepository $userRepository): Response
+    {
     }
 }
