@@ -77,5 +77,19 @@ body {
     max-width: 1200px;
     margin: 0 auto;
   }
+
+  .alert {
+    padding-top: 100px;
+  }
+
+  .alert.alert-success {
+    background-color: $color-green;
+    color: $color-dark;
+  }
+
+  .alert.alert-danger {
+    background-color: #cc2020;
+    color: $color-white;
+  }
 }
 

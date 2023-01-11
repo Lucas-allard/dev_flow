@@ -30,6 +30,13 @@ class LaboController extends AbstractController
     {
     }
 
+    private function checkToken(Request $request, Course $course): bool
+    {
+        $token = $request->query->get("token");
+
+        return $this->isCsrfTokenValid('course' . $course->getId(), $token);
+    }
+
     /**
      * @param Request $request
      * @return Response
@@ -168,27 +175,28 @@ class LaboController extends AbstractController
 
     #[Route('/add/{course}', name: 'course_add')]
     #[isGranted('ROLE_USER')]
-    public function addToUser(Course $course, UserRepository $userRepository): Response
+    public function addToUser(Request $request,Course $course, UserRepository $userRepository): Response
     {
         $user = $this->getUser();
 
-//        if ($user->getCourses()->contains($course)) {
-//            $this->addFlash('danger', 'Ce cours est déjà dans votre liste');
-//        } else {
-//            $user->addCourse($course);
-//            $userRepository->save($user);
-//            $this->addFlash('success', 'Le cours a bien été ajouté à votre liste');
-//        }
+        if ($this->checkToken($request, $course)) {
+            $user->addCourse($course);
+            $userRepository->save($user, true);
 
-        $user->addCourse($course);
+            $this->addFlash('success', 'Le cours a bien été ajouté à votre liste de cours');
+        } else {
+            $this->addFlash('danger', 'Vous avez déjà ajouté ce cours à votre liste de cours');
+        }
 
-        $userRepository->save($user, true);
 
         return $this->redirectToRoute('labo_index');
     }
 
     #[Route('/show/{course}', name: 'course_show')]
-    public function show(Course $course, UserRepository $userRepository): Response
+    public function show(Course $course): Response
     {
+        return $this->render('labo/course_show.html.twig', [
+            "course" => $course,
+        ]);
     }
 }
