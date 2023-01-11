@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Course;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -131,5 +132,33 @@ class CourseRepository extends ServiceEntityRepository
     public function findByCategoryAndLevel(string $category, string $level)
     {
 
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findPrevious(int $id)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.id < :id')
+            ->setParameter('id', $id)
+            ->orderBy('c.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findNext(int $id)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.id > :id')
+            ->setParameter('id', $id)
+            ->orderBy('c.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

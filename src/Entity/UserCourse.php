@@ -24,6 +24,11 @@ class UserCourse
     #[ORM\JoinColumn(nullable: false)]
     private ?Course $course = null;
 
+    public function __construct()
+    {
+        $this->isRead = false;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
