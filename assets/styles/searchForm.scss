@@ -5,11 +5,9 @@
   margin: 4rem 2rem;
   padding: 4rem;
   background-color: #12121229;
-  box-shadow: rgba(0, 0, 0, 0.15) 0 15px 25px, rgba(0, 0, 0, 0.05) 0 5px 10px;
   backdrop-filter: blur(10px);
-  border-radius: 0.5rem;
-  filter: drop-shadow(0 0 5px $color-white);
-  border: none;
+  box-shadow: 0 0 71px -30px $color-sand;
+  border: 1px solid $color-sand;
 
   summary {
     font-size: 3rem;
