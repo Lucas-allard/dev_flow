@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Le Labo - level{% endblock %}
+
+{% block body %}
+
+    {% block header %}
+        {% include "./header/_header.html.twig" %}
+    {% endblock %}
+
+    <main>
+        <section>
+            <h2>{{ course.title }}</h2>
+
+        </section>
+    </main>
+
+{% endblock %}
