@@ -1,6 +1,6 @@
 <?php
 
-namespace App\EventListener;
+namespace App\Events;
 
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;

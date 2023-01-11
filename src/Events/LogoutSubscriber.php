@@ -1,6 +1,6 @@
 <?php
 
-namespace App\EventListener;
+namespace App\Events;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
