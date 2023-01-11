@@ -1,6 +1,6 @@
 <?php
 
-namespace App\EventListener;
+namespace App\Events;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -10,11 +10,18 @@ use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 
 class IdleTimeoutRequestListener
 {
-    private $tokenStorage;
-    private $logoutUrlGenerator;
-    private $idleTimeout;
+    private TokenStorageInterface $tokenStorage;
+    private LogoutUrlGenerator $logoutUrlGenerator;
+    private int $idleTimeout;
+
     private EntityManagerInterface $entityManager;
 
+    /**
+     * @param TokenStorageInterface $tokenStorage
+     * @param LogoutUrlGenerator $logoutUrlGenerator
+     * @param int $idleTimeout
+     * @param EntityManagerInterface $entityManager
+     */
     public function __construct(
         TokenStorageInterface  $tokenStorage,
         LogoutUrlGenerator     $logoutUrlGenerator,
@@ -29,7 +36,11 @@ class IdleTimeoutRequestListener
         $this->idleTimeout = $idleTimeout;
     }
 
-    public function onKernelRequest(RequestEvent $event,)
+    /**
+     * @param RequestEvent $event
+     * @return void
+     */
+    public function onKernelRequest(RequestEvent $event,): void
     {
         $request = $event->getRequest();
         $session = $request->getSession();
