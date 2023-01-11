@@ -21,6 +21,9 @@
                             <a href="{{ path("labo_course_add", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}"><span><i
                                             class="fa-solid fa-plus"></i></span>Ajouter</a>
                         {% endif %}
+                        {% if app.user.hasCourse(course) and app.user.getUserCourse(course).isIsRead() %}
+                            <span class="courses__isRead"><i class="fa-solid fa-check"></i>Déjà lu</span>
+                        {% endif %}
                     {% else %}
                         <a href="{{ path('app_login') }}" class="btn btn-primary"><span><i
                                         class="fa-solid fa-plus"></i></span>Ajouter</a>
