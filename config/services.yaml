@@ -33,3 +33,8 @@ services:
       - '@security.token_storage'
       - '@security.logout_url_generator'
       - 172800  # Durée d'inactivité avant déconnexion en secondes
+
+  App\Firestore\FirestoreConnexion:
+    arguments:
+      $projectId: '%env(GOOGLE_PROJECT_ID)%'
+      $apiKey: '%env(GOOGLE_API_KEY)%'
