@@ -9,9 +9,27 @@
     {% endblock %}
 
     <main>
-        <section>
-            <h2>{{ course.title }}</h2>
+        <section class="course__section">
+            <article class="course__block">
+                <div class="course__header">
+                    <h1>{{ course.title }}</h1>
+                    <div class="course__headerInfos">
+                        <p>Catégorie: {{ course.category.name }}</p>
+                        <p>Level: {{ course.level.name }}</p>
+                        <p>Posté le {{ course.createdAt|date("d-m-Y", "Europe/Paris") }}</p>
+                    </div>
+                    {% if app.user %}
+                        {% if not app.user.hasCourse(course) %}
+                            <div class="course__headerCTA">
+                                <a href="{{ path("labo_course_add", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">Ajouter</a>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-primary">Ajouter</a>
+                    {% endif %}
+                </div>
 
+            </article>
         </section>
     </main>
 

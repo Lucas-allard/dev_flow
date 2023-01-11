@@ -18,7 +18,7 @@
                 <div class="courses__blockLinks">
                     {% if app.user %}
                         {% if not app.user.hasCourse(course) %}
-                            <a href={{ path("labo_course_add", {course: course.id}) }}>Ajouter</a>
+                            <a href="{{ path("labo_course_add", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">Ajouter</a>
                         {% endif %}
                     {% else %}
                         <a href="{{ path('app_login') }}" class="btn btn-primary">Ajouter</a>
