@@ -64,7 +64,7 @@ class LaboController extends AbstractController
         $courses = $this->paginator->paginate(
             $coursesData,
             $request->query->getInt('page', 1),
-            16
+            15
         );
 
         return $this->render('labo/labo.html.twig', [
@@ -100,7 +100,7 @@ class LaboController extends AbstractController
         $courses = $this->paginator->paginate(
             $coursesData,
             $request->query->getInt('page', 1),
-            16
+            15
         );
 
         return $this->render('labo/labo_by_category.html.twig', [
@@ -137,39 +137,13 @@ class LaboController extends AbstractController
         $courses = $this->paginator->paginate(
             $coursesData,
             $request->query->getInt('page', 1),
-            16
+            15
         );
 
         return $this->render('labo/labo_by_level.html.twig', [
             "levels" => $levels,
             "courses" => $courses,
             "searchForm" => $searchForm->createView(),
-        ]);
-    }
-
-    /**
-     * @param Request $request
-     * @param string $category
-     * @param string $level
-     * @return Response
-     */
-    #[Route('/catégories/{category}/levels/{level}', name: 'by_category_and_level')]
-    public function categoryAndLevel(Request $request, string $category, string $level): Response
-    {
-        $categories = $this->categoryRepository->findAll();
-        $levels = $this->levelRepository->findAll();
-        $coursesData = $this->courseRepository->findByCategoryAndLevel($category, $level);
-
-        $courses = $this->paginator->paginate(
-            $coursesData,
-            $request->query->getInt('page', 1),
-            16
-        );
-
-        return $this->render('labo/labo.html.twig', [
-            "categories" => $categories,
-            "levels" => $levels,
-            "courses" => $courses,
         ]);
     }
 

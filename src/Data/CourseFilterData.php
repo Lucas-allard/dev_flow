@@ -3,7 +3,6 @@
 namespace App\Data;
 
 use App\Entity\Category;
-use App\Entity\Course;
 use App\Entity\Level;
 
 class CourseFilterData

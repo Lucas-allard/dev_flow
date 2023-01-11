@@ -16,7 +16,15 @@ class CourseFixtures extends Fixture implements DependentFixtureInterface
             $faker = Faker\Factory::create('fr_FR');
             $course = new Course();
             $course->setTitle($faker->sentence(6, true));
-            $course->setContent($faker->paragraph(10, true));
+            $content = "";
+            $paragraphCount = 10;
+            for ($i = 0; $i < $paragraphCount; $i++) {
+                $content .= "<p>" . $faker->paragraph(2, true) . "</p>";
+                if ($faker->boolean(33)) {
+                    $content .= '<img src="' . $faker->imageUrl(640,480) . '" alt="' . $faker->sentence(3, true) . '" >';
+                }
+            }
+            $course->setContent($content);
             $course->setPoints($faker->numberBetween(1, 15));
             $course->setCategory($this->getReference('category_' . rand(1, 6)));
             $course->setLevel($this->getReference('level_' . rand(1, 4)));

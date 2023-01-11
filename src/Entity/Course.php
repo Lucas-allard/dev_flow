@@ -16,6 +16,16 @@ class Course
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * @var int|null
+     */
+    private ?int $previousId = null;
+
+    /**
+     * @var int|null
+     */
+    Private ?int $nextId = null;
+
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
@@ -48,6 +58,13 @@ class Course
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setPreviousId(?int $previousId): self
+    {
+        // if a course existant with this id -1 then set previousId to this id
+
+        return $this;
     }
 
     public function getTitle(): ?string
