@@ -3,9 +3,20 @@
 
 .course__section {
   background-color: $color-dark;
+  background-image: url("../../public/images/labo_background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  padding: 2rem;
 
   .course__block {
     padding: 2rem 4rem;
+    border: 1px solid $color-sand;
+    background-color: #12121229;
+    box-shadow: 0 0 71px -30px $color-sand;
+    backdrop-filter: blur(5px);
 
 
     h1 {
@@ -22,6 +33,7 @@
         flex-direction: column;
         justify-content: space-between;
         flex-wrap: wrap;
+        padding-top: 2rem;
 
         p {
           margin-bottom: 1rem;
@@ -38,6 +50,7 @@
       p {
         padding: 1rem 0
       }
+
       img {
         vertical-align: middle;
       }
@@ -69,48 +82,50 @@
       }
     }
 
-
     .course__footer {
       padding: 2rem 0;
+    }
 
-      .course__footerLinks {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        flex-wrap: wrap;
-        padding: 1rem 0;
+    .course__footerLinks,
+    .course__headerLinks {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 2rem 0;
 
-        a {
-          margin: 0.5rem 0;
+      a {
+        margin: 0.5rem 0;
+        color: $color-sand;
+        font-weight: 900;
+        text-decoration: underline;
+        transition: all 0.15s;
+
+        span {
+          margin: 0 0.5rem;
           color: $color-sand;
-          font-weight: 900;
-          text-decoration: underline;
-          transition: all 0.15s;
+        }
+
+        &:hover {
+          color: $color-green;
 
           span {
-            margin: 0 0.5rem;
-            color: $color-sand;
-          }
-
-          &:hover {
             color: $color-green;
-
-            span {
-              color: $color-green;
-            }
           }
         }
 
-        @media (min-width: 460px) {
-          flex-direction: row;
-          justify-content: space-between;
+      }
 
-          a {
-            margin-right: 1rem;
-          }
+      @media (min-width: 460px) {
+        flex-direction: row;
+        justify-content: space-between;
+
+        a {
+          margin-right: 1rem;
         }
       }
     }
+
   }
 
   @media (min-width: 1024px) {
@@ -118,10 +133,7 @@
     .course__block {
       max-width: 900px;
       margin: 0 auto;
-      border: 1px solid $color-sand;
-      background-color: #12121229;
-      box-shadow: 0 0 71px -30px $color-sand;
-      backdrop-filter: blur(10px);
+
 
       h1 {
         text-align: center;
@@ -143,4 +155,5 @@
     }
 
   }
+
 }

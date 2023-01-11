@@ -5,11 +5,14 @@ namespace App\Controller;
 use App\Data\CourseFilterData;
 use App\Data\SearchData;
 use App\Entity\Course;
+use App\Entity\UserCourse;
 use App\Form\SearchCoursesFormType;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use App\Repository\LevelRepository;
+use App\Repository\UserCourseRepository;
 use App\Repository\UserRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -149,13 +152,19 @@ class LaboController extends AbstractController
 
     #[Route('/add/{course}', name: 'course_add')]
     #[isGranted('ROLE_USER')]
-    public function addToUser(Request $request,Course $course, UserRepository $userRepository): Response
+    public function addToUser(
+        Request              $request,
+        Course               $course,
+        UserCourseRepository $userCourseRepository
+    ): Response
     {
         $user = $this->getUser();
 
         if ($this->checkToken($request, $course)) {
-            $user->addCourse($course);
-            $userRepository->save($user, true);
+            $userCourse = new UserCourse();
+            $userCourse->setUser($user);
+            $userCourse->setCourse($course);
+            $userCourseRepository->save($userCourse, true);
 
             $this->addFlash('success', 'Le cours a bien été ajouté à votre liste de cours');
         } else {
@@ -166,11 +175,67 @@ class LaboController extends AbstractController
         return $this->redirectToRoute('labo_index');
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     #[Route('/show/{course}', name: 'course_show')]
     public function show(Course $course): Response
     {
+        $hasPrevious = $this->hasPrevious($course->getId());
+        $hasNext = $this->hasNext($course->getId());
+
         return $this->render('labo/course_show.html.twig', [
             "course" => $course,
+            "hasPrevious" => $hasPrevious,
+            "hasNext" => $hasNext,
         ]);
+    }
+
+    #[Route('/read/{course}', name: 'course_is_read')]
+    #[isGranted('ROLE_USER')]
+    public function isRead(Course $course, UserCourseRepository $userCourseRepository, Request $request): Response
+    {
+        $user = $this->getUser();
+
+        if ($this->checkToken($request, $course)) {
+            // if the user doesn't have the course in his list, we add it
+            if (!$userCourseRepository->findOneBy(['user' => $user, 'course' => $course])) {
+                $userCourse = new UserCourse();
+                $userCourse->setUser($user);
+                $userCourse->setCourse($course);
+            } else {
+                $userCourse = $userCourseRepository->findOneBy(['user' => $user, 'course' => $course]);
+            }
+
+            $userCourse->setIsRead(true);
+
+            $userCourseRepository->save($userCourse, true);
+
+            $this->addFlash('success', 'Vous avez bien marqué ce cours comme lu');
+        } else {
+            $this->addFlash('danger', 'Vous avez déjà marqué ce cours comme lu');
+        }
+
+        return $this->redirectToRoute('labo_index');
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function hasPrevious(int $id): bool
+    {
+        $previous = $this->courseRepository->findPrevious($id);
+
+        return $previous !== null;
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function hasNext(int $id): bool
+    {
+        $next = $this->courseRepository->findNext($id);
+
+        return $next !== null;
     }
 }

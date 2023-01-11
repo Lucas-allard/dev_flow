@@ -13,6 +13,17 @@
             <article class="course__block" style="--clr: {{ course.level.color }}">
                 <div class="course__header">
                     <h1>{{ course.title }}</h1>
+                    <div class="course__headerLinks">
+                        {% if hasPrevious != false %}
+                            <a href={{ path("labo_course_show", {course: course.id - 1}) }}><span><i
+                                            class="fa-solid fa-chevron-left"></i></span>Cours précédent</a>
+                        {% endif %}
+                        <a href={{ path('labo_index') }}>Liste des cours</a>
+                        {% if hasNext != false %}
+                            <a href={{ path("labo_course_show", {course: course.id +1 }) }}>Cours suivant<span><i
+                                            class="fa-solid fa-chevron-right"></i></span></a>
+                        {% endif %}
+                    </div>
                     <div class="course__headerInfos">
                         <p>Catégorie: <span style="color: {{ course.category.color }}">{{ course.category.name }}</span>
                         </p>
@@ -49,14 +60,24 @@
                             <a href="{{ path('app_login') }}" class="btn btn-primary"><span><i
                                             class="fa-solid fa-plus"></i></span>Ajouter</a>
                         {% endif %}
-                        <a href=""><span><i class="fa-solid fa-check"></i></span>J'ai terminé</a>
+                        {% if app.user %}
+                            {% if not app.user.hasCourse(course) or (app.user.hasCourse(course) and not app.user.getUserCourse(course).isIsRead()) %}
+                                <a href="{{ path("labo_course_is_read", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}"><span><i
+                                                class="fa-solid fa-check"></i></span>J'ai terminé</a>
+                            {% endif %}
+                        {% endif %}
+
                     </div>
                     <div class="course__footerLinks">
-                        <a href={{ path("labo_course_show", {course: course.id - 1}) }}><span><i
-                                        class="fa-solid fa-chevron-left"></i></span>Cours précédent</a>
+                        {% if hasPrevious != false %}
+                            <a href={{ path("labo_course_show", {course: course.id - 1}) }}><span><i
+                                            class="fa-solid fa-chevron-left"></i></span>Cours précédent</a>
+                        {% endif %}
                         <a href={{ path('labo_index') }}>Liste des cours</a>
-                        <a href={{ path("labo_course_show", {course: course.id +1 }) }}>Cours suivant<span><i
-                                        class="fa-solid fa-chevron-right"></i></span></a>
+                        {% if hasNext != false %}
+                            <a href={{ path("labo_course_show", {course: course.id +1 }) }}>Cours suivant<span><i
+                                            class="fa-solid fa-chevron-right"></i></span></a>
+                        {% endif %}
                     </div>
                 </div>
             </article>
