@@ -69,11 +69,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Trophy::class, inversedBy: 'users')]
     private Collection $trophies;
 
-    #[ORM\ManyToMany(targetEntity: Course::class, inversedBy: 'users')]
-    private Collection $courses;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Payment::class)]
     private Collection $payments;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserCourse::class)]
+    private Collection $userCourses;
 
     /**
      * @throws Exception
@@ -85,8 +86,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->chatMessages = new ArrayCollection();
         $this->challenges = new ArrayCollection();
         $this->trophies = new ArrayCollection();
-        $this->courses = new ArrayCollection();
         $this->payments = new ArrayCollection();
+        $this->userCourses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -158,6 +159,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
+
     public function getFullName(): ?string
     {
         return $this->fullName;
@@ -348,36 +350,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Course>
-     */
-    public function getCourses(): Collection
-    {
-        return $this->courses;
-    }
-
-    public function hasCourse($course): bool
-    {
-        return $this->courses->contains($course);
-    }
-
-
-    public function addCourse(Course $course): self
-    {
-        if (!$this->courses->contains($course)) {
-            $this->courses->add($course);
-        }
-
-        return $this;
-    }
-
-    public function removeCourse(Course $course): self
-    {
-        $this->courses->removeElement($course);
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Payment>
      */
     public function getPayments(): Collection
@@ -401,6 +373,57 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($payment->getUser() === $this) {
                 $payment->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserCourse>
+     */
+    public function getUserCourses(): Collection
+    {
+        return $this->userCourses;
+    }
+
+    public function getUserCourse(Course $course)
+    {
+        foreach ($this->userCourses as $userCourse) {
+            if ($userCourse->getCourse()->getId() == $course->getId()) {
+                return $userCourse;
+            }
+        }
+        return null;
+    }
+
+    public function hasCourse($course): bool
+    {
+        foreach ($this->userCourses as $userCourse) {
+            if ($userCourse->getCourse()->getId() == $course->getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public function addUserCourse(UserCourse $userCourse): self
+    {
+        if (!$this->userCourses->contains($userCourse)) {
+            $this->userCourses->add($userCourse);
+            $userCourse->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserCourse(UserCourse $userCourse): self
+    {
+        if ($this->userCourses->removeElement($userCourse)) {
+            // set the owning side to null (unless already changed)
+            if ($userCourse->getUser() === $this) {
+                $userCourse->setUser(null);
             }
         }
 
