@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Repository\LevelRepository;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -76,12 +77,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserCourse::class)]
     private Collection $userCourses;
 
+    #[ORM\Column]
+    private ?int $readCount = null;
+
     /**
      * @throws Exception
      */
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+        $this->readCount = 0;
+        $this->points = 0;
         $this->profilColor = '#' . dechex(random_int(0, 16777215));
         $this->chatMessages = new ArrayCollection();
         $this->challenges = new ArrayCollection();
@@ -426,6 +432,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $userCourse->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getReadCount(): ?int
+    {
+        return $this->readCount;
+    }
+
+    public function setReadCount(int $readCount): self
+    {
+        $this->readCount = $readCount;
 
         return $this;
     }

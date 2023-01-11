@@ -24,7 +24,7 @@ class Course
     /**
      * @var int|null
      */
-    Private ?int $nextId = null;
+    private ?int $nextId = null;
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
@@ -50,8 +50,12 @@ class Course
     #[ORM\OneToMany(mappedBy: 'course', targetEntity: UserCourse::class)]
     private Collection $userCourses;
 
+    #[ORM\Column]
+    private ?int $readCount = null;
+
     public function __construct()
     {
+        $this->readCount = 0;
         $this->users = new ArrayCollection();
         $this->userCourses = new ArrayCollection();
     }
@@ -118,7 +122,6 @@ class Course
     }
 
 
-
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
@@ -169,6 +172,18 @@ class Course
                 $userCourse->setCourse(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getReadCount(): ?int
+    {
+        return $this->readCount;
+    }
+
+    public function setReadCount(int $readCount): self
+    {
+        $this->readCount = $readCount;
 
         return $this;
     }
