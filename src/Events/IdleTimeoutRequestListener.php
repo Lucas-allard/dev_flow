@@ -40,7 +40,7 @@ class IdleTimeoutRequestListener
      * @param RequestEvent $event
      * @return void
      */
-    public function onKernelRequest(RequestEvent $event,): void
+    public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
         $session = $request->getSession();
