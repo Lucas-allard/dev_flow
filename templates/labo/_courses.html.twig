@@ -18,12 +18,15 @@
                 <div class="courses__blockLinks">
                     {% if app.user %}
                         {% if not app.user.hasCourse(course) %}
-                            <a href="{{ path("labo_course_add", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">Ajouter</a>
+                            <a href="{{ path("labo_course_add", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}"><span><i
+                                            class="fa-solid fa-plus"></i></span>Ajouter</a>
                         {% endif %}
                     {% else %}
-                        <a href="{{ path('app_login') }}" class="btn btn-primary">Ajouter</a>
+                        <a href="{{ path('app_login') }}" class="btn btn-primary"><span><i
+                                        class="fa-solid fa-plus"></i></span>Ajouter</a>
                     {% endif %}
-                    <a href={{ path("labo_course_show", {course: course.id}) }}>Consulter</a>
+                    <a href={{ path("labo_course_show", {course: course.id}) }}><span><i
+                                    class="fa-solid fa-eye"></i></span>Consulter</a>
                 </div>
             </div>
         {% endfor %}
