@@ -42,18 +42,27 @@
             <div class="courses__block" style="--clr: {{ course.category.color }}">
                 <div class="courses__title">
                     <h3 style="color: {{ course.category.color }}">
-                        {{ course.category.name }}
+                        <a href="{{ path('labo_by_category', {category: course.category.name}) }}">
+                            {{ course.category.name }}
+                        </a>
                     </h3>
                     {% if course.createdAt > "now"|date_modify("-1 month") %}
                         <img src="{{ asset('images/icon_new.png') }}" alt="Nouveau cours" class="courses__new"/>
                     {% endif %}
                 </div>
 
-                <p><em style="color: {{ course.level.color }}"> Niveau : {{ course.level.name }}</em></p>
+                <p>
+                    <em style="color: {{ course.level.color }}">
+                        <a href="{{ path('labo_by_level', {level: course.level.name}) }}">
+                            Niveau : {{ course.level.name }}
+                        </a>
+                    </em>
+                </p>
                 <p><em> Points : {{ course.points }}</em></p>
                 <h4>{{ course.title }}</h4>
                 <p>{{ course.content| striptags | slice(0, 70) }} ...</p>
-                <p><em>{{ course.createdAt|date("d-m-Y", "Europe/Paris") }}</em> - {{ course.readCount }} lectures(s) - {{ course.likeCount }} like(s)</p>
+                <p><em>{{ course.createdAt|date("d-m-Y", "Europe/Paris") }}</em> - {{ course.readCount }} lectures(s)
+                    - {{ course.likeCount }} like(s)</p>
                 </p>
                 <div class="courses__blockLinks">
                     <a href={{ path("labo_course_show", {course: course.id}) }}><span><i

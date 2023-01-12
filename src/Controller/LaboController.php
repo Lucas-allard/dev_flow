@@ -196,7 +196,6 @@ class LaboController extends AbstractController
     /**
      * @param Request $request
      * @param Course $course
-     * @param UserCourseRepository $userCourseRepository
      * @return Response
      */
     #[Route('/add/{course}', name: 'course_add')]
