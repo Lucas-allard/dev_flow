@@ -53,9 +53,13 @@ class Course
     #[ORM\Column]
     private ?int $readCount = null;
 
+    #[ORM\Column]
+    private ?int $likeCount = null;
+
     public function __construct()
     {
         $this->readCount = 0;
+        $this->likeCount = 0;
         $this->users = new ArrayCollection();
         $this->userCourses = new ArrayCollection();
     }
@@ -184,6 +188,18 @@ class Course
     public function setReadCount(int $readCount): self
     {
         $this->readCount = $readCount;
+
+        return $this;
+    }
+
+    public function getLikeCount(): ?int
+    {
+        return $this->likeCount;
+    }
+
+    public function setLikeCount(int $likeCount): self
+    {
+        $this->likeCount = $likeCount;
 
         return $this;
     }

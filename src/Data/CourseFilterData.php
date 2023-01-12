@@ -24,6 +24,11 @@ class CourseFilterData
     /** @var int|null */
     private ?int $maxPoint = null;
 
+    /**
+     * @var bool
+     */
+    private ?bool $isRead = false;
+
     public function getCategory(): ?Category
     {
         return $this->category;
@@ -86,5 +91,21 @@ class CourseFilterData
     public function setQ(?string $q): void
     {
         $this->q = $q;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsRead(): ?bool
+    {
+        return $this->isRead;
+    }
+
+    /**
+     * @param bool $isRead
+     */
+    public function setIsRead(?bool $isRead): void
+    {
+        $this->isRead = $isRead;
     }
 }

@@ -91,6 +91,7 @@ class CourseRepository extends ServiceEntityRepository
             ->select('c', 'ca', 'l')
             ->join('c.category', 'ca')
             ->join('c.level', 'l')
+//            ->join('c.userCourses', 'uc')
             ->orderBy('c.createdAt', 'DESC');
         if ($filterData->getQ()) {
             $query = $query
@@ -117,21 +118,14 @@ class CourseRepository extends ServiceEntityRepository
                 ->andWhere('c.points <= :maxPoint')
                 ->setParameter('maxPoint', $filterData->getMaxPoint());
         }
+//        if ($filterData->getIsRead() !== null) {
+//            $query = $query
+//                ->andWhere('uc.isRead = :isRead')
+//                ->setParameter('isRead', $filterData->getIsRead());
+//        }
+
+        dd($query->getQuery()->getSQL());
         return $query->getQuery()->getResult();
-    }
-
-//    public function findOneBySomeField($value): ?Course
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
-    public function findByCategoryAndLevel(string $category, string $level)
-    {
-
     }
 
     /**

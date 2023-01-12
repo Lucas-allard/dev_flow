@@ -74,7 +74,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Payment::class)]
     private Collection $payments;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserCourse::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserCourse::class, cascade: ['persist'])]
     private Collection $userCourses;
 
     #[ORM\Column]
@@ -435,6 +435,71 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /**
+     * Vérifie si l'utilisateur a déjà lu le cours donné.
+     *
+     * @param Course $course
+     * @return bool
+     */
+    public function hasReadCourse(Course $course): bool
+    {
+        // Itérez à travers les UserCourse de l'utilisateur
+        foreach ($this->userCourses as $userCourse) {
+            // Vérifiez si le cours de l'objet UserCourse correspond au cours donné
+            if ($userCourse->getCourse() === $course && $userCourse->isIsRead()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Course $course
+     * @return void
+     */
+    public function addReadCourse(Course $course): void
+    {
+        $userCourse = new UserCourse();
+        $userCourse->setUser($this);
+        $userCourse->setCourse($course);
+        $userCourse->setIsRead(true);
+        $this->userCourses[] = $userCourse;
+    }
+
+    /**
+     * Vérifie si l'utilisateur a déjà liké le cours donné.
+     *
+     * @param Course $course
+     * @return bool
+     */
+    public function hasLikedCourse(Course $course): bool
+    {
+        // Itérez à travers les UserCourse de l'utilisateur
+        foreach ($this->userCourses as $userCourse) {
+            // Vérifiez si le cours de l'objet UserCourse correspond au cours donné
+            if ($userCourse->getCourse() === $course && $userCourse->isIsLiked()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Course $course
+     * @return void
+     */
+    public function addLikedCourse(Course $course): void
+    {
+        $userCourse = new UserCourse();
+        $userCourse->setUser($this);
+        $userCourse->setCourse($course);
+        $userCourse->setIsRead(true);
+        $this->userCourses[] = $userCourse;
+    }
+
 
     public function getReadCount(): ?int
     {

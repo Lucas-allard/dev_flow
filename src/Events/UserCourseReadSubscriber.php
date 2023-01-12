@@ -2,64 +2,41 @@
 
 namespace App\Events;
 
+use App\Entity\Course;
 use App\Entity\UserCourse;
-use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
-
-class UserCourseReadSubscriber
+class UserCourseReadSubscriber implements EventSubscriber
 {
-    public function postPersist(LifecycleEventArgs $args): void
+    public function getSubscribedEvents(): array
     {
-        $userCourse = $args->getObject();
+        return [
+            Events::postUpdate,
+        ];
+    }
 
-        // if this listener only applies to certain entity types,
-        // add some code to check the entity type as early as possible
-        if (!$userCourse instanceof UserCourse && !$userCourse->isIsRead()) {
-            return;
-        }
-
-        $course = $userCourse->getCourse();
-        $user = $userCourse->getUser();
-        $course->setReadCount($course->getReadCount() + 1);
-        $user->setReadCount($user->getReadCount() + 1);
-        $user->setPoints($user->getPoints() + $course->getPoints());
-
+    public function postUpdate(LifecycleEventArgs $args)
+    {
+        $entity = $args->getObject();
 
         $entityManager = $args->getObjectManager();
 
-        $entityManager->persist($course);
+        if (!$entity instanceof Course) {
+            return;
+        }
+
+        $userCourse = $entityManager->getRepository(UserCourse::class)->findOneBy(['course' => $entity->getId()]);
+
+        $user = $userCourse->getUser();
+        if ($userCourse->isIsRead()) {
+            $points = $entity->getPoints();
+            $user->setPoints($user->getPoints() + $points);
+        }
+
         $entityManager->persist($user);
+
         $entityManager->flush();
-        // ... do something with the Product entity
     }
 }
-//class UserCourseReadSubscriber implements EventSubscriberInterface
-//{
-//
-//    public static function getSubscribedEvents(): array
-//    {
-//        return [
-//            Events::postPersist,
-//            Events::postRemove,
-//            Events::postUpdate,
-//        ];
-//    }
-//
-//    public function postPersist(LifecycleEventArgs $args): void
-//    {
-//        dd($args);
-//        if ($userCourse->isIsRead()) {
-//            $course  = $userCourse->getCourse();
-//            $user    = $userCourse->getUser();
-//            $course->setReadCount($course->getReadCount() + 1);
-//            $user->setReadCount($user->getReadCount() + 1);
-//            $user->setPoints($user->getPoints() + $course->getPoints());
-//
-//            $event->getObjectManager()->persist($course);
-//        }
-//    }
-//
-//}
-

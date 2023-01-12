@@ -33,13 +33,30 @@ section h2 {
 .courses__section {
   position: relative;
 
+  .filter__block {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    a {
+      padding: 0 1rem;
+    }
+
+    a + a {
+      border-left: 3px solid $color-gray;
+    }
+  }
+
   .courses__container {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 10px;
     justify-content: center;
     margin: 0 auto;
-    padding: 50px 1rem 1rem;
+    padding: 1rem 1rem 1rem;
     max-width: 1280px;
 
     .courses__block {
@@ -57,13 +74,27 @@ section h2 {
       padding: 2em 1rem;
       min-height: 100%;
 
-      h3 {
-        padding: 10px;
-        margin-bottom: 0.5rem;
-        font-size: 1.4rem;
-        text-transform: Uppercase;
-        transition: all 0.3s;
-        color: var(--clr);
+
+      .courses__title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+
+        h3 {
+          padding: 10px;
+          margin-bottom: 0.5rem;
+          font-size: 1.4rem;
+          text-transform: Uppercase;
+          transition: all 0.3s;
+          color: var(--clr);
+        }
+
+        img {
+          margin-right: 2rem;
+          padding: 0.5rem 1rem;
+          width: 70px;
+        }
       }
 
       h4 {
@@ -113,12 +144,13 @@ section h2 {
 
         }
 
-        .courses__isRead {
+        .courses__isRead,
+        .courses__isLiked {
           color: $color-dark;
           background-color: $color-sand;
           margin: 0 1rem;
           padding: 0.5rem 1rem;
-
+          font-weight: 900;
           i {
             margin-right: 1rem;
           }
@@ -137,11 +169,25 @@ section h2 {
     @media (min-width: 768px) {
       grid-template-columns: repeat(3, 1fr);
     }
-
   }
-
 }
 
+.topPage__link {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: 4rem;
+
+  a {
+    font-size: 3rem;
+
+    &:hover {
+      color: $color-green;
+    }
+  }
+}
 
 .anim__absolute__left {
   position: absolute;

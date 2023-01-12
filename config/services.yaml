@@ -35,16 +35,7 @@ services:
       - 172800  # Durée d'inactivité avant déconnexion en secondes
   App\Events\UserCourseReadSubscriber:
     tags:
-      - name: 'doctrine.event_listener'
-        # this is the only required option for the lifecycle listener tag
-        event: 'postPersist'
-
-        # listeners can define their priority in case multiple subscribers or listeners are associated
-        # to the same event (default priority = 0; higher numbers = listener is run earlier)
-        priority: 500
-
-        # you can also restrict listeners to a specific Doctrine connection
-        connection: 'default'
+      - { name: doctrine.event_subscriber, event: postUpdate }
 
   App\Firestore\FirestoreConnexion:
     arguments:

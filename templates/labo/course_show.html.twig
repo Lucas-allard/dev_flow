@@ -33,13 +33,26 @@
                     </div>
                     <div class="course__headerCTA">
                         {% if app.user %}
-
                             {% if not app.user.hasCourse(course) %}
                                 <a href="{{ path("labo_course_add", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">
                                     <span><i class="fa-solid fa-plus"></i></span>Ajouter</a>
+                                <a href="{{ path("labo_course_like", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                    J'aime</a>
                             {% endif %}
                             {% if app.user.hasCourse(course) and app.user.getUserCourse(course).isIsRead() %}
                                 <span class="courses__isRead"><i class="fa-solid fa-check"></i>Déjà lu</span>
+                            {% endif %}
+                            {% if app.user.hasCourse(course) and not app.user.getUserCourse(course).isIsLiked() %}
+                                <a href="{{ path("labo_course_like", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                    J'aime</a>
+                            {% elseif app.user.hasCourse(course) and app.user.getUserCourse(course).isIsLiked() %}
+                                <span class="courses__isLiked"><i class="fa-solid fa-check"></i>J'aime</span>
                             {% endif %}
                         {% else %}
                             <a href="{{ path('app_login') }}" class="btn btn-primary"><span><i
@@ -56,11 +69,19 @@
                             {% if not app.user.hasCourse(course) %}
                                 <a href="{{ path("labo_course_add", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">
                                     <span><i class="fa-solid fa-plus"></i></span>Ajouter</a>
+                                <a href="{{ path("labo_course_like", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                    J'aime</a>
                             {% endif %}
                         {% else %}
                             <a href="{{ path('app_login') }}" class="btn btn-primary"><span><i
                                             class="fa-solid fa-plus"></i></span>Ajouter</a>
+                            <a href="{{ path('app_login') }}" class="btn btn-primary"><span><i
+                                            class="fa-solid fa-heart"></i></span>J'aime</a>
                         {% endif %}
+
                         {% if app.user %}
                             {% if not app.user.hasCourse(course) or (app.user.hasCourse(course) and not app.user.getUserCourse(course).isIsRead()) %}
                                 <a href="{{ path("labo_course_is_read", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}"><span><i
@@ -68,6 +89,15 @@
                             {% endif %}
                             {% if app.user.hasCourse(course) and app.user.getUserCourse(course).isIsRead() %}
                                 <span class="courses__isRead"><i class="fa-solid fa-check"></i>Déjà lu</span>
+                            {% endif %}
+                            {% if app.user.hasCourse(course) and not app.user.getUserCourse(course).isIsLiked() %}
+                                <a href="{{ path("labo_course_like", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                    J'aime</a>
+                            {% elseif app.user.hasCourse(course) and app.user.getUserCourse(course).isIsLiked() %}
+                                <span class="courses__isLiked"><i class="fa-solid fa-check"></i>J'aime</span>
                             {% endif %}
                         {% endif %}
 

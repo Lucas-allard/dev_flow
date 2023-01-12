@@ -80,11 +80,13 @@
         }
       }
 
-      .courses__isRead {
+      .courses__isRead,
+      .courses__isLiked {
         color: $color-dark;
         background-color: $color-sand;
         margin: 0 1rem;
         padding: 0.5rem 1rem;
+        font-weight: 900;
 
         i {
           margin-right: 1rem;
@@ -124,7 +126,6 @@
           }
         }
       }
-
 
 
       @media (min-width: 460px) {

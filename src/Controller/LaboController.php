@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Data\CourseFilterData;
-use App\Data\SearchData;
 use App\Entity\Course;
 use App\Entity\UserCourse;
 use App\Form\SearchCoursesFormType;
@@ -29,6 +28,7 @@ class LaboController extends AbstractController
         private CategoryRepository $categoryRepository,
         private LevelRepository    $levelRepository,
         private PaginatorInterface $paginator,
+        private UserCourseRepository $userCourseRepository,
     )
     {
     }
@@ -150,12 +150,60 @@ class LaboController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param string $attr
+     * @param string $order
+     * @return Response
+     */
+    #[Route('/sort?attr={attr}&order={order}', name: 'sort')]
+    public function sortCourse(Request $request, string $attr, string $order): Response
+    {
+//        $order = $order === "ASC" ? "DESC" : "ASC";
+
+        $categories = $this->categoryRepository->findAll();
+
+        $levels = $this->levelRepository->findAll();
+
+        $filterData = new CourseFilterData();
+
+        $searchForm = $this->createForm(SearchCoursesFormType::class, $filterData);
+        $searchForm->handleRequest($request);
+
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+
+            $coursesData = $this->courseRepository->findBySearch($filterData);
+        } else {
+
+            $coursesData = $this->courseRepository->findBy([], [$attr => $order]);
+        }
+
+        $courses = $this->paginator->paginate(
+            $coursesData,
+            $request->query->getInt('page', 1),
+            15
+        );
+
+        return $this->render('labo/labo.html.twig', [
+            "categories" => $categories,
+            "searchForm" => $searchForm->createView(),
+            "levels" => $levels,
+            "courses" => $courses,
+        ]);
+    }
+
+
+    /**
+     * @param Request $request
+     * @param Course $course
+     * @param UserCourseRepository $userCourseRepository
+     * @return Response
+     */
     #[Route('/add/{course}', name: 'course_add')]
     #[isGranted('ROLE_USER')]
     public function addToUser(
         Request              $request,
         Course               $course,
-        UserCourseRepository $userCourseRepository
     ): Response
     {
         $user = $this->getUser();
@@ -164,13 +212,51 @@ class LaboController extends AbstractController
             $userCourse = new UserCourse();
             $userCourse->setUser($user);
             $userCourse->setCourse($course);
-            $userCourseRepository->save($userCourse, true);
+            $this->userCourseRepository->save($userCourse, true);
 
             $this->addFlash('success', 'Le cours a bien été ajouté à votre liste de cours');
         } else {
             $this->addFlash('danger', 'Vous avez déjà ajouté ce cours à votre liste de cours');
         }
 
+
+        return $this->redirectToRoute('labo_index');
+    }
+
+    /**
+     * @param Request $request
+     * @param Course $course
+     * @return Response
+     */
+    #[Route('/like/{course}', name: 'course_like')]
+    #[isGranted('ROLE_USER')]
+    public function likeCourse(
+        Request              $request,
+        Course               $course,
+    ): Response
+    {
+
+        $user = $this->getUser();
+
+        if ($this->checkToken($request, $course)) {
+            if (!$this->userCourseRepository->findOneBy(['user' => $user, 'course' => $course])) {
+                $userCourse = new UserCourse();
+                $userCourse->setUser($user);
+                $userCourse->setCourse($course);
+            } else {
+                $userCourse = $this->userCourseRepository->findOneBy(['user' => $user, 'course' => $course]);
+
+            }
+
+            $userCourse->setIsLiked(true);
+            $course->setLikeCount($course->getLikeCount() + 1);
+
+
+            $this->userCourseRepository->save($userCourse, true);
+            $this->courseRepository->save($course, true);
+
+            $this->addFlash('success', 'Le cours a bien été liké');
+        }
 
         return $this->redirectToRoute('labo_index');
     }
@@ -191,25 +277,35 @@ class LaboController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Course $course
+     * @param Request $request
+     * @return Response
+     */
     #[Route('/read/{course}', name: 'course_is_read')]
     #[isGranted('ROLE_USER')]
-    public function isRead(Course $course, UserCourseRepository $userCourseRepository, Request $request): Response
+    public function isRead(
+        Course               $course,
+        Request              $request
+    ): Response
     {
         $user = $this->getUser();
 
         if ($this->checkToken($request, $course)) {
-            // if the user doesn't have the course in his list, we add it
-            if (!$userCourseRepository->findOneBy(['user' => $user, 'course' => $course])) {
+            if (!$this->userCourseRepository->findOneBy(['user' => $user, 'course' => $course])) {
                 $userCourse = new UserCourse();
                 $userCourse->setUser($user);
                 $userCourse->setCourse($course);
             } else {
-                $userCourse = $userCourseRepository->findOneBy(['user' => $user, 'course' => $course]);
+                $userCourse = $this->userCourseRepository->findOneBy(['user' => $user, 'course' => $course]);
             }
 
             $userCourse->setIsRead(true);
+            $course->setReadCount($course->getReadCount() + 1);
 
-            $userCourseRepository->save($userCourse, true);
+            $this->userCourseRepository->save($userCourse, true);
+            $this->courseRepository->save($course, true);
+
 
             $this->addFlash('success', 'Vous avez bien marqué ce cours comme lu');
         } else {
