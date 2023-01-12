@@ -1,0 +1,124 @@
+<section class="courses__section">
+    <h2>Les derniers cours</h2>
+
+    {{ include('./labo/_search_form.html.twig') }}
+
+    <div class="filter__block">
+        <a href="{{ path('labo_sort', { 'attr': 'createdAt', 'order': app.request.attributes.get('order') == 'ASC' and app.request.attributes.get('attr') == 'createdAt'  ? 'DESC' : 'ASC'}) }}">
+                    <span>
+                        {% if app.request.attributes.get('order') == 'ASC' and app.request.attributes.get('attr') == 'createdAt' %}
+                            <i class="fa-solid fa-arrow-down"> </i>
+                        {% else %}
+                            <i class="fa-solid fa-arrow-up"></i>
+                        {% endif %}
+                    </span>
+            Date
+        </a>
+        <a href="{{ path('labo_sort', {'attr': 'points', 'order': app.request.attributes.get('order') == 'ASC' and app.request.attributes.get('attr') == 'points' ? 'DESC' : 'ASC' }) }}">
+            <span>
+                {% if app.request.attributes.get('order') == 'ASC' and app.request.attributes.get('attr') == 'points' %}
+                    <i class="fa-solid fa-arrow-down"> </i>
+                {% else %}
+                    <i class="fa-solid fa-arrow-up"></i>
+                {% endif %}
+
+            </span>
+            Points
+        </a>
+        <a href="{{ path('labo_sort', { 'attr': 'readCount', 'order': app.request.attributes.get('order') == 'ASC' and  app.request.attributes.get('attr') == 'readCount' ? 'DESC' : 'ASC' }) }}">
+                    <span>
+                      {% if app.request.attributes.get('order') == 'ASC' and app.request.attributes.get('attr') == 'readCount' %}
+                          <i class="fa-solid fa-arrow-down"> </i>
+                        {% else %}
+                          <i class="fa-solid fa-arrow-up"></i>
+                      {% endif %}
+                    </span>
+            Nombre de lectures
+        </a>
+    </div>
+
+    <div class="courses__container">
+        {% for course in courses %}
+            <div class="courses__block" style="--clr: {{ course.category.color }}">
+                <div class="courses__title">
+                    <h3 style="color: {{ course.category.color }}">
+                        <a href="{{ path('labo_by_category', {category: course.category.name}) }}">
+                            {{ course.category.name }}
+                        </a>
+                    </h3>
+                    {% if course.createdAt > "now"|date_modify("-1 month") %}
+                        <img src="{{ asset('images/icon_new.png') }}" alt="Nouveau cours" class="courses__new"/>
+                    {% endif %}
+                </div>
+
+                <p>
+                    <em style="color: {{ course.level.color }}">
+                        <a href="{{ path('labo_by_level', {level: course.level.name}) }}">
+                            Niveau : {{ course.level.name }}
+                        </a>
+                    </em>
+                </p>
+                <p><em> Points : {{ course.points }}</em></p>
+                <h4>{{ course.title }}</h4>
+                <p>{{ course.content| striptags | slice(0, 70) }} ...</p>
+                <p><em>{{ course.createdAt|date("d-m-Y", "Europe/Paris") }}</em> - {{ course.readCount }} lectures(s)
+                    - {{ course.likeCount }} like(s)</p>
+                </p>
+                <div class="courses__blockLinks">
+                    <a href={{ path("labo_course_show", {course: course.id}) }}><span><i
+                                    class="fa-solid fa-eye"></i></span>Consulter</a>
+                    {% if app.user %}
+                        {% if not app.user.hasCourse(course) %}
+                            <a href="{{ path("labo_course_add", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-plus"></i>
+                                </span>
+                                Ajouter</a>
+                            <a href="{{ path("labo_course_like", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                J'aime</a>
+                        {% endif %}
+                        {% if app.user.hasCourse(course) and app.user.getUserCourse(course).isIsRead() %}
+                            <span class="courses__isRead"><i class="fa-solid fa-check"></i>Déjà lu</span>
+                        {% endif %}
+
+                        {% if app.user.hasCourse(course) and not app.user.getUserCourse(course).isIsLiked() %}
+                            <a href="{{ path("labo_course_like", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                J'aime</a>
+                        {% elseif app.user.hasCourse(course) and app.user.getUserCourse(course).isIsLiked() %}
+                            <span class="courses__isLiked"><i class="fa-solid fa-check"></i>J'aime</span>
+                        {% endif %}
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-primary"><span><i
+                                        class="fa-solid fa-plus"></i></span>Ajouter</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="anim__absolute__right">
+        <div class="bowl__design">
+            <div class="shadow"></div>
+            <div class="bowl">
+                <div class="liquid"></div>
+            </div>
+        </div>
+    </div>
+    <div class="anim__absolute__left">
+        <div class="bowl__design">
+            <div class="shadow"></div>
+            <div class="bowl">
+                <div class="liquid"></div>
+            </div>
+        </div>
+    </div>
+    {{ knp_pagination_render(courses) }}
+    <div class="topPage__link">
+        <a href="#top-page"><i class="fa-solid fa-arrow-up"></i></a>
+    </div>
+</section>

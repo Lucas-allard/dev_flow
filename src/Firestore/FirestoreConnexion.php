@@ -7,13 +7,13 @@ use MrShan0\PHPFirestore\FirestoreClient;
 class FirestoreConnexion
 {
     private FirestoreClient $client;
-    private string $projectId ;
+    private string $projectId;
     private string $apiKey;
 
-    public function __construct()
+    public function __construct(string $projectId, string $apiKey)
     {
-        $this->projectId = getenv('GOOGLE_PROJECT_ID');
-        $this->apiKey = getenv('GOOGLE_API_KEY');
+        $this->projectId = $projectId;
+        $this->apiKey = $apiKey;
 
         $this->client = new FirestoreClient($this->projectId, $this->apiKey, [
             'database' => "(default)"

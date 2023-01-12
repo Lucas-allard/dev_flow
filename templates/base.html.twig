@@ -20,6 +20,14 @@
     {% endblock %}
 </head>
 <body>
+
+
+{% include "header/_header.html.twig" %}
+
+{% for type, message in app.flashes %}
+    <div {{ react_component('Notification', {type: type, message: message}) }}></div>
+{% endfor %}
+
 {% block body %}
 
 {% endblock %}

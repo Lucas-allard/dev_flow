@@ -20,16 +20,24 @@ services:
       - '../src/Entity/'
       - '../src/Kernel.php'
 
-  App\EventListener\LoginListener:
+  App\Events\LoginListener:
     tags:
       - { name: kernel.event_listener, event: security.interactive_login }
-  App\EventListener\LogoutSubscriber:
+  App\Events\LogoutSubscriber:
     tags:
       - { name: kernel.event_listener, event: security.logout }
-  App\EventListener\IdleTimeoutRequestListener:
+  App\Events\IdleTimeoutRequestListener:
     tags:
       - { name: kernel.event_listener, event: kernel.request }
     arguments:
       - '@security.token_storage'
       - '@security.logout_url_generator'
       - 172800  # Durée d'inactivité avant déconnexion en secondes
+  App\Events\UserCourseReadSubscriber:
+    tags:
+      - { name: doctrine.event_subscriber, event: postUpdate }
+
+  App\Firestore\FirestoreConnexion:
+    arguments:
+      $projectId: '%env(GOOGLE_PROJECT_ID)%'
+      $apiKey: '%env(GOOGLE_API_KEY)%'

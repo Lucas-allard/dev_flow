@@ -14,7 +14,8 @@ class CategoryFixtures extends Fixture
 
         $category = new Category();
         $category->setName('HTML')
-            ->setDescription('Tous les cours de la catégorie HTML');
+            ->setDescription('Tous les cours de la catégorie HTML')
+            ->setColor("#E74E26");
 
         $manager->persist($category);
         // add reference for later use
@@ -23,7 +24,8 @@ class CategoryFixtures extends Fixture
         $category = new Category();
 
         $category->setName('CSS')
-            ->setDescription('Tous les cours de la catégorie CSS');
+            ->setDescription('Tous les cours de la catégorie CSS')
+            ->setColor("#264DE3");
 
         $manager->persist($category);
         // add reference for later use
@@ -32,7 +34,8 @@ class CategoryFixtures extends Fixture
         $category = new Category();
 
         $category->setName('JavaScript')
-            ->setDescription('Tous les cours de la catégorie JavaScript');
+            ->setDescription('Tous les cours de la catégorie JavaScript')
+            ->setColor("#E2C430");
 
         $manager->persist($category);
 
@@ -41,7 +44,8 @@ class CategoryFixtures extends Fixture
         $category = new Category();
 
         $category->setName('PHP')
-            ->setDescription('Tous les cours de la catégorie PHP');
+            ->setDescription('Tous les cours de la catégorie PHP')
+            ->setColor("#858EB8");
 
         $manager->persist($category);
 
@@ -50,7 +54,8 @@ class CategoryFixtures extends Fixture
         $category = new Category();
 
         $category->setName('Symfony')
-            ->setDescription('Tous les cours de la catégorie Symfony');
+            ->setDescription('Tous les cours de la catégorie Symfony')
+            ->setColor("#F7F7F7");
 
         $manager->persist($category);
 
@@ -59,7 +64,8 @@ class CategoryFixtures extends Fixture
         $category = new Category();
 
         $category->setName('React')
-            ->setDescription('Tous les cours de la catégorie React');
+            ->setDescription('Tous les cours de la catégorie React')
+            ->setColor("#00D1F7");
 
         $manager->persist($category);
 

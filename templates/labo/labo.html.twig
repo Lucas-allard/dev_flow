@@ -3,57 +3,31 @@
 {% block title %}Le Labo{% endblock %}
 
 {% block body %}
-
-    {% block header %}
-        {% include "./header/_header.html.twig" %}
-    {% endblock %}
-
     <main>
-        <section class="categories__section">
-            <h2>Les catégories du Labo</h2>
+        <section id="top-page">
+            <h2>Les catégories</h2>
             <div class="categories__container">
                 {% for category in categories %}
-                    <a href="">{{ category.name }}</a>
+                    <a href="{{ path("labo_by_category", {category: category.name}) }}"
+                       style="background-color: {{ category.color }}">{{ category.name }}</a>
                 {% endfor %}
+                <a href="{{ path("labo_index") }}">Tous</a>
             </div>
         </section>
-        <section class="courses__section">
-            <h2>Les derniers cours du Labo</h2>
-            <div class="courses__container">
-                {% for course in courses %}
-                    <a href="">
-                        <div
-                                {% if course.category.name == "html" %} class="courses__block html"
-                                {% elseif course.category.name == "css" %} class="courses__block css"
-                                {% elseif course.category.name == "javascript" %} class="courses__block javascript"
-                                {% elseif course.category.name == "php" %} class="courses__block php"
-                                {% endif %}
-                        >
-                            <h3>{{ course.category.name }}</h3>
-                            <p>{{ course.title }}</p>
-                            <p>{{ course.content| striptags | slice(0, 70) }} ...</p>
-                            <p><em>{{ course.createdAt|date("d-m-Y", "Europe/Paris") }}</em></p>
-                        </div>
-                    </a>
+        <section>
+            <h2>Les levels</h2>
+            <div class="levels__container">
+                {% for level in levels %}
+                    <a href="{{ path("labo_by_level", {level: level.name}) }}"
+                       style="background-color: {{ level.color }}">{{ level.name }}</a>
                 {% endfor %}
-            </div>
-            <div class="anim__absolute__right">
-                <div class="bowl__design">
-                    <div class="shadow"></div>
-                    <div class="bowl">
-                        <div class="liquid"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="anim__absolute__left">
-                <div class="bowl__design">
-                    <div class="shadow"></div>
-                    <div class="bowl">
-                        <div class="liquid"></div>
-                    </div>
-                </div>
+                <a href="{{ path("labo_index") }}">Tous</a>
             </div>
         </section>
+
+
+        {{ include('./labo/_courses.html.twig') }}
+
     </main>
 
 {% endblock %}

@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
+use App\Entity\UserCourse;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -30,9 +31,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             $user->setCreatedAt($faker->dateTimeBetween('-6 months'));
             $user->setGoogleId($faker->uuid);
             $user->setPoints($faker->numberBetween(1, 1000));
-            for ($t = 0; $t < rand(1, 10); $t++) {
-                $user->addCourse($this->getReference('course_' . $faker->numberBetween(0, 39)));
-            }
+
 
             if ($user->getPoints() <= 99) {
                 $user->setLevel($this->getReference('level_1'));

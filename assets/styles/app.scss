@@ -3,6 +3,7 @@
 
 html {
   font-size: 62.5%;
+  scroll-behavior: smooth;
 }
 
 * {
@@ -46,7 +47,7 @@ body {
   }
 
   p {
-    --min: 1rem; // minimum value
+    --min: 1.4rem; // minimum value
     --val: 2.5vw; // preferred value = 2.5% viewport width
     --max: 1.125em; // maximum value
   }
@@ -76,6 +77,20 @@ body {
   .container {
     max-width: 1200px;
     margin: 0 auto;
+  }
+
+  .alert {
+    padding-top: 100px;
+  }
+
+  .alert.alert-success {
+    background-color: $color-green;
+    color: $color-dark;
+  }
+
+  .alert.alert-danger {
+    background-color: #cc2020;
+    color: $color-white;
   }
 }
 

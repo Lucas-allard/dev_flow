@@ -1,0 +1,129 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Le Labo - level{% endblock %}
+
+{% block body %}
+
+    {% block header %}
+        {% include "./header/_header.html.twig" %}
+    {% endblock %}
+
+    <main>
+        <section class="course__section">
+            <article class="course__block" style="--clr: {{ course.level.color }}">
+                <div class="course__header">
+                    <h1>{{ course.title }}</h1>
+                    <div class="course__headerLinks">
+                        {% if hasPrevious != false %}
+                            <a href={{ path("labo_course_show", {course: course.id - 1}) }}><span><i
+                                            class="fa-solid fa-chevron-left"></i></span>Cours précédent</a>
+                        {% endif %}
+                        <a href={{ path('labo_index') }}>Liste des cours</a>
+                        {% if hasNext != false %}
+                            <a href={{ path("labo_course_show", {course: course.id +1 }) }}>Cours suivant<span><i
+                                            class="fa-solid fa-chevron-right"></i></span></a>
+                        {% endif %}
+                    </div>
+                    <div class="course__headerInfos">
+                        <p>
+                            <a href="{{ path('labo_by_category', {category : course.category.name}) }}">
+                                Catégorie:
+                                <span style="color: {{ course.category.color }}">{{ course.category.name }}</span>
+                            </a>
+                        </p>
+                        <p>
+                            <a href="{{ path('labo_by_level', {level : course.level.name}) }}">
+                                Level: <span style="color: {{ course.level.color }}">{{ course.level.name }}</span>
+                            </a>
+                        </p>
+                        <p>Points: <span>{{ course.points }}</span></p>
+                        <p>Posté le <span>{{ course.createdAt|date("d-m-Y", "Europe/Paris") }}</span></p>
+                    </div>
+                    <div class="course__headerCTA">
+                        {% if app.user %}
+                            {% if not app.user.hasCourse(course) %}
+                                <a href="{{ path("labo_course_add", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">
+                                    <span><i class="fa-solid fa-plus"></i></span>Ajouter</a>
+                                <a href="{{ path("labo_course_like", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                    J'aime</a>
+                            {% endif %}
+                            {% if app.user.hasCourse(course) and app.user.getUserCourse(course).isIsRead() %}
+                                <span class="courses__isRead"><i class="fa-solid fa-check"></i>Déjà lu</span>
+                            {% endif %}
+                            {% if app.user.hasCourse(course) and not app.user.getUserCourse(course).isIsLiked() %}
+                                <a href="{{ path("labo_course_like", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                    J'aime</a>
+                            {% elseif app.user.hasCourse(course) and app.user.getUserCourse(course).isIsLiked() %}
+                                <span class="courses__isLiked"><i class="fa-solid fa-check"></i>J'aime</span>
+                            {% endif %}
+                        {% else %}
+                            <a href="{{ path('app_login') }}" class="btn btn-primary"><span><i
+                                            class="fa-solid fa-plus"></i></span>Ajouter</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="course__content">
+                    {{ course.content|raw }}
+                </div>
+                <div class="course__footer">
+                    <div class="course__footerCTA">
+                        {% if app.user %}
+                            {% if not app.user.hasCourse(course) %}
+                                <a href="{{ path("labo_course_add", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">
+                                    <span><i class="fa-solid fa-plus"></i></span>Ajouter</a>
+                                <a href="{{ path("labo_course_like", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                    J'aime</a>
+                            {% endif %}
+                        {% else %}
+                            <a href="{{ path('app_login') }}" class="btn btn-primary"><span><i
+                                            class="fa-solid fa-plus"></i></span>Ajouter</a>
+                            <a href="{{ path('app_login') }}" class="btn btn-primary"><span><i
+                                            class="fa-solid fa-heart"></i></span>J'aime</a>
+                        {% endif %}
+
+                        {% if app.user %}
+                            {% if not app.user.hasCourse(course) or (app.user.hasCourse(course) and not app.user.getUserCourse(course).isIsRead()) %}
+                                <a href="{{ path("labo_course_is_read", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}"><span><i
+                                                class="fa-solid fa-check"></i></span>J'ai terminé</a>
+                            {% endif %}
+                            {% if app.user.hasCourse(course) and app.user.getUserCourse(course).isIsRead() %}
+                                <span class="courses__isRead"><i class="fa-solid fa-check"></i>Déjà lu</span>
+                            {% endif %}
+                            {% if app.user.hasCourse(course) and not app.user.getUserCourse(course).isIsLiked() %}
+                                <a href="{{ path("labo_course_like", {course: course.id, }) }}?token={{ csrf_token('course' ~ course.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                    J'aime</a>
+                            {% elseif app.user.hasCourse(course) and app.user.getUserCourse(course).isIsLiked() %}
+                                <span class="courses__isLiked"><i class="fa-solid fa-check"></i>J'aime</span>
+                            {% endif %}
+                        {% endif %}
+
+                    </div>
+                    <div class="course__footerLinks">
+                        {% if hasPrevious != false %}
+                            <a href={{ path("labo_course_show", {course: course.id - 1}) }}><span><i
+                                            class="fa-solid fa-chevron-left"></i></span>Cours précédent</a>
+                        {% endif %}
+                        <a href={{ path('labo_index') }}>Liste des cours</a>
+                        {% if hasNext != false %}
+                            <a href={{ path("labo_course_show", {course: course.id +1 }) }}>Cours suivant<span><i
+                                            class="fa-solid fa-chevron-right"></i></span></a>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+        </section>
+    </main>
+
+{% endblock %}

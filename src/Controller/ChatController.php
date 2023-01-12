@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\ChatMessage;
 use App\Repository\ChatMessageRepository;
 use App\Repository\UserRepository;
 use App\Services\AddMessageToCurrentUser;
 use App\Services\FirestoreService;
+use DateTime;
 use MrShan0\PHPFirestore\Fields\FirestoreTimestamp;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -73,14 +75,12 @@ class ChatController extends AbstractController
     /**
      * @param Request $request
      * @param ChatMessageRepository $chatMessageRepository
-     * @param AddMessageToCurrentUser $service
      * @return Response
      */
     #[Route('/chat/send', name: 'chat_send')]
     public function send(
         Request                 $request,
         ChatMessageRepository   $chatMessageRepository,
-        AddMessageToCurrentUser $service,
     ): Response
     {
         $messageData = json_decode($request->getContent(), true);
@@ -93,7 +93,14 @@ class ChatController extends AbstractController
 
         if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('chat', $messageData["user"]["csrfToken"]))) {
 
-            $service->sendMessage($messageData, $this->userRepository, $chatMessageRepository);
+            $user = $this->userRepository->find(["id" => $messageData["id"]]);
+
+            $chatMessage = new ChatMessage();
+            $chatMessage->setContent($messageData["message"])
+                ->setUser($user)
+                ->setTimestamp(new DateTime());
+
+            $chatMessageRepository->save($chatMessage, true);
 
             $this->firestoreService->addDocument(
                 $messageData["collection"],

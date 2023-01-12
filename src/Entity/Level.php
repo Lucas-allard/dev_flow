@@ -28,9 +28,16 @@ class Level
     #[ORM\OneToMany(mappedBy: 'level', targetEntity: User::class)]
     private Collection $users;
 
+    #[ORM\Column(length: 255)]
+    private ?string $color = null;
+
+    #[ORM\OneToMany(mappedBy: 'level', targetEntity: Course::class)]
+    private Collection $courses;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->courses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -98,6 +105,48 @@ class Level
             // set the owning side to null (unless already changed)
             if ($user->getLevel() === $this) {
                 $user->setLevel(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(string $color): self
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Course>
+     */
+    public function getCourses(): Collection
+    {
+        return $this->courses;
+    }
+
+    public function addCourse(Course $course): self
+    {
+        if (!$this->courses->contains($course)) {
+            $this->courses->add($course);
+            $course->setLevel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCourse(Course $course): self
+    {
+        if ($this->courses->removeElement($course)) {
+            // set the owning side to null (unless already changed)
+            if ($course->getLevel() === $this) {
+                $course->setLevel(null);
             }
         }
 

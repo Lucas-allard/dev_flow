@@ -1,0 +1,116 @@
+@import 'assets/styles/variables';
+
+.searchForm__container {
+
+  margin: 4rem 2rem;
+  padding: 4rem;
+  background-color: #12121229;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 71px -30px $color-sand;
+  border: 1px solid $color-sand;
+
+  summary {
+    font-size: 3rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: $color-white;
+    font-family: $font-secondary;
+  }
+
+  form {
+    padding: 2rem 0 0;
+
+    .searchForm__row {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+
+      div {
+        width: 100%;
+        margin: 0 1rem;
+
+        label, input, select {
+          margin-right: 1rem;
+          padding: 0.5rem 1rem
+        }
+
+        input {
+          width: 90%;
+        }
+
+        button[type="submit"] {
+          background-color: $color-dark;
+          border: 1px solid #29292D;
+          color: $color-white;
+          padding: 1em 2rem;
+          cursor: pointer;
+          transition: all 0.3s ease-in-out;
+
+          &:hover {
+            background-color: $color-white;
+            color: $color-dark;
+          }
+        }
+      }
+
+      &:nth-child(2) div,
+      &:nth-child(3) div:first-child {
+        margin: 1rem 0;
+      }
+    }
+
+    .searchForm__row:not(:last-child) {
+      margin-bottom: 2rem;
+    }
+
+    .searchForm__row.query {
+      div {
+        width: 100%;
+
+        input {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  @media (min-width: 500px) {
+    form .searchForm__row {
+      flex-direction: row;
+
+      &:nth-child(2) {
+        flex-direction: column;
+      }
+
+      input {
+        width: 100%;
+      }
+
+      label {
+        margin-right: 1rem;
+        padding: 0.5rem 1rem
+      }
+    }
+  }
+
+  @media (min-width: 768px) {
+    width: 40%;
+    margin: 4rem auto;
+  }
+
+  @media (min-width: 1200px) {
+    form .searchForm__row:nth-child(2) {
+      flex-direction: row;
+
+      div {
+        margin: 0;
+        label {
+          margin: 0 1rem 0;
+          padding: 0;
+        }
+      }
+    }
+  }
+}
+
