@@ -33,8 +33,11 @@ class UserChallengeCompleteSubscriber implements EventSubscriber
 
         $user = $userChallenge->getUser();
         if ($userChallenge->isIsComplete()) {
-            $points = $entity->getPoints();
-            $user->setPoints($user->getPoints() + $points);
+            $user->setPoints($user->getPoints() +  $entity->getPoints());
+
+            if ($entity->getTrophy()) {
+                $user->addTrophy($entity->getTrophy());
+            }
         }
 
         $entityManager->persist($user);

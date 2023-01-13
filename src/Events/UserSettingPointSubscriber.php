@@ -5,6 +5,7 @@ namespace App\Events;
 use App\Entity\Challenge;
 use App\Entity\Course;
 use App\Entity\Level;
+use App\Entity\Trophy;
 use App\Entity\User;
 use App\Entity\UserChallenge;
 use App\Entity\UserCourse;
@@ -12,6 +13,7 @@ use App\Repository\LevelRepository;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Persistence\ObjectManager;
 
 class UserSettingPointSubscriber implements EventSubscriber
 {
@@ -32,24 +34,45 @@ class UserSettingPointSubscriber implements EventSubscriber
             return;
         }
 
-        if (!$entity->getPoints()) {
-            $entity->setLevel($entityManager->getRepository(Level::class)->findOneBy(['name' => 'Débutant']));
+        $points = $entity->getPoints();
+
+        $this->updateLevel($entity, $points, $entityManager);
+
+        $this->updateTrophies($entity, $points, $entityManager);
+    }
+
+    private function updateLevel(User $user, int $points, ObjectManager $manager)
+    {
+
+        $levelRepository = $manager->getRepository(Level::class);
+
+        $levels = $levelRepository->findAll();
+
+        foreach ($levels as $level) {
+            if ($points >= $level->getRequiredPoint()) {
+                $user->setLevel($level);
+                $manager->persist($user);
+            }
         }
 
-        if ($entity->getPoints() > 249) {
-            $entity->setLevel($entityManager->getRepository(Level::class)->findOneBy(['name' => 'Intermédiaire']));
+        $manager->flush();
+    }
+
+    private function updateTrophies(User $user, int $points, ObjectManager $manager)
+    {
+
+
+        $trophyRepository = $manager->getRepository(Trophy::class);
+
+        $trophies = $trophyRepository->findAll();
+
+        foreach ($trophies as $trophy) {
+            if ($points >= $trophy->getRequiredPoint()) {
+                $user->addTrophy($trophy);
+                $manager->persist($user);
+            }
         }
 
-        if ($entity->getPoints() > 499) {
-            $entity->setLevel($entityManager->getRepository(Level::class)->findOneBy(['name' => 'Avancé']));
-        }
-
-        if ($entity->getPoints() > 999) {
-            $entity->setLevel($entityManager->getRepository(Level::class)->findOneBy(['name' => 'Expert']));
-        }
-
-        $entityManager->persist($entity);
-
-        $entityManager->flush();
+        $manager->flush();
     }
 }
