@@ -34,6 +34,9 @@ class Trophy
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'trophies')]
     private Collection $users;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $img = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -126,6 +129,18 @@ class Trophy
         if ($this->users->removeElement($user)) {
             $user->removeTrophy($this);
         }
+
+        return $this;
+    }
+
+    public function getImg(): ?string
+    {
+        return $this->img;
+    }
+
+    public function setImg(string $img): self
+    {
+        $this->img = $img;
 
         return $this;
     }

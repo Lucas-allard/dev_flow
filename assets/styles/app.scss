@@ -109,5 +109,44 @@ body {
       border-left: 3px solid $color-gray;
     }
   }
+
+  .links__block {
+    display: flex;
+    padding-top: 1rem;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 900;
+
+    a {
+      margin: 0 1rem;
+      padding: 0.5rem 1rem;
+      color: $color-sand;
+      background-color: $color-green;
+      transition: all 0.15s;
+
+      span {
+        margin-right: 0.5rem;
+      }
+
+      &:hover {
+        background-color: $color-sand;
+        color: $color-dark;
+      }
+
+    }
+
+    .links__block__isRead,
+    .links__block__isLiked {
+      color: $color-dark;
+      background-color: $color-sand;
+      margin: 0 1rem;
+      padding: 0.5rem 1rem;
+      font-weight: 900;
+      i {
+        margin-right: 1rem;
+      }
+    }
+  }
+
 }
 

@@ -18,7 +18,6 @@
                         <img src="{{ asset('images/icon_new.png') }}" alt="Nouveau cours" class="courses__new"/>
                     {% endif %}
                 </div>
-
                 <p>
                     <em style="color: {{ course.level.color }}">
                         <a href="{{ path('labo_by_level', {level: course.level.name}) }}">
@@ -26,13 +25,14 @@
                         </a>
                     </em>
                 </p>
+
                 <p><em> Points : {{ course.points }}</em></p>
                 <h4>{{ course.title }}</h4>
                 <p>{{ course.content| striptags | slice(0, 70) }} ...</p>
                 <p><em>{{ course.createdAt|date("d-m-Y", "Europe/Paris") }}</em> - {{ course.readCount }} lectures(s)
                     - {{ course.likeCount }} like(s)</p>
                 </p>
-                <div class="courses__blockLinks">
+                <div class="links__block">
                     <a href={{ path("labo_course_show", {course: course.id}) }}><span><i
                                     class="fa-solid fa-eye"></i></span>Consulter</a>
                     {% if app.user %}
@@ -49,7 +49,7 @@
                                 J'aime</a>
                         {% endif %}
                         {% if app.user.hasCourse(course) and app.user.getUserCourse(course).isIsRead() %}
-                            <span class="courses__isRead"><i class="fa-solid fa-check"></i>Déjà lu</span>
+                            <span class="links__block__isRead"><i class="fa-solid fa-check"></i>Déjà lu</span>
                         {% endif %}
 
                         {% if app.user.hasCourse(course) and not app.user.getUserCourse(course).isIsLiked() %}
@@ -59,7 +59,7 @@
                                 </span>
                                 J'aime</a>
                         {% elseif app.user.hasCourse(course) and app.user.getUserCourse(course).isIsLiked() %}
-                            <span class="courses__isLiked"><i class="fa-solid fa-check"></i>J'aime</span>
+                            <span class="links__block__isLiked"><i class="fa-solid fa-check"></i>J'aime</span>
                         {% endif %}
                     {% else %}
                         <a href="{{ path('app_login') }}"><span><i

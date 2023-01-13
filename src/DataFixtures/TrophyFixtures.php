@@ -28,6 +28,7 @@ class TrophyFixtures extends Fixture
         for ($t = 10; $t < 15; $t++) {
             $trophy = new Trophy();
             $trophy->setName('Trophy ' . $t);
+            $trophy->setImg('images/rank_low/rank_low_'. $t+ 1  .'.png');
             $trophy->setDescription('Description of trophy ' . $t);
             $trophy->setDate($faker->dateTimeBetween('-6 months'));
             $manager->persist($trophy);

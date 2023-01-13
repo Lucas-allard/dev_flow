@@ -40,23 +40,83 @@
       width: 98%;
       height: 98%;
       z-index: 2;
-      padding: 4rem;
+      padding: 2em 1rem;
 
-
-      .challenges__headerImage {
+      .challenges__infos {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-bottom: 1rem;
+        padding: 0 0 1rem 1rem;
+        min-height: 70px;
 
-        img:first-child {
-          width: 50px;
-          height: auto;
+        h3 {
+          margin-bottom: 0.5rem;
+          font-size: 1.4rem;
+          text-transform: Uppercase;
         }
 
-        img:nth-child(2) {
+
+        img {
           width: 70px;
         }
+      }
+
+
+      p {
+        padding: 5px 10px;
+        margin-bottom: 0.5rem;
+        font-size: 1.4rem;
+      }
+
+      p > em {
+        margin-top: 1rem;
+        font-weight: 900;
+      }
+
+
+
+      .challenges__awards {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .challenges__trophy {
+          display: flex;
+          align-items: center;
+          font-weight: 900;
+
+          span {
+            width: 50px;
+            margin-left: 1rem;
+          }
+        }
+      }
+
+      .challenges__title {
+        padding-bottom: 1rem;
+
+        h3 {
+          font-weight: 500;
+          font-size: 1.6rem;
+          margin: 2rem 0;
+          padding: 0 10px
+        }
+      }
+
+      .challenges__dates {
+        padding-bottom: 1rem;
+
+        .challenges__start {
+          color: $color-green
+        }
+
+        .challenges__end {
+          color: red;
+        }
+      }
+
+      .challenges__blockLinks {
+
       }
     }
 
@@ -102,9 +162,9 @@
   @media (min-width: 768px) {
     grid-template-columns: repeat(3, 1fr);
   }
-  @media (min-width: 1024px) {
-    grid-template-columns: repeat(4, 1fr);
-  }
+  //@media (min-width: 1024px) {
+  //  grid-template-columns: repeat(4, 1fr);
+  //}
 }
 
 

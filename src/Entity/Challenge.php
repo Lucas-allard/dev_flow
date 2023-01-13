@@ -31,9 +31,6 @@ class Challenge
     #[ORM\OneToOne(mappedBy: 'challenge', cascade: ['persist', 'remove'])]
     private ?Trophy $trophy = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'challenges')]
-    private Collection $users;
-
     #[ORM\ManyToOne(inversedBy: 'challenges')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Category $category = null;
@@ -45,9 +42,16 @@ class Challenge
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
+    #[ORM\Column]
+    private ?int $points = null;
+
+    #[ORM\OneToMany(mappedBy: 'challenge', targetEntity: UserChallenge::class)]
+    private Collection $userChallenges;
+
     public function __construct()
     {
-        $this->users = new ArrayCollection();
+        $this->points = 0;
+        $this->userChallenges = new ArrayCollection();
     }
 
 
@@ -126,30 +130,6 @@ class Challenge
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
-
-    public function addUser(User $user): self
-    {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): self
-    {
-        $this->users->removeElement($user);
-
-        return $this;
-    }
-
     public function getCategory(): ?Category
     {
         return $this->category;
@@ -182,6 +162,48 @@ class Challenge
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getPoints(): ?int
+    {
+        return $this->points;
+    }
+
+    public function setPoints(int $points): self
+    {
+        $this->points = $points;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserChallenge>
+     */
+    public function getUserChallenges(): Collection
+    {
+        return $this->userChallenges;
+    }
+
+    public function addUserChallenge(UserChallenge $userChallenge): self
+    {
+        if (!$this->userChallenges->contains($userChallenge)) {
+            $this->userChallenges->add($userChallenge);
+            $userChallenge->setChallenge($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserChallenge(UserChallenge $userChallenge): self
+    {
+        if ($this->userChallenges->removeElement($userChallenge)) {
+            // set the owning side to null (unless already changed)
+            if ($userChallenge->getChallenge() === $this) {
+                $userChallenge->setChallenge(null);
+            }
+        }
 
         return $this;
     }

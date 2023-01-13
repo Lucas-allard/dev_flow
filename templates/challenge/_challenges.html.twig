@@ -1,5 +1,3 @@
-
-
 <section class="challenges__section">
     <h2>Les derniers challenges</h2>
 
@@ -10,30 +8,69 @@
             <article class="challenges__block__background"
                      style="--clr: {{ challenge.category.color }}; --i: {{ loop.index }} ">
                 <div class="challenges__block">
-                    <div class="challenges__headerImage">
-
-                        {% if challenge.endDate < date('now') %}
-                            <p>Terminé depuis le : <span> {{ challenge.endDate|date("d-m-Y", "Europe/Paris") }}</span></p>
-
-                        {% else %}
-                            <p>Date de début : <span> {{ challenge.startDate|date("d-m-Y", "Europe/Paris") }}</span></p>
-                        {% endif %}
+                    <div class="challenges__infos">
+                        <h3 style="color: {{ challenge.category.color }}">
+                            <a
+                                    {#                                    href="{{ path('challenge_by_category', {category: course.category.name}) }}" #}
+                            >
+                                {{ challenge.category.name }}
+                            </a>
+                        </h3>
                         {% if challenge.startDate < "now"|date_modify("-1 month") %}
                             <img src="{{ asset('images/icon_new.png') }}" alt="Nouveau cours" class="courses__new"/>
                         {% endif %}
                     </div>
-                    <div class="challenges__title">
-                        <h3>{{ challenge.name }}</h3>
-                        {% if challenge.createdAt > "now"|date_modify("-1 month") %}
+                    <p>
+                        <em style="color: {{ challenge.level.color }}">
+                            <a
+                                    {#                                    href="{{ path('labo_by_level', {level: course.level.name}) }}" #}
+                            >
+                                Niveau : {{ challenge.level.name }}
+                            </a>
+                        </em>
+                    </p>
+                    <div class="challenges__awards">
+                        {% if challenge.points %}
+                            <p><em>Points : <span>{{ challenge.points }}</span></em></p>
+                        {% endif %}
 
+                        {% if challenge.trophy is not null %}
+                            <p class="challenges__trophy">Trophée :
+                                <span>
+                                <img src="{{ asset( challenge.trophy.img ) }}" alt="{{ challenge.trophy.name }}">
+                            </span>
+                            </p>
                         {% endif %}
                     </div>
-                    <div class="challenges__blockContent">
-                        <div class="challenge_description">
-                            {{ challenge.description| striptags | slice(0, 70) }} ...
-                        </div>
+                    <div class="challenges__title">
+                        <h3>
+                            <a
+{#                                    href="{{ path('challenge_show', {id: challenge.id}) }}"#}
+                            >
+                                {{ challenge.name }}
+                            </a>
+                        </h3>
                     </div>
-                    <div class="challenges__blockLinks">
+                    <p>
+                        {{ challenge.description| striptags | slice(0, 70) }} ...
+                    </p>
+                    <p><em>{{ challenge.createdAt|date("d-m-Y", "Europe/Paris") }}</em>
+{#                        - {{ course.readCount }} lectures(s)#}
+{#                        - {{ course.likeCount }} like(s)#}
+                    </p>
+                    </p>
+                    <div class="challenges__dates">
+                        {% if challenge.endDate < date('now') %}
+                            <p class="challenges__end">Terminé depuis le :
+                                <span> {{ challenge.endDate|date("d-m-Y", "Europe/Paris") }}</span>
+                            </p>
+
+                        {% else %}
+                            <p class="challenges__start">Date de début :
+                                <span> {{ challenge.startDate|date("d-m-Y", "Europe/Paris") }}</span></p>
+                        {% endif %}
+                    </div>
+                    <div class="links__block">
                         <a
                                 {#                            href="{{ path('challenge_show', {id: challenge.id}) }}" #}
                         >

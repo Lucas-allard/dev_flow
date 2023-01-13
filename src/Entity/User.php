@@ -58,9 +58,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profilColor = null;
 
-    #[ORM\ManyToMany(targetEntity: Challenge::class, mappedBy: 'users')]
-    private Collection $challenges;
-
     #[ORM\Column(nullable: true)]
     private ?int $points = null;
 
@@ -80,6 +77,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $readCount = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserChallenge::class)]
+    private Collection $userChallenges;
+
     /**
      * @throws Exception
      */
@@ -90,10 +90,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->points = 0;
         $this->profilColor = '#' . dechex(random_int(0, 16777215));
         $this->chatMessages = new ArrayCollection();
-        $this->challenges = new ArrayCollection();
         $this->trophies = new ArrayCollection();
         $this->payments = new ArrayCollection();
         $this->userCourses = new ArrayCollection();
+        $this->userChallenges = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -276,33 +276,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfilColor(?string $profilColor): self
     {
         $this->profilColor = $profilColor;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Challenge>
-     */
-    public function getChallenges(): Collection
-    {
-        return $this->challenges;
-    }
-
-    public function addChallenge(Challenge $challenge): self
-    {
-        if (!$this->challenges->contains($challenge)) {
-            $this->challenges->add($challenge);
-            $challenge->addUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeChallenge(Challenge $challenge): self
-    {
-        if ($this->challenges->removeElement($challenge)) {
-            $challenge->removeUser($this);
-        }
 
         return $this;
     }
@@ -509,6 +482,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setReadCount(int $readCount): self
     {
         $this->readCount = $readCount;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserChallenge>
+     */
+    public function getUserChallenges(): Collection
+    {
+        return $this->userChallenges;
+    }
+
+    public function addUserChallenge(UserChallenge $userChallenge): self
+    {
+        if (!$this->userChallenges->contains($userChallenge)) {
+            $this->userChallenges->add($userChallenge);
+            $userChallenge->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserChallenge(UserChallenge $userChallenge): self
+    {
+        if ($this->userChallenges->removeElement($userChallenge)) {
+            // set the owning side to null (unless already changed)
+            if ($userChallenge->getUser() === $this) {
+                $userChallenge->setUser(null);
+            }
+        }
 
         return $this;
     }

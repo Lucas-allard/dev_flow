@@ -63,6 +63,8 @@ section h2 {
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1rem;
+        min-height: 70px;
+
 
         h3 {
           padding: 10px;
@@ -102,43 +104,6 @@ section h2 {
 
       }
 
-      .courses__blockLinks {
-        display: flex;
-        padding-top: 1rem;
-        align-items: center;
-        font-size: 1.2rem;
-        font-weight: 900;
-
-        a {
-          margin: 0 1rem;
-          padding: 0.5rem 1rem;
-          color: $color-sand;
-          background-color: $color-green;
-          transition: all 0.15s;
-
-          span {
-            margin-right: 0.5rem;
-          }
-
-          &:hover {
-            background-color: $color-sand;
-            color: $color-dark;
-          }
-
-        }
-
-        .courses__isRead,
-        .courses__isLiked {
-          color: $color-dark;
-          background-color: $color-sand;
-          margin: 0 1rem;
-          padding: 0.5rem 1rem;
-          font-weight: 900;
-          i {
-            margin-right: 1rem;
-          }
-        }
-      }
     }
 
     @media (width <= 649px) {
