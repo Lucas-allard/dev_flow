@@ -1,0 +1,10 @@
+<section id="top-page">
+    <h2>Les catégories</h2>
+    <div class="categories__container">
+        {% for category in categories %}
+            <a href="{{ path("labo_by_category", {category: category.name}) }}"
+               style="background-color: {{ category.color }}">{{ category.name }}</a>
+        {% endfor %}
+        <a href="{{ path("labo_index") }}">Tous</a>
+    </div>
+</section>
