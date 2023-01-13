@@ -13,9 +13,7 @@
                 <div class="challenges__block">
                     <div class="challenges__infos">
                         <h3 style="color: {{ challenge.category.color }}">
-                            <a
-                                    {#                                    href="{{ path('challenge_by_category', {category: course.category.name}) }}" #}
-                            >
+                            <a href="{{ path('challenge_by_category', {category: challenge.category.name}) }}">
                                 {{ challenge.category.name }}
                             </a>
                         </h3>
@@ -25,9 +23,7 @@
                     </div>
                     <p>
                         <em style="color: {{ challenge.level.color }}">
-                            <a
-                                    {#                                    href="{{ path('labo_by_level', {level: course.level.name}) }}" #}
-                            >
+                            <a href="{{ path('challenge_by_level', {level: challenge.level.name}) }}">
                                 Niveau : {{ challenge.level.name }}
                             </a>
                         </em>
@@ -47,9 +43,7 @@
                     </div>
                     <div class="challenges__title">
                         <h3>
-                            <a
-{#                                    href="{{ path('challenge_show', {id: challenge.id}) }}"#}
-                            >
+                            <a href="{{ path('challenge_show', {challenge: challenge.id}) }}">
                                 {{ challenge.name }}
                             </a>
                         </h3>
@@ -74,15 +68,34 @@
                         {% endif %}
                     </div>
                     <div class="links__block">
-                        <a
-                                {#                            href="{{ path('challenge_show', {id: challenge.id}) }}" #}
-                        >
+                        <a href="{{ path('challenge_show', {challenge: challenge.id}) }}">
                         <span>
                             <i class="fa-solid fa-eye"></i>
                         </span>
                             Consulter
                         </a>
                         {% if app.user %}
+                            {% if not app.user.hasChallenge(challenge) %}
+                                <a href="{{ path("challenge_add", {challenge: challenge.id, }) }}?token={{ csrf_token('challenge' ~ challenge.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-plus"></i>
+                                </span>
+                                    Ajouter</a>
+                                <a href="{{ path("challenge_like", {challenge: challenge.id, }) }}?token={{ csrf_token('challenge' ~ challenge.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                    J'aime</a>
+                            {% endif %}
+                            {% if app.user.hasChallenge(challenge) and not app.user.getUserChallenge(challenge).isIsLiked() %}
+                                <a href="{{ path("challenge_like", {challenge: challenge.id, }) }}?token={{ csrf_token('challenge' ~ challenge.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                    J'aime</a>
+                            {% elseif app.user.hasChallenge(challenge) and app.user.getUserChallenge(challenge).isIsLiked() %}
+                                <span class="links__block__isLiked"><i class="fa-solid fa-check"></i>J'aime</span>
+                            {% endif %}
                         {% else %}
                             <a href="{{ path('app_login') }}">
                             <span>

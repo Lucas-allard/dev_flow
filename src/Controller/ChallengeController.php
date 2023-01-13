@@ -126,6 +126,44 @@ class ChallengeController extends ManagerController
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param Course $course
+     * @return Response
+     */
+    #[Route('/like/{challenge}', name: 'like')]
+    #[isGranted('ROLE_USER')]
+    public function likeChallenge(
+        Request $request,
+        Challenge  $challenge,
+    ): Response
+    {
+
+        $user = $this->getUser();
+
+        if ($this->checkToken($request, 'challenge', $challenge)) {
+            if (!$this->userChallengeRepository->findOneBy(['user' => $user, 'challenge' => $challenge])) {
+                $userChallenge = new userChallenge();
+                $userChallenge->setUser($user);
+                $userChallenge->setChallenge($challenge);
+            } else {
+                $userChallenge = $this->userChallengeRepository->findOneBy(['user' => $user, 'challenge' => $challenge]);
+
+            }
+
+            $userChallenge->setIsLiked(true);
+            $challenge->setLikeCount($challenge->getLikeCount() + 1);
+
+
+            $this->userChallengeRepository->save($userChallenge, true);
+            $this->challengeRepository->save($challenge, true);
+
+            $this->addFlash('success', 'Le challenge a bien été liké');
+        }
+
+        return $this->redirectToRoute('challenge_index');
+    }
+
     #[Route('/add/{challenge}', name: 'add')]
     #[isGranted('ROLE_USER')]
     public function addToUser(
