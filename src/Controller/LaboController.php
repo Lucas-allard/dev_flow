@@ -10,35 +10,27 @@ use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use App\Repository\LevelRepository;
 use App\Repository\UserCourseRepository;
-use App\Repository\UserRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/labo', name: 'labo_')]
-class LaboController extends AbstractController
+class LaboController extends ManagerController
 {
 
     public function __construct(
-        private CourseRepository   $courseRepository,
-        private CategoryRepository $categoryRepository,
-        private LevelRepository    $levelRepository,
-        private PaginatorInterface $paginator,
+        private CourseRepository     $courseRepository,
+        private CategoryRepository   $categoryRepository,
+        private LevelRepository      $levelRepository,
+        private PaginatorInterface   $paginator,
         private UserCourseRepository $userCourseRepository,
     )
     {
     }
 
-    private function checkToken(Request $request, Course $course): bool
-    {
-        $token = $request->query->get("token");
-
-        return $this->isCsrfTokenValid('course' . $course->getId(), $token);
-    }
 
     /**
      * @param Request $request
@@ -202,13 +194,13 @@ class LaboController extends AbstractController
     #[Route('/add/{course}', name: 'course_add')]
     #[isGranted('ROLE_USER')]
     public function addToUser(
-        Request              $request,
-        Course               $course,
+        Request $request,
+        Course  $course,
     ): Response
     {
         $user = $this->getUser();
 
-        if ($this->checkToken($request, $course)) {
+        if ($this->checkToken($request, 'course', $course)) {
             $userCourse = new UserCourse();
             $userCourse->setUser($user);
             $userCourse->setCourse($course);
@@ -231,14 +223,14 @@ class LaboController extends AbstractController
     #[Route('/like/{course}', name: 'course_like')]
     #[isGranted('ROLE_USER')]
     public function likeCourse(
-        Request              $request,
-        Course               $course,
+        Request $request,
+        Course  $course,
     ): Response
     {
 
         $user = $this->getUser();
 
-        if ($this->checkToken($request, $course)) {
+        if ($this->checkToken($request, 'course', $course)) {
             if (!$this->userCourseRepository->findOneBy(['user' => $user, 'course' => $course])) {
                 $userCourse = new UserCourse();
                 $userCourse->setUser($user);
@@ -285,13 +277,13 @@ class LaboController extends AbstractController
     #[Route('/read/{course}', name: 'course_is_read')]
     #[isGranted('ROLE_USER')]
     public function isRead(
-        Course               $course,
-        Request              $request
+        Course  $course,
+        Request $request
     ): Response
     {
         $user = $this->getUser();
 
-        if ($this->checkToken($request, $course)) {
+        if ($this->checkToken($request, 'course', $course)) {
             if (!$this->userCourseRepository->findOneBy(['user' => $user, 'course' => $course])) {
                 $userCourse = new UserCourse();
                 $userCourse->setUser($user);

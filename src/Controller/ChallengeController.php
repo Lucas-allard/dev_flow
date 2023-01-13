@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Challenge;
 use App\Repository\CategoryRepository;
 use App\Repository\ChallengeRepository;
 use App\Repository\LevelRepository;
@@ -12,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/challenge', name: 'challenge_')]
-class ChallengeController extends AbstractController
+    class ChallengeController extends ManagerController
 {
     public function __construct(
         private CategoryRepository $categoryRepository,
@@ -35,10 +36,10 @@ class ChallengeController extends AbstractController
         $challenges = $this->paginator->paginate(
             $challengeData,
             $request->query->getInt('page', 1),
-            16
+            15
         );
 
-        return $this->render('challenge/challenge.html.twig', [
+        return $this->render('challenge/challenges.html.twig', [
             'categories' => $categories,
             'levels' => $levels,
             'challenges' => $challenges,
