@@ -80,8 +80,8 @@ class ChatController extends AbstractController
      */
     #[Route('/send', name: 'send')]
     public function send(
-        Request                 $request,
-        ChatMessageRepository   $chatMessageRepository,
+        Request               $request,
+        ChatMessageRepository $chatMessageRepository,
     ): Response
     {
         $messageData = json_decode($request->getContent(), true);
@@ -101,8 +101,10 @@ class ChatController extends AbstractController
                 ->setUser($user)
                 ->setTimestamp(new DateTime());
 
-            $chatMessageRepository->save($chatMessage, true);
+            $user->setPoints($user->getPoints() + 2);
 
+            $chatMessageRepository->save($chatMessage, true);
+            $this->userRepository->save($user, true);
             $this->firestoreService->addDocument(
                 $messageData["collection"],
                 [
