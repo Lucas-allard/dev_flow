@@ -494,6 +494,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->userChallenges;
     }
 
+    public function getUserChallenge(Challenge $challenge)
+    {
+        foreach ($this->userChallenges as $userChallenge) {
+            if ($userChallenge->getChallenge()->getId() == $challenge->getId()) {
+                return $userChallenge;
+            }
+        }
+        return null;
+    }
+
+    public function hasChallenge($challenge): bool
+    {
+        foreach ($this->userChallenges as $userChallenge) {
+            if ($userChallenge->getChallenge()->getId() == $challenge->getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public function addUserChallenge(UserChallenge $userChallenge): self
     {
         if (!$this->userChallenges->contains($userChallenge)) {

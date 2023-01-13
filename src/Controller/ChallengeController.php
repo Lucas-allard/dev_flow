@@ -3,12 +3,17 @@
 namespace App\Controller;
 
 use App\Data\FilterData;
+use App\Entity\Challenge;
+use App\Entity\UserChallenge;
 use App\Form\SearchCoursesFormType;
 use App\Repository\CategoryRepository;
 use App\Repository\ChallengeRepository;
 use App\Repository\LevelRepository;
+use App\Repository\UserChallengeRepository;
 use App\Services\SearchFormHandler;
+use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,6 +25,7 @@ class ChallengeController extends ManagerController
         private CategoryRepository  $categoryRepository,
         private LevelRepository     $levelRepository,
         private ChallengeRepository $challengeRepository,
+        private UserChallengeRepository $userChallengeRepository,
         private PaginatorInterface  $paginator,
     )
     {
@@ -120,6 +126,44 @@ class ChallengeController extends ManagerController
         ]);
     }
 
+    #[Route('/add/{challenge}', name: 'add')]
+    #[isGranted('ROLE_USER')]
+    public function addToUser(
+        Request $request,
+        Challenge  $challenge,
+    ): Response
+    {
+        $user = $this->getUser();
+
+        if ($this->checkToken($request, 'challenge', $challenge)) {
+            $userChallenge = new UserChallenge();
+            $userChallenge->setUser($user);
+            $userChallenge->setChallenge($challenge);
+            $this->userChallengeRepository->save($userChallenge, true);
+
+            $this->addFlash('success', 'Le challenge a bien été ajouté à votre liste de challenge');
+        } else {
+            $this->addFlash('danger', 'Vous avez déjà ajouté ce challenge à votre liste de challenge');
+        }
+
+        return $this->redirectToRoute('labo_index');
+    }
 
 
+    /**
+     * @throws NonUniqueResultException
+     * @throws NonUniqueResultException
+     */
+    #[Route('/show/{challenge}', name: 'show')]
+    public function show(Challenge $challenge): Response
+    {
+        $hasPrevious = $this->hasPrevious($challenge->getId());
+        $hasNext = $this->hasNext($challenge->getId());
+
+        return $this->render('challenge/challenge_show.html.twig', [
+            "course" => $challenge,
+            "hasPrevious" => $hasPrevious,
+            "hasNext" => $hasNext,
+        ]);
+    }
 }
