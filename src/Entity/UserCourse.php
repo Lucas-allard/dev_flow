@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserCourseRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-class UserCourse
+class UserCourse implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

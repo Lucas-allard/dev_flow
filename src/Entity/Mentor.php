@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MentorRepository::class)]
-class Mentor
+class Mentor  implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

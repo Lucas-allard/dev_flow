@@ -7,7 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ChatMessageRepository::class)]
-class ChatMessage
+class ChatMessage  implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

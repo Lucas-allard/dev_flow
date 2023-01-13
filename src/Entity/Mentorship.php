@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MentorshipRepository::class)]
-class Mentorship
+class Mentorship  implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
