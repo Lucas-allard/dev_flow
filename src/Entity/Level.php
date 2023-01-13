@@ -34,10 +34,15 @@ class Level
     #[ORM\OneToMany(mappedBy: 'level', targetEntity: Course::class)]
     private Collection $courses;
 
+    #[ORM\OneToMany(mappedBy: 'level', targetEntity: Challenge::class)]
+    private Collection $challenges;
+
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->courses = new ArrayCollection();
+        $this->challenges = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -153,4 +158,33 @@ class Level
         return $this;
     }
 
+    /**
+     * @return Collection<int, Challenge>
+     */
+    public function getChallenges(): Collection
+    {
+        return $this->challenges;
+    }
+
+    public function addChallenge(Challenge $challenge): self
+    {
+        if (!$this->challenges->contains($challenge)) {
+            $this->challenges->add($challenge);
+            $challenge->setLevel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChallenge(Challenge $challenge): self
+    {
+        if ($this->challenges->removeElement($challenge)) {
+            // set the owning side to null (unless already changed)
+            if ($challenge->getLevel() === $this) {
+                $challenge->setLevel(null);
+            }
+        }
+
+        return $this;
+    }
 }

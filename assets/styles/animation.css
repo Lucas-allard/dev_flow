@@ -17,7 +17,6 @@
 }
 
 
-
 @keyframes bounce {
     from {
         top: -86px;
@@ -91,3 +90,15 @@
     }
 }
 
+@keyframes moveUp {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    50% {
+        transform: translate3d(15px, -15px, 15px);
+        box-shadow: -9px 8px 15px 4px #050506;
+    }
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
+}

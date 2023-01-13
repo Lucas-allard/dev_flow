@@ -39,28 +39,15 @@ class ChallengeRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Challenge[] Returns an array of Challenge objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Challenge
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findChallenges()
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c', 'ca', 'l', 't')
+            ->join('c.category', 'ca')
+            ->join('c.level', 'l')
+            ->leftJoin('c.trophy', 't')
+            ->orderBy('c.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

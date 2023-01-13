@@ -33,23 +33,6 @@ section h2 {
 .courses__section {
   position: relative;
 
-  .filter__block {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem 0;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-
-    a {
-      padding: 0 1rem;
-    }
-
-    a + a {
-      border-left: 3px solid $color-gray;
-    }
-  }
-
   .courses__container {
     display: grid;
     grid-template-columns: repeat(1, 1fr);

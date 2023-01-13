@@ -145,6 +145,7 @@ class LaboController extends AbstractController
 
         return $this->render('labo/labo_by_level.html.twig', [
             "levels" => $levels,
+            "level" => $level,
             "courses" => $courses,
             "searchForm" => $searchForm->createView(),
         ]);

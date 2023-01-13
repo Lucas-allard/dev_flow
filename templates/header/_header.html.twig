@@ -12,25 +12,25 @@
             </label>
             <div class="navlinks-container">
                 <a href="{{ path("home") }}" aria-current="page">
-                    <span></span>
+                    <span {% if app.request.attributes.get('_route') == "home" %}class="active"{% endif %}></span>
                     <span>Accueil</span>
                 </a>
                 <a href="{{ path("labo_index") }}">
-                    <span></span>
+                    <span {% if 'labo' in app.request.attributes.get('_route') %}class="active"{% endif %}></span>
                     <span>Le Labo</span>
                 </a>
-                <a href="#">
-                    <span></span>
-                    <span>Articles</span>
+                <a href="{{ path('challenge_index') }}">
+                    <span {% if 'challenge' in app.request.attributes.get('_route') %}class="active"{% endif %}></span>
+                    <span>Challenges</span>
                 </a>
-                <a href="{{ path("chat") }}">
-                    <span></span>
+                <a href="{{ path("chat_index") }}">
+                    <span {% if 'chat' in app.request.attributes.get('_route') %}class="active"{% endif %}></span>
                     <span>Chat</span>
                 </a>
                 {% if app.user %}
                     <a href="#">
                         <span></span>
-                        <span>Profil</span>
+                        <span  {% if 'profile' in app.request.attributes.get('_route') %}class="active"{% endif %}>Profil</span>
                     </a>
                 {% endif %}
             </div>

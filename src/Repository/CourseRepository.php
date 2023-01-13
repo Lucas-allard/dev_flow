@@ -85,6 +85,10 @@ class CourseRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @param $filterData
+     * @return array
+     */
     public function findBySearch($filterData): array
     {
         $query = $this->createQueryBuilder('c')

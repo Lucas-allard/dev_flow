@@ -18,6 +18,7 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 
+#[Route('/chat', name: 'chat_')]
 class ChatController extends AbstractController
 {
 
@@ -37,7 +38,7 @@ class ChatController extends AbstractController
     /**
      * @return Response
      */
-    #[Route('/chat', name: 'chat')]
+    #[Route('/', name: 'index')]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
@@ -77,7 +78,7 @@ class ChatController extends AbstractController
      * @param ChatMessageRepository $chatMessageRepository
      * @return Response
      */
-    #[Route('/chat/send', name: 'chat_send')]
+    #[Route('/send', name: 'send')]
     public function send(
         Request                 $request,
         ChatMessageRepository   $chatMessageRepository,
@@ -121,7 +122,7 @@ class ChatController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    #[Route('/chat/send/private', name: 'chat_send_private')]
+    #[Route('/send/private', name: 'send_private')]
     public function sendPrivateMessage(
         Request $request,
     ): Response

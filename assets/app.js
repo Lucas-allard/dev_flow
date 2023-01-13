@@ -14,6 +14,7 @@ import './styles/labo.scss';
 import './styles/pagination.scss';
 import './styles/searchForm.scss';
 import './styles/course.scss';
+import './styles/challenges.scss';
 
 
 

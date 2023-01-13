@@ -1,15 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Le Labo - level{% endblock %}
+{% block title %}Le Labo - {{ course.title }}{% endblock %}
 
 {% block body %}
-
-    {% block header %}
-        {% include "./header/_header.html.twig" %}
-    {% endblock %}
-
-    <main>
-        <section class="course__section">
+    <section class="course__section">
             <article class="course__block" style="--clr: {{ course.level.color }}">
                 <div class="course__header">
                     <h1>{{ course.title }}</h1>
@@ -124,6 +118,5 @@
                 </div>
             </article>
         </section>
-    </main>
 
 {% endblock %}

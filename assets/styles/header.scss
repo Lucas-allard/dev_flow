@@ -83,6 +83,12 @@ $transition_link: 0.14s ease-in-out;
     border-radius: $border-radius-xl
   }
 
+  .navlinks-container a span:first-child.active {
+    width: 100%;
+    background-color: $color-green;
+    border-radius: $border-radius-xl
+  }
+
   .navlinks-container a.disabled-link {
     pointer-events: none;
     opacity: 0.6;
@@ -162,7 +168,7 @@ $transition_link: 0.14s ease-in-out;
 
       input:checked ~ label .burger:nth-child(1) {
         opacity: 1;
-        transform: rotate(45deg) translate(2px, 0) ;
+        transform: rotate(45deg) translate(2px, 0);
       }
 
       input:checked ~ label .burger:nth-child(2) {

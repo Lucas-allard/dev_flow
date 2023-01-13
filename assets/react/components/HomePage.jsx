@@ -6,11 +6,12 @@ import GamificationSection from "../layout/GamificationSection";
 
 export const HomePage = () => {
     return (
-            <main>
-                <HeroSection/>
-                <LastContentSection/>
-                {/*<GamificationSection/>*/}
-            </main>
+        <>
+            <HeroSection/>
+            <LastContentSection/>
+            {/*<GamificationSection/>*/}
+        </>
+
     );
 }
 

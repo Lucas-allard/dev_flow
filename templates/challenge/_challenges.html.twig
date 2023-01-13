@@ -1,0 +1,79 @@
+
+
+<section class="challenges__section">
+    <h2>Les derniers challenges</h2>
+
+    {{ include('./commons/_filter.html.twig') }}
+
+    <div class="challenges__container">
+        {% for challenge in challenges %}
+            <article class="challenges__block__background"
+                     style="--clr: {{ challenge.category.color }}; --i: {{ loop.index }} ">
+                <div class="challenges__block">
+                    <div class="challenges__headerImage">
+
+                        {% if challenge.endDate < date('now') %}
+                            <p>Terminé depuis le : <span> {{ challenge.endDate|date("d-m-Y", "Europe/Paris") }}</span></p>
+
+                        {% else %}
+                            <p>Date de début : <span> {{ challenge.startDate|date("d-m-Y", "Europe/Paris") }}</span></p>
+                        {% endif %}
+                        {% if challenge.startDate < "now"|date_modify("-1 month") %}
+                            <img src="{{ asset('images/icon_new.png') }}" alt="Nouveau cours" class="courses__new"/>
+                        {% endif %}
+                    </div>
+                    <div class="challenges__title">
+                        <h3>{{ challenge.name }}</h3>
+                        {% if challenge.createdAt > "now"|date_modify("-1 month") %}
+
+                        {% endif %}
+                    </div>
+                    <div class="challenges__blockContent">
+                        <div class="challenge_description">
+                            {{ challenge.description| striptags | slice(0, 70) }} ...
+                        </div>
+                    </div>
+                    <div class="challenges__blockLinks">
+                        <a
+                                {#                            href="{{ path('challenge_show', {id: challenge.id}) }}" #}
+                        >
+                        <span>
+                            <i class="fa-solid fa-eye"></i>
+                        </span>
+                            Consulter
+                        </a>
+                        {% if app.user %}
+                        {% else %}
+                            <a href="{{ path('app_login') }}">
+                            <span>
+                            <i class="fa-solid fa-plus"></i>
+                            </span>
+                                Ajouter
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+    <div class="anim__absolute__right">
+        <div class="bowl__design">
+            <div class="shadow"></div>
+            <div class="bowl">
+                <div class="liquid"></div>
+            </div>
+        </div>
+    </div>
+    <div class="anim__absolute__left">
+        <div class="bowl__design">
+            <div class="shadow"></div>
+            <div class="bowl">
+                <div class="liquid"></div>
+            </div>
+        </div>
+    </div>
+    {{ knp_pagination_render(challenges) }}
+    <div class="topPage__link">
+        <a href="#top-page"><i class="fa-solid fa-arrow-up"></i></a>
+    </div>
+</section>
