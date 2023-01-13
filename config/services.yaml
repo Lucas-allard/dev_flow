@@ -41,6 +41,10 @@ services:
     tags:
       - { name: doctrine.event_subscriber, event: postUpdate }
 
+  App\Events\UserChallengeCompleteSubscriber:
+    tags:
+      - { name: doctrine.event_subscriber, event: postUpdate }
+
   App\Services\SearchFormHandler:
     arguments:
 

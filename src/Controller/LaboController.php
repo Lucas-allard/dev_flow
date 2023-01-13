@@ -243,8 +243,8 @@ class LaboController extends ManagerController
             }
 
             $userCourse->setIsLiked(true);
-            $course->setLikeCount($course->getLikeCount() + 1);
 
+            $course->setLikeCount($course->getLikeCount() + 1);
 
             $this->userCourseRepository->save($userCourse, true);
             $this->courseRepository->save($course, true);
