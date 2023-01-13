@@ -164,6 +164,11 @@ class ChallengeController extends ManagerController
         return $this->redirectToRoute('challenge_index');
     }
 
+    /**
+     * @param Request $request
+     * @param Challenge $challenge
+     * @return Response
+     */
     #[Route('/add/{challenge}', name: 'add')]
     #[isGranted('ROLE_USER')]
     public function addToUser(
@@ -184,7 +189,7 @@ class ChallengeController extends ManagerController
             $this->addFlash('danger', 'Vous avez déjà ajouté ce challenge à votre liste de challenge');
         }
 
-        return $this->redirectToRoute('labo_index');
+        return $this->redirectToRoute('challenge_index');
     }
 
 
@@ -203,5 +208,38 @@ class ChallengeController extends ManagerController
             "hasPrevious" => $hasPrevious,
             "hasNext" => $hasNext,
         ]);
+    }
+
+    #[Route('/complete/{challenge}', name: 'is_complete')]
+    #[isGranted('ROLE_USER')]
+    public function isComplete(
+        Challenge  $challenge,
+        Request $request
+    ): Response
+    {
+        $user = $this->getUser();
+
+        if ($this->checkToken($request, 'course', $challenge)) {
+            if (!$this->userChallengeRepository->findOneBy(['user' => $user, 'challenge' => $challenge])) {
+                $userChallenge = new UserChallenge();
+                $userChallenge->setUser($user);
+                $userChallenge->setChallenge($challenge);
+            } else {
+                $userChallenge = $this->userChallengeRepository->findOneBy(['user' => $user, 'challenge' => $challenge]);
+            }
+
+            $userChallenge->setIsComplete(true);
+            $challenge->setCompleteCount($challenge->getCompleteCount() + 1);
+
+            $this->userChallengeRepository->save($userChallenge, true);
+            $this->challengeRepository->save($challenge, true);
+
+
+            $this->addFlash('success', 'Vous avez bien marqué ce cours comme lu');
+        } else {
+            $this->addFlash('danger', 'Vous avez déjà marqué ce cours comme lu');
+        }
+
+        return $this->redirectToRoute('challenge_index');
     }
 }
