@@ -102,6 +102,7 @@ class ChatController extends AbstractController
                 ->setTimestamp(new DateTime());
 
             $user->setPoints($user->getPoints() + 2);
+            $user->setChatMessageCount($user->getChatMessageCount() + 1);
 
             $chatMessageRepository->save($chatMessage, true);
             $this->userRepository->save($user, true);

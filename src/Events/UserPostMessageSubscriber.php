@@ -3,7 +3,7 @@
 namespace App\Events;
 
 
-use App\Entity\Level;
+use App\Entity\ChatMessage;
 use App\Entity\Trophy;
 use App\Entity\User;
 use Doctrine\Common\EventSubscriber;
@@ -11,7 +11,7 @@ use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\ObjectManager;
 
-class UserSettingPointSubscriber implements EventSubscriber
+class UserPostMessageSubscriber implements EventSubscriber
 {
     public function getSubscribedEvents(): array
     {
@@ -30,40 +30,18 @@ class UserSettingPointSubscriber implements EventSubscriber
             return;
         }
 
-        $points = $entity->getPoints();
 
-        $this->updateLevel($entity, $points, $entityManager);
-
-        $this->updateTrophies($entity, $points, $entityManager);
+        $this->updateTrophies($entity, $entityManager);
     }
 
-    private function updateLevel(User $user, int $points, ObjectManager $manager)
+    private function updateTrophies(User $user, ObjectManager $manager)
     {
-
-        $levelRepository = $manager->getRepository(Level::class);
-
-        $levels = $levelRepository->findAll();
-
-        foreach ($levels as $level) {
-            if ($points >= $level->getRequiredPoint()) {
-                $user->setLevel($level);
-                $manager->persist($user);
-            }
-        }
-
-        $manager->flush();
-    }
-
-    private function updateTrophies(User $user, int $points, ObjectManager $manager)
-    {
-
-
         $trophyRepository = $manager->getRepository(Trophy::class);
 
         $trophies = $trophyRepository->findAll();
-
+        $numberOfMessages = $user->getChatMessageCount();
         foreach ($trophies as $trophy) {
-            if ($points >= $trophy->getRequiredPoint()) {
+            if ($numberOfMessages >= $trophy->getRequiredMessages()) {
                 $user->addTrophy($trophy);
                 $manager->persist($user);
             }

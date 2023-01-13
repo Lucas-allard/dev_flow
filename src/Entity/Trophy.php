@@ -37,6 +37,9 @@ class Trophy implements EntityInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $img = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $requiredMessage = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -141,6 +144,18 @@ class Trophy implements EntityInterface
     public function setImg(string $img): self
     {
         $this->img = $img;
+
+        return $this;
+    }
+
+    public function getRequiredMessage(): ?int
+    {
+        return $this->requiredMessage;
+    }
+
+    public function setRequiredMessage(?int $requiredMessage): self
+    {
+        $this->requiredMessage = $requiredMessage;
 
         return $this;
     }

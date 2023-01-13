@@ -80,6 +80,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserChallenge::class)]
     private Collection $userChallenges;
 
+    #[ORM\Column]
+    private ?int $chatMessageCount = null;
+
     /**
      * @throws Exception
      */
@@ -87,6 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     {
         $this->createdAt = new \DateTime();
         $this->readCount = 0;
+        $this->chatMessageCount = 0;
         $this->points = 0;
         $this->profilColor = '#' . dechex(random_int(0, 16777215));
         $this->chatMessages = new ArrayCollection();
@@ -203,7 +207,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     }
 
     /**
-     * @return Collection<int, ChatMessage>
+     * @return Collection<ChatMessage>
      */
     public function getChatMessages(): Collection
     {
@@ -215,6 +219,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
         if (!$this->chatMessages->contains($chatMessage)) {
             $this->chatMessages->add($chatMessage);
             $chatMessage->setUser($this);
+            $this->chatMessageCount++;
         }
 
         return $this;
@@ -226,6 +231,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
             // set the owning side to null (unless already changed)
             if ($chatMessage->getUser() === $this) {
                 $chatMessage->setUser(null);
+                $this->chatMessageCount--;
             }
         }
 
@@ -439,6 +445,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
         $userCourse->setCourse($course);
         $userCourse->setIsRead(true);
         $this->userCourses[] = $userCourse;
+
     }
 
     /**
@@ -533,6 +540,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
                 $userChallenge->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getChatMessageCount(): ?int
+    {
+        return $this->chatMessageCount;
+    }
+
+    public function setChatMessageCount(int $chatMessageCount): self
+    {
+        $this->chatMessageCount = $chatMessageCount;
 
         return $this;
     }

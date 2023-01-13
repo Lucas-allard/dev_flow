@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Data\FilterData;
 use App\Entity\Course;
+use App\Entity\User;
 use App\Entity\UserCourse;
 use App\Form\SearchCoursesFormType;
 use App\Repository\CategoryRepository;
@@ -11,6 +12,7 @@ use App\Repository\CourseRepository;
 use App\Repository\FilterableRepositoryInterface;
 use App\Repository\LevelRepository;
 use App\Repository\UserCourseRepository;
+use App\Repository\UserRepository;
 use App\Services\SearchFormHandler;
 use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\PaginatorInterface;
@@ -280,9 +282,12 @@ class LaboController extends ManagerController
     #[isGranted('ROLE_USER')]
     public function isRead(
         Course  $course,
+        UserRepository $userRepository,
         Request $request
     ): Response
     {
+
+        /** @var User $user */
         $user = $this->getUser();
 
         if ($this->checkToken($request, 'course', $course)) {
@@ -296,9 +301,11 @@ class LaboController extends ManagerController
 
             $userCourse->setIsRead(true);
             $course->setReadCount($course->getReadCount() + 1);
+            $user->setReadCount($user->getReadCount() + 1);
 
             $this->userCourseRepository->save($userCourse, true);
             $this->courseRepository->save($course, true);
+            $userRepository->save($user, true);
 
 
             $this->addFlash('success', 'Vous avez bien marqué ce cours comme lu');
