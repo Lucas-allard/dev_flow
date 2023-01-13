@@ -122,12 +122,6 @@ class CourseRepository extends ServiceEntityRepository implements FilterableRepo
                 ->andWhere('c.points <= :maxPoint')
                 ->setParameter('maxPoint', $filterData->getMaxPoint());
         }
-//        if ($filterData->getIsRead() !== null) {
-//            $query = $query
-//                ->andWhere('uc.isRead = :isRead')
-//                ->setParameter('isRead', $filterData->getIsRead());
-//        }
-
         return $query->getQuery()->getResult();
     }
 

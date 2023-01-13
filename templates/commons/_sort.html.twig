@@ -1,0 +1,22 @@
+{% if 'labo' in app.request.attributes.get('_route') %}
+    {% set pathValue = 'labo_sort' %}
+    {% set attributs = { 'createdAt': 'Date', 'points': 'Points', 'readCount': 'Nombre de lectures' } %}
+{% elseif 'challenge' in app.request.attributes.get('_route') %}
+    {% set pathValue = 'challenge_sort' %}
+    {% set attributs = { 'points': 'Points','readCount': 'Nombre de lectures', 'completeCount': 'Nombre de complétions' } %}
+{% endif %}
+
+<div class="filter__block">
+    {% for key, value in attributs %}
+        <a href="{{ path(pathValue, { 'attr': key, 'order': app.request.attributes.get('order') == 'ASC' and app.request.attributes.get('attr') == key  ? 'DESC' : 'ASC'}) }}">
+        <span>
+                                {% if app.request.attributes.get('order') == 'ASC' and app.request.attributes.get('attr') == key %}
+                                    <i class="fa-solid fa-arrow-down"> </i>
+                                {% else %}
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                {% endif %}
+                            </span>
+            {{ value }}
+        </a>
+    {% endfor %}
+</div>

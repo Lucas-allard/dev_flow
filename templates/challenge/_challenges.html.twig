@@ -1,7 +1,10 @@
 <section class="challenges__section">
     <h2>Les derniers challenges</h2>
 
-    {{ include('./commons/_filter.html.twig') }}
+    {{ include('./challenge/_search_form.html.twig') }}
+
+
+    {{ include('./commons/_sort.html.twig') }}
 
     <div class="challenges__container">
         {% for challenge in challenges %}

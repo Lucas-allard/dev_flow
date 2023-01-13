@@ -25,6 +25,14 @@ class LaboController extends ManagerController
 {
 
 
+    /**
+     * @param CourseRepository $courseRepository
+     * @param CategoryRepository $categoryRepository
+     * @param LevelRepository $levelRepository
+     * @param PaginatorInterface $paginator
+     * @param UserCourseRepository $userCourseRepository
+     * @param FormFactoryInterface $formFactory
+     */
     public function __construct(
         private CourseRepository     $courseRepository,
         private CategoryRepository   $categoryRepository,
@@ -35,6 +43,8 @@ class LaboController extends ManagerController
 //        private SearchFormHandler    $searchFormHandler,
     )
     {
+
+        parent::__construct($this->courseRepository);
 //        $this->searchFormHandler = new SearchFormHandler($this->formFactory, $this->courseRepository, SearchCoursesFormType::class, new FilterData());
     }
 
@@ -47,7 +57,6 @@ class LaboController extends ManagerController
     #[Route('/', name: 'index')]
     public function index(
         Request              $request,
-        FormFactoryInterface $formFactory,
     ): Response
     {
 
@@ -93,7 +102,7 @@ class LaboController extends ManagerController
         $searchForm = $searchFormHandler->getSearchForm();
 
         if ($coursesData === null) {
-            $coursesData = $this->courseRepository->findCourses();
+            $coursesData = $this->courseRepository->findByCategory($category);
         }
 
         $courses = $this->paginator->paginate(
@@ -126,15 +135,8 @@ class LaboController extends ManagerController
         $searchForm = $searchFormHandler->getSearchForm();
 
         if ($coursesData === null) {
-            $coursesData = $this->courseRepository->findCourses();
+            $coursesData = $this->courseRepository->findByLevel($level);
         }
-
-        $courses = $this->paginator->paginate(
-            $coursesData,
-            $request->query->getInt('page', 1),
-            15
-        );
-
 
         $courses = $this->paginator->paginate(
             $coursesData,
@@ -169,8 +171,7 @@ class LaboController extends ManagerController
         $searchForm = $searchFormHandler->getSearchForm();
 
         if ($coursesData === null) {
-            $coursesData = $this->courseRepository->findCourses();
-        }
+            $coursesData = $this->courseRepository->findBy([], [$attr => $order]);        }
 
         $courses = $this->paginator->paginate(
             $coursesData,
