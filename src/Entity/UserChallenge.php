@@ -27,6 +27,12 @@ class UserChallenge
     #[ORM\Column]
     private ?bool $isLiked = null;
 
+    public function __construct()
+    {
+        $this->isComplete = false;
+        $this->isLiked = false;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

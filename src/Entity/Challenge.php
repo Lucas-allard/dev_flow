@@ -48,9 +48,17 @@ class Challenge
     #[ORM\OneToMany(mappedBy: 'challenge', targetEntity: UserChallenge::class)]
     private Collection $userChallenges;
 
+    #[ORM\Column]
+    private ?int $completeCount = null;
+
+    #[ORM\Column]
+    private ?int $likeCount = null;
+
     public function __construct()
     {
         $this->points = 0;
+        $this->setCompleteCount(0);
+        $this->setLikeCount(0);
         $this->userChallenges = new ArrayCollection();
     }
 
@@ -204,6 +212,30 @@ class Challenge
                 $userChallenge->setChallenge(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCompleteCount(): ?int
+    {
+        return $this->completeCount;
+    }
+
+    public function setCompleteCount(int $completeCount): self
+    {
+        $this->completeCount = $completeCount;
+
+        return $this;
+    }
+
+    public function getLikeCount(): ?int
+    {
+        return $this->likeCount;
+    }
+
+    public function setLikeCount(int $likeCount): self
+    {
+        $this->likeCount = $likeCount;
 
         return $this;
     }
