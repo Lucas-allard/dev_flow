@@ -5,7 +5,7 @@ namespace App\Data;
 use App\Entity\Category;
 use App\Entity\Level;
 
-class CourseFilterData
+class FilterData
 {
     /**
      * @var string|null

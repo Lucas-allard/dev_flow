@@ -55,8 +55,8 @@
                         {{ challenge.description| striptags | slice(0, 70) }} ...
                     </p>
                     <p><em>{{ challenge.createdAt|date("d-m-Y", "Europe/Paris") }}</em>
-{#                        - {{ course.readCount }} lectures(s)#}
-{#                        - {{ course.likeCount }} like(s)#}
+                        - {{ challenge.completeCount }} complétion(s)
+                        - {{ challenge.likeCount }} like(s)
                     </p>
                     </p>
                     <div class="challenges__dates">

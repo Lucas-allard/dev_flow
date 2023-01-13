@@ -214,7 +214,6 @@
     border-radius: 50%;
     border: 8px solid transparent;
     transform-origin: bottom center;
-    animation: animateBowl 5s linear infinite;
 
     &:before, &:after {
       content: "";
@@ -253,7 +252,6 @@
       border-bottom-right-radius: 150px;
       filter: drop-shadow(0 0 80px #1673B6);
       transform-origin: top center;
-      animation: animateLiquid 5s linear infinite;
 
 
       &:before, &:after {

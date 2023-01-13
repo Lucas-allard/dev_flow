@@ -2,12 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Challenge;
 use App\Repository\CategoryRepository;
 use App\Repository\ChallengeRepository;
 use App\Repository\LevelRepository;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

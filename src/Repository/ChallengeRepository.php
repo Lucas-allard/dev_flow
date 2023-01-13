@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Data\FilterData;
 use App\Entity\Challenge;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -14,7 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Challenge[]    findAll()
  * @method Challenge[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ChallengeRepository extends ServiceEntityRepository
+class ChallengeRepository extends ServiceEntityRepository implements FilterableRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -49,5 +50,20 @@ class ChallengeRepository extends ServiceEntityRepository
             ->orderBy('c.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
+    }
+
+    public function findBySearch(FilterData $filterData)
+    {
+        // TODO: Implement findBySearch() method.
+    }
+
+    public function findByCategory(string $category)
+    {
+        // TODO: Implement findByCategory() method.
+    }
+
+    public function findByLevel(string $level)
+    {
+        // TODO: Implement findByLevel() method.
     }
 }

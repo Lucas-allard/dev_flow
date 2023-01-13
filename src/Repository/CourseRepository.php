@@ -15,7 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Course[]    findAll()
  * @method Course[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CourseRepository extends ServiceEntityRepository
+class CourseRepository extends ServiceEntityRepository implements FilterableRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -128,7 +128,6 @@ class CourseRepository extends ServiceEntityRepository
 //                ->setParameter('isRead', $filterData->getIsRead());
 //        }
 
-        dd($query->getQuery()->getSQL());
         return $query->getQuery()->getResult();
     }
 

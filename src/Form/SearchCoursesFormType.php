@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Data\CourseFilterData;
+use App\Data\FilterData;
 use App\Entity\Category;
 use App\Entity\Level;
 use App\Entity\UserCourse;
@@ -87,7 +87,7 @@ class SearchCoursesFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => CourseFilterData::class,
+            'data_class' => FilterData::class,
             'method' => 'GET',
             'csrf_protection' => false
         ]);
