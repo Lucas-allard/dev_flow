@@ -2,7 +2,8 @@
 
 namespace App\Services;
 
-use App\Data\FilterData;
+use App\Data\ChallengeFilterData;
+use App\Data\FilterDataInterface;
 use App\Repository\FilterableRepositoryInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -14,7 +15,7 @@ class SearchFormHandler
     private string $formType;
 
     private FilterableRepositoryInterface $repository;
-    private FilterData $filterData;
+    private FilterDataInterface $filterData;
 
     private FormInterface $form;
 
@@ -22,17 +23,19 @@ class SearchFormHandler
      * @param FormFactoryInterface $formFactory
      * @param string $formType
      * @param FilterableRepositoryInterface $repository
+     * @param FilterDataInterface $filterData
      */
     public function __construct(
         FormFactoryInterface          $formFactory,
         string                        $formType,
         FilterableRepositoryInterface $repository,
+        FilterDataInterface           $filterData
     )
     {
         $this->formFactory = $formFactory;
         $this->formType = $formType;
         $this->repository = $repository;
-        $this->filterData = new FilterData();
+        $this->filterData = $filterData;
     }
 
 
@@ -74,10 +77,10 @@ class SearchFormHandler
     }
 
     /**
-     * @param FilterData $filterData
+     * @param ChallengeFilterData $filterData
      * @return SearchFormHandler
      */
-    public function setFilterData(FilterData $filterData): SearchFormHandler
+    public function setFilterData(ChallengeFilterData $filterData): SearchFormHandler
     {
         $this->filterData = $filterData;
         return $this;

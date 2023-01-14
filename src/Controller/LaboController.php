@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
-use App\Data\FilterData;
+use App\Data\ChallengeFilterData;
+use App\Data\CourseFilterData;
 use App\Entity\Course;
 use App\Entity\User;
 use App\Entity\UserCourse;
 use App\Form\SearchChallengeFormType;
+use App\Form\SearchCoursesFormType;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use App\Repository\LevelRepository;
@@ -48,7 +50,7 @@ class LaboController extends ManagerController
     )
     {
         parent::__construct($this->courseRepository);
-        $this->searchFormHandler = new SearchFormHandler($this->formFactory, SearchChallengeFormType::class, $this->courseRepository, New FilterData());
+        $this->searchFormHandler = new SearchFormHandler($this->formFactory, SearchCoursesFormType::class, $this->courseRepository, New CourseFilterData());
 
     }
 

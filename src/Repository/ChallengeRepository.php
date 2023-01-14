@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Data\FilterData;
+use App\Data\ChallengeFilterData;
 use App\Entity\Challenge;
 use App\Entity\Course;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -54,13 +54,12 @@ class ChallengeRepository extends ServiceEntityRepository implements FilterableR
             ->getResult();
     }
 
-    public function findBySearch(FilterData $filterData)
+    public function findBySearch(ChallengeFilterData $filterData)
     {
         $query = $this->createQueryBuilder('c')
             ->select('c', 'ca', 'l')
             ->join('c.category', 'ca')
             ->join('c.level', 'l')
-//            ->join('c.userCourses', 'uc')
             ->orderBy('c.createdAt', 'DESC');
         if ($filterData->getQ()) {
             $query = $query
@@ -87,7 +86,21 @@ class ChallengeRepository extends ServiceEntityRepository implements FilterableR
                 ->andWhere('c.points <= :maxPoint')
                 ->setParameter('maxPoint', $filterData->getMaxPoint());
         }
-        return $query->getQuery()->getResult();    }
+
+        if ($filterData->getStartDate()) {
+            $query = $query
+                ->andWhere('c.startDate >= :startDate')
+                ->setParameter('startDate', $filterData->getStartDate());
+        }
+
+        if ($filterData->getEndDate()) {
+            $query = $query
+                ->andWhere('c.endDate <= :endDate')
+                ->setParameter('endDate', $filterData->getEndDate());
+        }
+
+        return $query->getQuery()->getResult();
+    }
 
     /**
      * @return Course[] Returns an array of Course objects

@@ -2,11 +2,11 @@
 
 namespace App\Repository;
 
-use App\Data\FilterData;
+use App\Data\ChallengeFilterData;
 
 interface FilterableRepositoryInterface
 {
-    public function findBySearch(FilterData $filterData);
+    public function findBySearch(ChallengeFilterData $filterData);
 
     public function findByCategory(string $category);
 

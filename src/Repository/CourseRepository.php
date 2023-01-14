@@ -107,6 +107,7 @@ class CourseRepository extends ServiceEntityRepository implements FilterableRepo
                 ->andWhere('ca.name = :category')
                 ->setParameter('category', $filterData->getCategory()->getName());
         }
+
         if ($filterData->getLevel()) {
             $query = $query
                 ->andWhere('l.name = :level')

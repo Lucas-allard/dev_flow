@@ -2,14 +2,11 @@
 
 namespace App\Form;
 
-use App\Data\FilterData;
+use App\Data\ChallengeFilterData;
 use App\Entity\Category;
 use App\Entity\Level;
-use App\Entity\UserCourse;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\ChoiceList\Factory\Cache\ChoiceLabel;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -87,7 +84,7 @@ class SearchCoursesFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => FilterData::class,
+            'data_class' => ChallengeFilterData::class,
             'method' => 'GET',
             'csrf_protection' => false
         ]);

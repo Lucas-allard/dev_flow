@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\Data\FilterData;
+use App\Data\ChallengeFilterData;
 use App\Entity\Challenge;
 use App\Entity\UserChallenge;
-use App\Form\SearchCoursesFormType;
+use App\Form\SearchChallengeFormType;
 use App\Repository\CategoryRepository;
 use App\Repository\ChallengeRepository;
 use App\Repository\LevelRepository;
@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,28 +23,49 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/challenge', name: 'challenge_')]
 class ChallengeController extends ManagerController
 {
+    private SearchFormHandler $searchFormHandler;
+
+    /**
+     * @param CategoryRepository $categoryRepository
+     * @param LevelRepository $levelRepository
+     * @param ChallengeRepository $challengeRepository
+     * @param UserChallengeRepository $userChallengeRepository
+     * @param PaginatorInterface $paginator
+     * @param FormFactoryInterface $formFactory
+     * @param EntityManagerInterface $entityManager
+     */
     public function __construct(
-        private CategoryRepository  $categoryRepository,
-        private LevelRepository     $levelRepository,
-        private ChallengeRepository $challengeRepository,
+        private CategoryRepository      $categoryRepository,
+        private LevelRepository         $levelRepository,
+        private ChallengeRepository     $challengeRepository,
         private UserChallengeRepository $userChallengeRepository,
-        private PaginatorInterface  $paginator,
-        private EntityManagerInterface $entityManager,
+        private PaginatorInterface      $paginator,
+        private FormFactoryInterface    $formFactory,
+        private EntityManagerInterface  $entityManager,
     )
     {
         parent::__construct($this->challengeRepository);
+        $this->searchFormHandler = new SearchFormHandler($this->formFactory, SearchChallengeFormType::class, $this->challengeRepository, new ChallengeFilterData());
+
     }
 
     #[Route('/', name: 'index')]
     public function index(Request $request): Response
     {
+        $challengeData = $this->searchFormHandler->handleForm($request);
+
+        $searchForm = $this->searchFormHandler->getSearchForm();
+
+        if ($challengeData === null) {
+            $challengeData = $this->challengeRepository->findChallenges();
+        }
+
         $categories = $this->categoryRepository->findAll();
 
         $levels = $this->levelRepository->findAll();
 
-
         $challenges = $this->paginator->paginate(
-            $this->challengeRepository->findChallenges(),
+            $challengeData,
             $request->query->getInt('page', 1),
             15
         );
@@ -52,6 +74,7 @@ class ChallengeController extends ManagerController
             'categories' => $categories,
             'levels' => $levels,
             'challenges' => $challenges,
+            'searchForm' => $searchForm->createView(),
         ]);
     }
 
@@ -115,7 +138,7 @@ class ChallengeController extends ManagerController
 
         $levels = $this->levelRepository->findAll();
 
-            $challenges = $this->paginator->paginate(
+        $challenges = $this->paginator->paginate(
             $this->challengeRepository->findBy([], [$attr => $order]),
             $request->query->getInt('page', 1),
             15
@@ -136,8 +159,8 @@ class ChallengeController extends ManagerController
     #[Route('/like/{challenge}', name: 'like')]
     #[isGranted('ROLE_USER')]
     public function likeChallenge(
-        Request $request,
-        Challenge  $challenge,
+        Request   $request,
+        Challenge $challenge,
     ): Response
     {
 
@@ -176,8 +199,8 @@ class ChallengeController extends ManagerController
     #[Route('/add/{challenge}', name: 'add')]
     #[isGranted('ROLE_USER')]
     public function addToUser(
-        Request $request,
-        Challenge  $challenge,
+        Request   $request,
+        Challenge $challenge,
     ): Response
     {
         $user = $this->getUser();
@@ -217,8 +240,8 @@ class ChallengeController extends ManagerController
     #[Route('/complete/{challenge}', name: 'is_complete')]
     #[isGranted('ROLE_USER')]
     public function isComplete(
-        Challenge  $challenge,
-        Request $request
+        Challenge $challenge,
+        Request   $request
     ): Response
     {
         $user = $this->getUser();
