@@ -4,7 +4,120 @@
 
 {% block body %}
     <section class="challenge__section">
+        <article class="challenge__block" style="--clr: {{ challenge.level.color }}">
+            <div class="challenge__header">
+                <h1>{{ challenge.name }}</h1>
+                <p><em>{{ challenge.completeCount }} complétion(s) - {{ challenge.likeCount }} like(s)</em></p>
+                <div class="challenge__headerLinks">
+                    {% if hasPrevious != false %}
+                        <a href={{ path("challenge_show", {challenge: challenge.id - 1}) }}><span><i
+                                        class="fa-solid fa-chevron-left"></i></span>Challenge précédent</a>
+                    {% endif %}
+                    <a href={{ path('challenge_index') }}>Liste des challenges</a>
+                    {% if hasNext != false %}
+                        <a href={{ path("challenge_show", {challenge: challenge.id +1 }) }}>Challenge suivant<span><i
+                                        class="fa-solid fa-chevron-right"></i></span></a>
+                    {% endif %}
+                </div>
+                <div class="challenge__headerInfos">
+                    <p>
+                        <a href="{{ path('challenge_by_category', {category : challenge.category.name}) }}">
+                            Catégorie:
+                            <span style="color: {{ challenge.category.color }}">{{ challenge.category.name }}</span>
+                        </a>
+                    </p>
+                    <p>
+                        <a href="{{ path('challenge_by_level', {level : challenge.level.name}) }}">
+                            Level: <span style="color: {{ challenge.level.color }}">{{ challenge.level.name }}</span>
+                        </a>
+                    </p>
+                    <p>Points: <span>{{ challenge.points }}</span></p>
+                    <p>Posté le <span>{{ challenge.createdAt|date("d-m-Y", "Europe/Paris") }}</span></p>
+                </div>
+                <div class="challenge__headerCTA">
+                    {% if app.user %}
+                        {% if not app.user.haschallenge(challenge) %}
+                            <a href="{{ path("challenge_add", {challenge: challenge.id, }) }}?token={{ csrf_token('challenge' ~ challenge.id) }}">
+                                <span><i class="fa-solid fa-plus"></i></span>Ajouter</a>
+                            <a href="{{ path("challenge_like", {challenge: challenge.id, }) }}?token={{ csrf_token('challenge' ~ challenge.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                J'aime</a>
+                        {% endif %}
+                        {% if app.user.haschallenge(challenge) and app.user.getUserchallenge(challenge).isIsComplete() %}
+                            <span class="challenges__isRead"><i class="fa-solid fa-check"></i>Déjà complété</span>
+                        {% endif %}
+                        {% if app.user.haschallenge(challenge) and not app.user.getUserchallenge(challenge).isIsLiked() %}
+                            <a href="{{ path("challenge_like", {challenge: challenge.id, }) }}?token={{ csrf_token('challenge' ~ challenge.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                J'aime</a>
+                        {% elseif app.user.haschallenge(challenge) and app.user.getUserchallenge(challenge).isIsLiked() %}
+                            <span class="challenges__isLiked"><i class="fa-solid fa-check"></i>J'aime</span>
+                        {% endif %}
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-primary"><span><i
+                                        class="fa-solid fa-plus"></i></span>Ajouter</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="challenge__content">
+                {{ challenge.description|raw }}
+            </div>
+            <div class="challenge__footer">
+                <div class="challenge__footerCTA">
+                    {% if app.user %}
+                        {% if not app.user.haschallenge(challenge) %}
+                            <a href="{{ path("challenge_add", {challenge: challenge.id, }) }}?token={{ csrf_token('challenge' ~ challenge.id) }}">
+                                <span><i class="fa-solid fa-plus"></i></span>Ajouter</a>
+                            <a href="{{ path("challenge_like", {challenge: challenge.id, }) }}?token={{ csrf_token('challenge' ~ challenge.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                J'aime</a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-primary"><span><i
+                                        class="fa-solid fa-plus"></i></span>Ajouter</a>
+                        <a href="{{ path('app_login') }}" class="btn btn-primary"><span><i
+                                        class="fa-solid fa-heart"></i></span>J'aime</a>
+                    {% endif %}
 
+                    {% if app.user %}
+                        {% if not app.user.haschallenge(challenge) or (app.user.haschallenge(challenge) and not app.user.getUserchallenge(challenge).isIsComplete()) %}
+                            <a href="{{ path("challenge_is_complete", {challenge: challenge.id, }) }}?token={{ csrf_token('challenge' ~ challenge.id) }}"><span><i
+                                            class="fa-solid fa-check"></i></span>J'ai terminé</a>
+                        {% endif %}
+                        {% if app.user.haschallenge(challenge) and app.user.getUserchallenge(challenge).isIsComplete() %}
+                            <span class="challenges__isRead"><i class="fa-solid fa-check"></i>Déjà complété</span>
+                        {% endif %}
+                        {% if app.user.haschallenge(challenge) and not app.user.getUserchallenge(challenge).isIsLiked() %}
+                            <a href="{{ path("challenge_like", {challenge: challenge.id, }) }}?token={{ csrf_token('challenge' ~ challenge.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                J'aime</a>
+                        {% elseif app.user.haschallenge(challenge) and app.user.getUserchallenge(challenge).isIsLiked() %}
+                            <span class="challenges__isLiked"><i class="fa-solid fa-check"></i>J'aime</span>
+                        {% endif %}
+                    {% endif %}
+
+                </div>
+                <div class="challenge__footerLinks">
+                    {% if hasPrevious != false %}
+                        <a href={{ path("challenge_show", {challenge: challenge.id - 1}) }}><span><i
+                                        class="fa-solid fa-chevron-left"></i></span>Challenge précédent</a>
+                    {% endif %}
+                    <a href={{ path('challenge_index') }}>Liste des cours</a>
+                    {% if hasNext != false %}
+                        <a href={{ path("challenge_show", {challenge: challenge.id +1 }) }}>Challenge suivant<span><i
+                                        class="fa-solid fa-chevron-right"></i></span></a>
+                    {% endif %}
+                </div>
+            </div>
+        </article>
     </section>
 
 {% endblock %}

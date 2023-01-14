@@ -18,7 +18,11 @@ class ChallengeFixtures extends Fixture implements DependentFixtureInterface
             $challenge = new Challenge();
             $challenge->setCreatedAt($faker->dateTimeBetween('-3 months', '-3 months'));
             $challenge->setName($faker->sentence(6, true));
-            $challenge->setDescription($faker->paragraph(10, true));
+            $description = "<div>
+                <p>" . $faker->paragraph(10, true) . "</p><img src='" . $faker->imageUrl(640, 480) . "' alt='Challenge image'>
+                    <p>" . $faker->paragraph(7, true) . "</p>
+                    <img src='" . $faker->imageUrl(640, 480) . "' alt='Challenge image'><p>" . $faker->paragraph(5, true) . "</p></div>";
+            $challenge->setDescription($description);
             $challenge->setCategory($this->getReference('category_' . rand(1, 6)));
             $challenge->setLevel($this->getReference('level_' . rand(1, 4)));
             $challenge->setStartDate($faker->dateTimeBetween('-3 months', 'now'));

@@ -28,6 +28,10 @@
 
     .course__header {
 
+      h1 ~ p {
+        text-align: center;
+      }
+
       .course__headerInfos {
         display: flex;
         flex-direction: column;

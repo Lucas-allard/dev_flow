@@ -17,7 +17,7 @@
                                 {{ challenge.category.name }}
                             </a>
                         </h3>
-                        {% if challenge.startDate < "now"|date_modify("-1 month") %}
+                        {% if (challenge.startDate < "now"|date_modify("-1 month")) and (challenge.endDate > "now"|date_modify("1 month"))%}
                             <img src="{{ asset('images/icon_new.png') }}" alt="Nouveau cours" class="courses__new"/>
                         {% endif %}
                     </div>
@@ -55,7 +55,6 @@
                     <p><em>{{ challenge.createdAt|date("d-m-Y", "Europe/Paris") }}</em>
                         - {{ challenge.completeCount }} complétion(s)
                         - {{ challenge.likeCount }} like(s)
-                    </p>
                     </p>
                     <div class="challenges__dates">
                         {% if challenge.endDate < date('now') %}

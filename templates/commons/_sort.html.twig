@@ -3,7 +3,7 @@
     {% set attributs = { 'createdAt': 'Date', 'points': 'Points', 'readCount': 'Nombre de lectures' } %}
 {% elseif 'challenge' in app.request.attributes.get('_route') %}
     {% set pathValue = 'challenge_sort' %}
-    {% set attributs = { 'points': 'Points','readCount': 'Nombre de lectures', 'completeCount': 'Nombre de complétions' } %}
+    {% set attributs = { 'points': 'Points', 'completeCount': 'Nombre de complétions' } %}
 {% endif %}
 
 <div class="filter__block">

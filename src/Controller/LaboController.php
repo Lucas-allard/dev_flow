@@ -218,8 +218,7 @@ class LaboController extends ManagerController
             $this->addFlash('danger', 'Vous avez déjà ajouté ce cours à votre liste de cours');
         }
 
-
-        return $this->redirectToRoute('labo_index');
+        return $this->redirect($request->headers->get('referer'));
     }
 
     /**
@@ -260,7 +259,7 @@ class LaboController extends ManagerController
             $this->addFlash('success', 'Le cours a bien été liké');
         }
 
-        return $this->redirectToRoute('labo_index');
+        return $this->redirect($request->headers->get('referer'));
     }
 
     /**
@@ -289,7 +288,6 @@ class LaboController extends ManagerController
     #[isGranted('ROLE_USER')]
     public function isRead(
         Course         $course,
-        UserRepository $userRepository,
         Request        $request
     ): Response
     {
@@ -320,7 +318,7 @@ class LaboController extends ManagerController
             $this->addFlash('danger', 'Vous avez déjà marqué ce cours comme lu');
         }
 
-        return $this->redirectToRoute('labo_index');
+        return $this->redirect($request->headers->get('referer'));
     }
 
 }

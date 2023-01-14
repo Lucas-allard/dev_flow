@@ -115,16 +115,16 @@ class ChallengeController extends ManagerController
 
         $levels = $this->levelRepository->findAll();
 
-        $courses = $this->paginator->paginate(
+            $challenges = $this->paginator->paginate(
             $this->challengeRepository->findBy([], [$attr => $order]),
             $request->query->getInt('page', 1),
             15
         );
 
-        return $this->render('labo/labo.html.twig', [
+        return $this->render('challenge/challenges.html.twig', [
             "categories" => $categories,
             "levels" => $levels,
-            "courses" => $courses,
+            "challenges" => $challenges,
         ]);
     }
 
@@ -165,7 +165,7 @@ class ChallengeController extends ManagerController
             $this->addFlash('success', 'Le challenge a bien été liké');
         }
 
-        return $this->redirectToRoute('challenge_index');
+        return $this->redirect($request->headers->get('referer'));
     }
 
     /**
@@ -193,7 +193,7 @@ class ChallengeController extends ManagerController
             $this->addFlash('danger', 'Vous avez déjà ajouté ce challenge à votre liste de challenge');
         }
 
-        return $this->redirectToRoute('challenge_index');
+        return $this->redirect($request->headers->get('referer'));
     }
 
 
@@ -223,7 +223,7 @@ class ChallengeController extends ManagerController
     {
         $user = $this->getUser();
 
-        if ($this->checkToken($request, 'course', $challenge)) {
+        if ($this->checkToken($request, 'challenge', $challenge)) {
             if (!$this->userChallengeRepository->findOneBy(['user' => $user, 'challenge' => $challenge])) {
                 $userChallenge = new UserChallenge();
                 $userChallenge->setUser($user);
@@ -240,11 +240,11 @@ class ChallengeController extends ManagerController
 
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Vous avez bien marqué ce cours comme lu');
+            $this->addFlash('success', 'Vous avez bien complété ce challenge');
         } else {
-            $this->addFlash('danger', 'Vous avez déjà marqué ce cours comme lu');
+            $this->addFlash('danger', 'Vous avez déjà complété ce challenge');
         }
 
-        return $this->redirectToRoute('challenge_index');
+        return $this->redirect($request->headers->get('referer'));
     }
 }
