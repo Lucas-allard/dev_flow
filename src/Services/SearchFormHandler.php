@@ -10,34 +10,55 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SearchFormHandler
 {
-    private $searchForm;
+    private FormFactoryInterface $formFactory;
+    private string $formType;
+
+    private FilterableRepositoryInterface $repository;
+    private FilterData $filterData;
+
+    private FormInterface $form;
 
     /**
      * @param FormFactoryInterface $formFactory
-     * @param FilterableRepositoryInterface $repository
      * @param string $formType
-     * @param FilterData $filterData
+     * @param FilterableRepositoryInterface $repository
      */
     public function __construct(
-        private FormFactoryInterface          $formFactory,
-        private FilterableRepositoryInterface $repository,
-        string                                $formType,
-        private FilterData                            $filterData,
+        FormFactoryInterface          $formFactory,
+        string                        $formType,
+        FilterableRepositoryInterface $repository,
     )
     {
-        $this->searchForm = $this->formFactory->create($formType, $this->filterData);
+        $this->formFactory = $formFactory;
+        $this->formType = $formType;
+        $this->repository = $repository;
+        $this->filterData = new FilterData();
+    }
+
+
+    /**
+     * @param Request $request
+     * @return FormInterface
+     */
+    public function createForm(Request $request): FormInterface
+    {
+        $form = $this->formFactory->create($this->formType, $this->filterData);
+
+        $form->handleRequest($request);
+
+        return $form;
     }
 
     /**
      * @param Request $request
-     * @return array|null
+     * @return null
      */
-    public function handleSearchForm(Request $request): ?array
+    public function handleForm(Request $request)
     {
-        $this->searchForm->handleRequest($request);
+        $this->form = $this->createForm($request);
 
-        if ($this->searchForm->isSubmitted() && $this->searchForm->isValid()) {
 
+        if ($this->form->isSubmitted() && $this->form->isValid()) {
             return $this->repository->findBySearch($this->filterData);
         }
 
@@ -49,6 +70,16 @@ class SearchFormHandler
      */
     public function getSearchForm(): FormInterface
     {
-        return $this->searchForm;
+        return $this->form;
+    }
+
+    /**
+     * @param FilterData $filterData
+     * @return SearchFormHandler
+     */
+    public function setFilterData(FilterData $filterData): SearchFormHandler
+    {
+        $this->filterData = $filterData;
+        return $this;
     }
 }

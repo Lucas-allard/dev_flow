@@ -6,10 +6,9 @@ use App\Data\FilterData;
 use App\Entity\Course;
 use App\Entity\User;
 use App\Entity\UserCourse;
-use App\Form\SearchCoursesFormType;
+use App\Form\SearchChallengeFormType;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
-use App\Repository\FilterableRepositoryInterface;
 use App\Repository\LevelRepository;
 use App\Repository\UserCourseRepository;
 use App\Repository\UserRepository;
@@ -27,6 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class LaboController extends ManagerController
 {
 
+    private SearchFormHandler $searchFormHandler;
 
     /**
      * @param CourseRepository $courseRepository
@@ -35,6 +35,7 @@ class LaboController extends ManagerController
      * @param PaginatorInterface $paginator
      * @param UserCourseRepository $userCourseRepository
      * @param FormFactoryInterface $formFactory
+     * @param EntityManagerInterface $entityManager
      */
     public function __construct(
         private CourseRepository       $courseRepository,
@@ -43,19 +44,17 @@ class LaboController extends ManagerController
         private PaginatorInterface     $paginator,
         private UserCourseRepository   $userCourseRepository,
         private FormFactoryInterface   $formFactory,
-//        private SearchFormHandler    $searchFormHandler,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
     )
     {
-
         parent::__construct($this->courseRepository);
-//        $this->searchFormHandler = new SearchFormHandler($this->formFactory, $this->courseRepository, SearchCoursesFormType::class, new FilterData());
+        $this->searchFormHandler = new SearchFormHandler($this->formFactory, SearchChallengeFormType::class, $this->courseRepository, New FilterData());
+
     }
 
 
     /**
      * @param Request $request
-     * @param FormFactoryInterface $formFactory
      * @return Response
      */
     #[Route('/', name: 'index')]
@@ -64,10 +63,9 @@ class LaboController extends ManagerController
     ): Response
     {
 
-        $searchFormHandler = new SearchFormHandler($this->formFactory, $this->courseRepository, SearchCoursesFormType::class, new FilterData());
-        $coursesData = $searchFormHandler->handleSearchForm($request);
+        $coursesData = $this->searchFormHandler->handleForm($request);
 
-        $searchForm = $searchFormHandler->getSearchForm();
+        $searchForm = $this->searchFormHandler->getSearchForm();
 
         if ($coursesData === null) {
             $coursesData = $this->courseRepository->findCourses();
@@ -100,10 +98,9 @@ class LaboController extends ManagerController
     {
         $categories = $this->categoryRepository->findAll();
 
-        $searchFormHandler = new SearchFormHandler($this->formFactory, $this->courseRepository, SearchCoursesFormType::class, new FilterData());
-        $coursesData = $searchFormHandler->handleSearchForm($request);
+        $coursesData = $this->searchFormHandler->handleForm($request);
 
-        $searchForm = $searchFormHandler->getSearchForm();
+        $searchForm = $this->searchFormHandler->getSearchForm();
 
         if ($coursesData === null) {
             $coursesData = $this->courseRepository->findByCategory($category);
@@ -133,10 +130,9 @@ class LaboController extends ManagerController
     {
         $levels = $this->levelRepository->findAll();
 
-        $searchFormHandler = new SearchFormHandler($this->formFactory, $this->courseRepository, SearchCoursesFormType::class, new FilterData());
-        $coursesData = $searchFormHandler->handleSearchForm($request);
+        $coursesData = $this->searchFormHandler->handleForm($request);
 
-        $searchForm = $searchFormHandler->getSearchForm();
+        $searchForm = $this->searchFormHandler->getSearchForm();
 
         if ($coursesData === null) {
             $coursesData = $this->courseRepository->findByLevel($level);
@@ -169,10 +165,9 @@ class LaboController extends ManagerController
 
         $levels = $this->levelRepository->findAll();
 
-        $searchFormHandler = new SearchFormHandler($this->formFactory, $this->courseRepository, SearchCoursesFormType::class, new FilterData());
-        $coursesData = $searchFormHandler->handleSearchForm($request);
+        $coursesData = $this->searchFormHandler->handleForm($request);
 
-        $searchForm = $searchFormHandler->getSearchForm();
+        $searchForm = $this->searchFormHandler->getSearchForm();
 
         if ($coursesData === null) {
             $coursesData = $this->courseRepository->findBy([], [$attr => $order]);
@@ -287,8 +282,8 @@ class LaboController extends ManagerController
     #[Route('/read/{course}', name: 'course_is_read')]
     #[isGranted('ROLE_USER')]
     public function isRead(
-        Course         $course,
-        Request        $request
+        Course  $course,
+        Request $request
     ): Response
     {
 
@@ -307,7 +302,7 @@ class LaboController extends ManagerController
             $userCourse->setIsRead(true);
             $course->setReadCount($course->getReadCount() + 1);
 
-            $this->userCourseRepository->save($userCourse );
+            $this->userCourseRepository->save($userCourse);
             $this->courseRepository->save($course);
 
             $this->entityManager->flush();
