@@ -110,6 +110,11 @@ body {
     }
   }
 
+  a.redirect:hover {
+    color: $color-green;
+    font-weight: bold;
+  }
+
   .links__block {
     display: flex;
     padding-top: 1rem;

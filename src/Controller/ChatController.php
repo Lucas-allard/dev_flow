@@ -8,6 +8,7 @@ use App\Repository\UserRepository;
 use App\Services\AddMessageToCurrentUser;
 use App\Services\FirestoreService;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use MrShan0\PHPFirestore\Fields\FirestoreTimestamp;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -82,6 +83,7 @@ class ChatController extends AbstractController
     public function send(
         Request               $request,
         ChatMessageRepository $chatMessageRepository,
+        EntityManagerInterface $entityManager
     ): Response
     {
         $messageData = json_decode($request->getContent(), true);
@@ -101,11 +103,12 @@ class ChatController extends AbstractController
                 ->setUser($user)
                 ->setTimestamp(new DateTime());
 
-            $user->setPoints($user->getPoints() + 2);
-            $user->setChatMessageCount($user->getChatMessageCount() + 1);
+            $user
+                ->setPoints($user->getPoints() + 2)
+                ->setChatMessageCount($user->getChatMessageCount() + 1);
 
-            $chatMessageRepository->save($chatMessage, true);
-            $this->userRepository->save($user, true);
+            $chatMessageRepository->save($chatMessage );
+            $this->userRepository->save($user);
             $this->firestoreService->addDocument(
                 $messageData["collection"],
                 [
@@ -114,6 +117,10 @@ class ChatController extends AbstractController
                     "profilPicture" => $messageData["user"]["profilPicture"],
                     "timestamp" => new FirestoreTimestamp(),
                 ]);
+
+
+            $entityManager->flush();
+
 
             return new Response('', Response::HTTP_CREATED);
         } else {

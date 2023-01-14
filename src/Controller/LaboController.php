@@ -14,6 +14,7 @@ use App\Repository\LevelRepository;
 use App\Repository\UserCourseRepository;
 use App\Repository\UserRepository;
 use App\Services\SearchFormHandler;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -36,13 +37,14 @@ class LaboController extends ManagerController
      * @param FormFactoryInterface $formFactory
      */
     public function __construct(
-        private CourseRepository     $courseRepository,
-        private CategoryRepository   $categoryRepository,
-        private LevelRepository      $levelRepository,
-        private PaginatorInterface   $paginator,
-        private UserCourseRepository $userCourseRepository,
-        private FormFactoryInterface $formFactory,
+        private CourseRepository       $courseRepository,
+        private CategoryRepository     $categoryRepository,
+        private LevelRepository        $levelRepository,
+        private PaginatorInterface     $paginator,
+        private UserCourseRepository   $userCourseRepository,
+        private FormFactoryInterface   $formFactory,
 //        private SearchFormHandler    $searchFormHandler,
+        private EntityManagerInterface $entityManager
     )
     {
 
@@ -58,7 +60,7 @@ class LaboController extends ManagerController
      */
     #[Route('/', name: 'index')]
     public function index(
-        Request              $request,
+        Request $request,
     ): Response
     {
 
@@ -173,7 +175,8 @@ class LaboController extends ManagerController
         $searchForm = $searchFormHandler->getSearchForm();
 
         if ($coursesData === null) {
-            $coursesData = $this->courseRepository->findBy([], [$attr => $order]);        }
+            $coursesData = $this->courseRepository->findBy([], [$attr => $order]);
+        }
 
         $courses = $this->paginator->paginate(
             $coursesData,
@@ -248,8 +251,11 @@ class LaboController extends ManagerController
 
             $course->setLikeCount($course->getLikeCount() + 1);
 
-            $this->userCourseRepository->save($userCourse, true);
-            $this->courseRepository->save($course, true);
+            $this->userCourseRepository->save($userCourse);
+            $this->courseRepository->save($course);
+
+            $this->entityManager->flush();
+
 
             $this->addFlash('success', 'Le cours a bien été liké');
         }
@@ -275,15 +281,16 @@ class LaboController extends ManagerController
 
     /**
      * @param Course $course
+     * @param UserRepository $userRepository
      * @param Request $request
      * @return Response
      */
     #[Route('/read/{course}', name: 'course_is_read')]
     #[isGranted('ROLE_USER')]
     public function isRead(
-        Course  $course,
+        Course         $course,
         UserRepository $userRepository,
-        Request $request
+        Request        $request
     ): Response
     {
 
@@ -301,11 +308,11 @@ class LaboController extends ManagerController
 
             $userCourse->setIsRead(true);
             $course->setReadCount($course->getReadCount() + 1);
-            $user->setReadCount($user->getReadCount() + 1);
 
-            $this->userCourseRepository->save($userCourse, true);
-            $this->courseRepository->save($course, true);
-            $userRepository->save($user, true);
+            $this->userCourseRepository->save($userCourse );
+            $this->courseRepository->save($course);
+
+            $this->entityManager->flush();
 
 
             $this->addFlash('success', 'Vous avez bien marqué ce cours comme lu');

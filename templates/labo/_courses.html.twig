@@ -8,7 +8,7 @@
     <div class="courses__container">
         {% for course in courses %}
             <article class="courses__block" style="--clr: {{ course.category.color }}">
-                <div class="courses__title">
+                <div class="courses__infos">
                     <h3 style="color: {{ course.category.color }}">
                         <a href="{{ path('labo_by_category', {category: course.category.name}) }}">
                             {{ course.category.name }}
@@ -27,8 +27,13 @@
                 </p>
 
                 <p><em> Points : {{ course.points }}</em></p>
-                <h4>{{ course.title }}</h4>
-                <p>{{ course.content| striptags | slice(0, 70) }} ...</p>
+                <div class="courses__title">
+                    <h3><a href="{{ path('labo_course_show', {course: course.id}) }}">{{ course.title }}</a></h3>
+                </div>
+                <p>
+                    {{ course.content| striptags | slice(0, 70) }}
+                    <a class="redirect" href="{{ path('labo_course_show', {course: course.id}) }}"> ...</a>
+                </p>
                 <p><em>{{ course.createdAt|date("d-m-Y", "Europe/Paris") }}</em> - {{ course.readCount }} lectures(s)
                     - {{ course.likeCount }} like(s)</p>
                 </p>

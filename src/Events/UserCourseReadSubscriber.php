@@ -45,7 +45,7 @@ class UserCourseReadSubscriber implements EventSubscriber
 
         $user = $userCourse->getUser();
         if ($userCourse->isIsRead()) {
-            $user->setPoints($user->getPoints() + $points);
+            $user->setPoints($user->getPoints() + $points)->setReadCount($user->getReadCount() + 1);
         }
         $entityManager->persist($user);
 

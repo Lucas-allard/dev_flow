@@ -11,6 +11,7 @@ use App\Repository\ChallengeRepository;
 use App\Repository\LevelRepository;
 use App\Repository\UserChallengeRepository;
 use App\Services\SearchFormHandler;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -27,6 +28,7 @@ class ChallengeController extends ManagerController
         private ChallengeRepository $challengeRepository,
         private UserChallengeRepository $userChallengeRepository,
         private PaginatorInterface  $paginator,
+        private EntityManagerInterface $entityManager,
     )
     {
         parent::__construct($this->challengeRepository);
@@ -128,7 +130,7 @@ class ChallengeController extends ManagerController
 
     /**
      * @param Request $request
-     * @param Course $course
+     * @param Challenge $challenge
      * @return Response
      */
     #[Route('/like/{challenge}', name: 'like')]
@@ -155,8 +157,10 @@ class ChallengeController extends ManagerController
             $challenge->setLikeCount($challenge->getLikeCount() + 1);
 
 
-            $this->userChallengeRepository->save($userChallenge, true);
-            $this->challengeRepository->save($challenge, true);
+            $this->userChallengeRepository->save($userChallenge);
+            $this->challengeRepository->save($challenge);
+
+            $this->entityManager->flush();
 
             $this->addFlash('success', 'Le challenge a bien été liké');
         }
@@ -204,7 +208,7 @@ class ChallengeController extends ManagerController
         $hasNext = $this->hasNext($challenge->getId());
 
         return $this->render('challenge/challenge_show.html.twig', [
-            "course" => $challenge,
+            "challenge" => $challenge,
             "hasPrevious" => $hasPrevious,
             "hasNext" => $hasNext,
         ]);
@@ -231,9 +235,10 @@ class ChallengeController extends ManagerController
             $userChallenge->setIsComplete(true);
             $challenge->setCompleteCount($challenge->getCompleteCount() + 1);
 
-            $this->userChallengeRepository->save($userChallenge, true);
-            $this->challengeRepository->save($challenge, true);
+            $this->userChallengeRepository->save($userChallenge);
+            $this->challengeRepository->save($challenge,);
 
+            $this->entityManager->flush();
 
             $this->addFlash('success', 'Vous avez bien marqué ce cours comme lu');
         } else {
