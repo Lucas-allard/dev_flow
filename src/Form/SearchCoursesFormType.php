@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Data\ChallengeFilterData;
+use App\Data\CourseFilterData;
 use App\Entity\Category;
 use App\Entity\Level;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -84,7 +85,7 @@ class SearchCoursesFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => ChallengeFilterData::class,
+            'data_class' => CourseFilterData::class,
             'method' => 'GET',
             'csrf_protection' => false
         ]);

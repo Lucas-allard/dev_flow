@@ -5,12 +5,13 @@ namespace App\Controller;
 use App\Entity\Challenge;
 use App\Repository\FilterableRepositoryInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
 abstract class ManagerController extends AbstractController
 {
-    public function __construct(private FilterableRepositoryInterface $repository)
+    public function __construct(protected FilterableRepositoryInterface $repository)
     {
     }
 
@@ -46,4 +47,5 @@ abstract class ManagerController extends AbstractController
 
         return $next !== null;
     }
+
 }

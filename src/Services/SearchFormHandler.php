@@ -7,82 +7,54 @@ use App\Data\FilterDataInterface;
 use App\Repository\FilterableRepositoryInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 
 class SearchFormHandler
 {
+    /**
+     * @var FormFactoryInterface
+     */
     private FormFactoryInterface $formFactory;
-    private string $formType;
 
-    private FilterableRepositoryInterface $repository;
-    private FilterDataInterface $filterData;
-
-    private FormInterface $form;
+    private ?FormInterface $form = null;
 
     /**
      * @param FormFactoryInterface $formFactory
-     * @param string $formType
-     * @param FilterableRepositoryInterface $repository
-     * @param FilterDataInterface $filterData
      */
-    public function __construct(
-        FormFactoryInterface          $formFactory,
-        string                        $formType,
-        FilterableRepositoryInterface $repository,
-        FilterDataInterface           $filterData
-    )
+    public function __construct(FormFactoryInterface $formFactory)
     {
         $this->formFactory = $formFactory;
-        $this->formType = $formType;
-        $this->repository = $repository;
-        $this->filterData = $filterData;
     }
 
-
     /**
-     * @param Request $request
+     * @param $formType
+     * @param null $data
+     * @param array $options
      * @return FormInterface
      */
-    public function createForm(Request $request): FormInterface
+    public function createForm($formType, $data = null, array $options = [])
     {
-        $form = $this->formFactory->create($this->formType, $this->filterData);
-
-        $form->handleRequest($request);
-
-        return $form;
-    }
-
-    /**
-     * @param Request $request
-     * @return null
-     */
-    public function handleForm(Request $request)
-    {
-        $this->form = $this->createForm($request);
-
-
-        if ($this->form->isSubmitted() && $this->form->isValid()) {
-            return $this->repository->findBySearch($this->filterData);
-        }
-
-        return null;
-    }
-
-    /**
-     * @return FormInterface
-     */
-    public function getSearchForm(): FormInterface
-    {
+        $this->form = $this->formFactory->create($formType, $data, $options);
         return $this->form;
     }
 
     /**
-     * @param ChallengeFilterData $filterData
-     * @return SearchFormHandler
+     * @param Request $request
+     * @return bool
      */
-    public function setFilterData(ChallengeFilterData $filterData): SearchFormHandler
+    public function handleForm(Request $request): bool
     {
-        $this->filterData = $filterData;
-        return $this;
+        $this->form->handleRequest($request);
+        if ($this->form->isSubmitted() && $this->form->isValid()) {
+            return true;
+        }
+        return false;
     }
+
+    public function getSearchForm(): FormView
+    {
+        return $this->form->createView();
+    }
+
 }

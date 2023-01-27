@@ -7,19 +7,18 @@ use App\Data\CourseFilterData;
 use App\Entity\Course;
 use App\Entity\User;
 use App\Entity\UserCourse;
-use App\Form\SearchChallengeFormType;
 use App\Form\SearchCoursesFormType;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use App\Repository\LevelRepository;
 use App\Repository\UserCourseRepository;
 use App\Repository\UserRepository;
+use App\Services\Paginator;
 use App\Services\SearchFormHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,30 +27,35 @@ use Symfony\Component\Routing\Annotation\Route;
 class LaboController extends ManagerController
 {
 
-    private SearchFormHandler $searchFormHandler;
 
     /**
      * @param CourseRepository $courseRepository
      * @param CategoryRepository $categoryRepository
      * @param LevelRepository $levelRepository
-     * @param PaginatorInterface $paginator
      * @param UserCourseRepository $userCourseRepository
-     * @param FormFactoryInterface $formFactory
+     * @param SearchFormHandler $searchFormHandler
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(
         private CourseRepository       $courseRepository,
         private CategoryRepository     $categoryRepository,
         private LevelRepository        $levelRepository,
-        private PaginatorInterface     $paginator,
+        private Paginator              $paginator,
         private UserCourseRepository   $userCourseRepository,
-        private FormFactoryInterface   $formFactory,
+        private SearchFormHandler      $searchFormHandler,
         private EntityManagerInterface $entityManager,
     )
     {
         parent::__construct($this->courseRepository);
-        $this->searchFormHandler = new SearchFormHandler($this->formFactory, SearchCoursesFormType::class, $this->courseRepository, New CourseFilterData());
+    }
 
+    private function handleSearchForm(Request $request)
+    {
+        $form = $this->searchFormHandler->createForm(SearchCoursesFormType::class, new CourseFilterData());
+        if ($this->searchFormHandler->handleForm($request)) {
+            return $this->courseRepository->findBySearch($form->getData());
+        }
+        return null;
     }
 
 
@@ -64,28 +68,18 @@ class LaboController extends ManagerController
         Request $request,
     ): Response
     {
-
-        $coursesData = $this->searchFormHandler->handleForm($request);
-
-        $searchForm = $this->searchFormHandler->getSearchForm();
+        $coursesData = $this->handleSearchForm($request);
 
         if ($coursesData === null) {
             $coursesData = $this->courseRepository->findCourses();
         }
 
-        $categories = $this->categoryRepository->findAll();
-        $levels = $this->levelRepository->findAll();
-
-        $courses = $this->paginator->paginate(
-            $coursesData,
-            $request->query->getInt('page', 1),
-            15
-        );
+        $courses = $this->paginator->getPaginatedData($request, $coursesData, 15);
 
         return $this->render('labo/labo.html.twig', [
-            "categories" => $categories,
-            "searchForm" => $searchForm->createView(),
-            "levels" => $levels,
+            "categories" => $this->categoryRepository->findAll(),
+            "searchForm" => $this->searchFormHandler->getSearchForm(),
+            "levels" => $this->levelRepository->findAll(),
             "courses" => $courses,
         ]);
     }
@@ -98,27 +92,19 @@ class LaboController extends ManagerController
     #[Route('/catégories/{category}', name: 'by_category')]
     public function category(Request $request, string $category): Response
     {
-        $categories = $this->categoryRepository->findAll();
-
-        $coursesData = $this->searchFormHandler->handleForm($request);
-
-        $searchForm = $this->searchFormHandler->getSearchForm();
+        $coursesData = $this->handleSearchForm($request);
 
         if ($coursesData === null) {
             $coursesData = $this->courseRepository->findByCategory($category);
         }
 
-        $courses = $this->paginator->paginate(
-            $coursesData,
-            $request->query->getInt('page', 1),
-            15
-        );
+        $courses = $this->paginator->getPaginatedData($request, $coursesData, 15);
 
         return $this->render('labo/labo_by_category.html.twig', [
-            "categories" => $categories,
+            "categories" => $this->categoryRepository->findAll(),
             "category" => $category,
             "courses" => $courses,
-            "searchForm" => $searchForm->createView(),
+            "searchForm" => $this->searchFormHandler->getSearchForm(),
         ]);
     }
 
@@ -130,27 +116,19 @@ class LaboController extends ManagerController
     #[Route('/levels/{level}', name: 'by_level')]
     public function level(Request $request, string $level): Response
     {
-        $levels = $this->levelRepository->findAll();
-
-        $coursesData = $this->searchFormHandler->handleForm($request);
-
-        $searchForm = $this->searchFormHandler->getSearchForm();
+        $coursesData = $this->handleSearchForm($request);
 
         if ($coursesData === null) {
             $coursesData = $this->courseRepository->findByLevel($level);
         }
 
-        $courses = $this->paginator->paginate(
-            $coursesData,
-            $request->query->getInt('page', 1),
-            15
-        );
+        $courses = $this->paginator->getPaginatedData($request, $coursesData, 15);
 
         return $this->render('labo/labo_by_level.html.twig', [
-            "levels" => $levels,
+            "levels" => $this->levelRepository->findAll(),
             "level" => $level,
             "courses" => $courses,
-            "searchForm" => $searchForm->createView(),
+            "searchForm" => $this->searchFormHandler->getSearchForm(),
         ]);
     }
 
