@@ -4,8 +4,5 @@
 
 
 {% block body %}
-    {% block header %}
-        {% include "./header/_header.html.twig" %}
-    {% endblock %}
-    <div style="position: relative" {{ react_component('App') }}></div>
+    <div  {{ react_component('App') }}></div>
 {% endblock %}

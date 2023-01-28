@@ -1,22 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Le Labo - level{% endblock %}
+{% block title %}Le Labo - {{ level }}{% endblock %}
 
 {% block body %}
 
-    <main>
-        <section id="top-page">
-            <h2>Les levels</h2>
-            <div class="levels__container">
-                {% for level in levels %}
-                    <a href="{{ path("labo_by_level", {level: level.name}) }}"
-                       style="background-color: {{ level.color }}">{{ level.name }}</a>
-                {% endfor %}
-                <a href="{{ path("labo_index") }}">Tous</a>
-            </div>
-        </section>
+        {% include "commons/_levels.html.twig" with {'id': 'top-page' } %}
 
         {{ include('./labo/_courses.html.twig') }}
-    </main>
 
 {% endblock %}

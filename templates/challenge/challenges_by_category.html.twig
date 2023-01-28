@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Challenges - {{ category }}{% endblock %}
+
+{% block body %}
+
+    {{ include('/commons/_categories.html.twig') }}
+
+    {{ include('./challenge/_challenges.html.twig') }}
+
+{% endblock %}

@@ -7,7 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProjectTrackingRepository::class)]
-class ProjectTracking
+class ProjectTracking implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

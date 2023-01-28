@@ -27,9 +27,13 @@
 {% for type, message in app.flashes %}
     <div {{ react_component('Notification', {type: type, message: message}) }}></div>
 {% endfor %}
+<main>
+    {% block body %}{% endblock %}
 
-{% block body %}
+</main>
 
-{% endblock %}
+{#{% include "footer/_footer.html.twig" %}#}
+
+
 </body>
 </html>

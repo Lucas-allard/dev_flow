@@ -1,0 +1,19 @@
+<section id="top-page">
+    <h2>Les catégories</h2>
+    <div class="categories__container">
+        {% for category in categories %}
+            {% if 'labo' in app.request.attributes.get('_route') %}
+                <a href="{{ path("labo_by_category", {category: category.name}) }}"
+                   style="background-color: {{ category.color }}">{{ category.name }}</a>
+            {% elseif 'challenge' in app.request.attributes.get('_route') %}
+                <a href="{{ path("challenge_by_category", {category: category.name}) }}"
+                   style="background-color: {{ category.color }}">{{ category.name }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if 'labo' in app.request.attributes.get('_route') %}
+            <a href="{{ path("labo_index") }}">Tous</a>
+        {% elseif 'challenge' in app.request.attributes.get('_route') %}
+            <a href="{{ path("challenge_index") }}">Tous</a>
+        {% endif %}
+    </div>
+</section>

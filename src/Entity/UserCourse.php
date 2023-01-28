@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserCourseRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-class UserCourse
+class UserCourse implements EntityInterface, UserEntity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -28,18 +28,12 @@ class UserCourse
     #[ORM\Column]
     private ?bool $isLiked = null;
 
-    #[ORM\Column]
-    private ?bool $hasRead = null;
 
-    #[ORM\Column]
-    private ?bool $hasLiked = null;
 
     public function __construct()
     {
         $this->isLiked = false;
-        $this->hasLiked = false;
         $this->isRead = false;
-        $this->hasRead = false;
     }
 
     public function getId(): ?int
@@ -91,30 +85,6 @@ class UserCourse
     public function setIsLiked(bool $isLiked): self
     {
         $this->isLiked = $isLiked;
-
-        return $this;
-    }
-
-    public function isHasRead(): ?bool
-    {
-        return $this->hasRead;
-    }
-
-    public function setHasRead(bool $hasRead): self
-    {
-        $this->hasRead = $hasRead;
-
-        return $this;
-    }
-
-    public function isHasLiked(): ?bool
-    {
-        return $this->hasLiked;
-    }
-
-    public function setHasLiked(bool $hasLiked): self
-    {
-        $this->hasLiked = $hasLiked;
 
         return $this;
     }

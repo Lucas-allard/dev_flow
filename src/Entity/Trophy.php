@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TrophyRepository::class)]
-class Trophy
+class Trophy implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -33,6 +33,12 @@ class Trophy
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'trophies')]
     private Collection $users;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $img = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $requiredMessage = null;
 
     public function __construct()
     {
@@ -126,6 +132,30 @@ class Trophy
         if ($this->users->removeElement($user)) {
             $user->removeTrophy($this);
         }
+
+        return $this;
+    }
+
+    public function getImg(): ?string
+    {
+        return $this->img;
+    }
+
+    public function setImg(string $img): self
+    {
+        $this->img = $img;
+
+        return $this;
+    }
+
+    public function getRequiredMessage(): ?int
+    {
+        return $this->requiredMessage;
+    }
+
+    public function setRequiredMessage(?int $requiredMessage): self
+    {
+        $this->requiredMessage = $requiredMessage;
 
         return $this;
     }

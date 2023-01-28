@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'Il y a déjà un compte avec cette adresse email')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -58,9 +58,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profilColor = null;
 
-    #[ORM\ManyToMany(targetEntity: Challenge::class, mappedBy: 'users')]
-    private Collection $challenges;
-
     #[ORM\Column(nullable: true)]
     private ?int $points = null;
 
@@ -80,6 +77,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $readCount = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserChallenge::class)]
+    private Collection $userChallenges;
+
+    #[ORM\Column]
+    private ?int $chatMessageCount = null;
+
     /**
      * @throws Exception
      */
@@ -87,13 +90,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->createdAt = new \DateTime();
         $this->readCount = 0;
+        $this->chatMessageCount = 0;
         $this->points = 0;
         $this->profilColor = '#' . dechex(random_int(0, 16777215));
         $this->chatMessages = new ArrayCollection();
-        $this->challenges = new ArrayCollection();
         $this->trophies = new ArrayCollection();
         $this->payments = new ArrayCollection();
         $this->userCourses = new ArrayCollection();
+        $this->userChallenges = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -203,7 +207,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, ChatMessage>
+     * @return Collection<ChatMessage>
      */
     public function getChatMessages(): Collection
     {
@@ -215,6 +219,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if (!$this->chatMessages->contains($chatMessage)) {
             $this->chatMessages->add($chatMessage);
             $chatMessage->setUser($this);
+            $this->chatMessageCount++;
         }
 
         return $this;
@@ -226,6 +231,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($chatMessage->getUser() === $this) {
                 $chatMessage->setUser(null);
+                $this->chatMessageCount--;
             }
         }
 
@@ -276,33 +282,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfilColor(?string $profilColor): self
     {
         $this->profilColor = $profilColor;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Challenge>
-     */
-    public function getChallenges(): Collection
-    {
-        return $this->challenges;
-    }
-
-    public function addChallenge(Challenge $challenge): self
-    {
-        if (!$this->challenges->contains($challenge)) {
-            $this->challenges->add($challenge);
-            $challenge->addUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeChallenge(Challenge $challenge): self
-    {
-        if ($this->challenges->removeElement($challenge)) {
-            $challenge->removeUser($this);
-        }
 
         return $this;
     }
@@ -466,6 +445,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $userCourse->setCourse($course);
         $userCourse->setIsRead(true);
         $this->userCourses[] = $userCourse;
+
     }
 
     /**
@@ -509,6 +489,69 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setReadCount(int $readCount): self
     {
         $this->readCount = $readCount;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserChallenge>
+     */
+    public function getUserChallenges(): Collection
+    {
+        return $this->userChallenges;
+    }
+
+    public function getUserChallenge(Challenge $challenge)
+    {
+        foreach ($this->userChallenges as $userChallenge) {
+            if ($userChallenge->getChallenge()->getId() == $challenge->getId()) {
+                return $userChallenge;
+            }
+        }
+        return null;
+    }
+
+    public function hasChallenge($challenge): bool
+    {
+        foreach ($this->userChallenges as $userChallenge) {
+            if ($userChallenge->getChallenge()->getId() == $challenge->getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public function addUserChallenge(UserChallenge $userChallenge): self
+    {
+        if (!$this->userChallenges->contains($userChallenge)) {
+            $this->userChallenges->add($userChallenge);
+            $userChallenge->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserChallenge(UserChallenge $userChallenge): self
+    {
+        if ($this->userChallenges->removeElement($userChallenge)) {
+            // set the owning side to null (unless already changed)
+            if ($userChallenge->getUser() === $this) {
+                $userChallenge->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getChatMessageCount(): ?int
+    {
+        return $this->chatMessageCount;
+    }
+
+    public function setChatMessageCount(int $chatMessageCount): self
+    {
+        $this->chatMessageCount = $chatMessageCount;
 
         return $this;
     }

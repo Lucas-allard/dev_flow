@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ChallengeRepository::class)]
-class Challenge
+class Challenge  implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -31,12 +31,35 @@ class Challenge
     #[ORM\OneToOne(mappedBy: 'challenge', cascade: ['persist', 'remove'])]
     private ?Trophy $trophy = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'challenges')]
-    private Collection $users;
+    #[ORM\ManyToOne(inversedBy: 'challenges')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Category $category = null;
+
+    #[ORM\ManyToOne(inversedBy: 'challenges')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Level $level = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column]
+    private ?int $points = null;
+
+    #[ORM\OneToMany(mappedBy: 'challenge', targetEntity: UserChallenge::class)]
+    private Collection $userChallenges;
+
+    #[ORM\Column]
+    private ?int $completeCount = null;
+
+    #[ORM\Column]
+    private ?int $likeCount = null;
 
     public function __construct()
     {
-        $this->users = new ArrayCollection();
+        $this->points = 0;
+        $this->setCompleteCount(0);
+        $this->setLikeCount(0);
+        $this->userChallenges = new ArrayCollection();
     }
 
 
@@ -115,26 +138,104 @@ class Challenge
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
+    public function getCategory(): ?Category
     {
-        return $this->users;
+        return $this->category;
     }
 
-    public function addUser(User $user): self
+    public function setCategory(?Category $category): self
     {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function getLevel(): ?Level
+    {
+        return $this->level;
+    }
+
+    public function setLevel(?Level $level): self
+    {
+        $this->level = $level;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getPoints(): ?int
+    {
+        return $this->points;
+    }
+
+    public function setPoints(int $points): self
+    {
+        $this->points = $points;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserChallenge>
+     */
+    public function getUserChallenges(): Collection
+    {
+        return $this->userChallenges;
+    }
+
+    public function addUserChallenge(UserChallenge $userChallenge): self
+    {
+        if (!$this->userChallenges->contains($userChallenge)) {
+            $this->userChallenges->add($userChallenge);
+            $userChallenge->setChallenge($this);
         }
 
         return $this;
     }
 
-    public function removeUser(User $user): self
+    public function removeUserChallenge(UserChallenge $userChallenge): self
     {
-        $this->users->removeElement($user);
+        if ($this->userChallenges->removeElement($userChallenge)) {
+            // set the owning side to null (unless already changed)
+            if ($userChallenge->getChallenge() === $this) {
+                $userChallenge->setChallenge(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCompleteCount(): ?int
+    {
+        return $this->completeCount;
+    }
+
+    public function setCompleteCount(int $completeCount): self
+    {
+        $this->completeCount = $completeCount;
+
+        return $this;
+    }
+
+    public function getLikeCount(): ?int
+    {
+        return $this->likeCount;
+    }
+
+    public function setLikeCount(int $likeCount): self
+    {
+        $this->likeCount = $likeCount;
 
         return $this;
     }

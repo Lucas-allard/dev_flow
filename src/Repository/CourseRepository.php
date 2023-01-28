@@ -15,7 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Course[]    findAll()
  * @method Course[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CourseRepository extends ServiceEntityRepository
+class CourseRepository extends ServiceEntityRepository implements FilterableRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -85,6 +85,10 @@ class CourseRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @param $filterData
+     * @return array
+     */
     public function findBySearch($filterData): array
     {
         $query = $this->createQueryBuilder('c')
@@ -103,6 +107,7 @@ class CourseRepository extends ServiceEntityRepository
                 ->andWhere('ca.name = :category')
                 ->setParameter('category', $filterData->getCategory()->getName());
         }
+
         if ($filterData->getLevel()) {
             $query = $query
                 ->andWhere('l.name = :level')
@@ -118,13 +123,6 @@ class CourseRepository extends ServiceEntityRepository
                 ->andWhere('c.points <= :maxPoint')
                 ->setParameter('maxPoint', $filterData->getMaxPoint());
         }
-//        if ($filterData->getIsRead() !== null) {
-//            $query = $query
-//                ->andWhere('uc.isRead = :isRead')
-//                ->setParameter('isRead', $filterData->getIsRead());
-//        }
-
-        dd($query->getQuery()->getSQL());
         return $query->getQuery()->getResult();
     }
 
@@ -154,5 +152,23 @@ class CourseRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function findByCategoryOrLevel(?string $entity)
+    {
+        $query = $this->createQueryBuilder('c')
+            ->select('c', 'ca', 'l')
+            ->join('c.category', 'ca')
+            ->join('c.level', 'l')
+            ->orderBy('c.createdAt', 'DESC');
+
+        if ($entity) {
+            $query = $query
+                ->andWhere('ca.name = :entity')
+                ->orWhere('l.name = :entity')
+                ->setParameter('entity', $entity);
+        }
+
+        return $query->getQuery()->getResult();
     }
 }

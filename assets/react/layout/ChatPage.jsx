@@ -24,16 +24,13 @@ const ChatPage = ({user, users}) => {
     }, [users])
 
     return (
-        <main>
-            <div className="chat__page">
-                <Sidebar/>
-                <Chat/>
-                {isUsersList &&
-                    <UsersList/>
-                }
-            </div>
-        </main>
-
+        <div className="chat__page">
+            <Sidebar/>
+            <Chat/>
+            {isUsersList &&
+                <UsersList/>
+            }
+        </div>
     );
 }
 

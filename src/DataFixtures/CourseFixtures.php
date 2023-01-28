@@ -21,7 +21,7 @@ class CourseFixtures extends Fixture implements DependentFixtureInterface
             for ($i = 0; $i < $paragraphCount; $i++) {
                 $content .= "<p>" . $faker->paragraph(2, true) . "</p>";
                 if ($faker->boolean(33)) {
-                    $content .= '<img src="' . $faker->imageUrl(640,480) . '" alt="' . $faker->sentence(3, true) . '" >';
+                    $content .= '<img src="/images/code_exemple.svg" alt="' . $faker->sentence(3, true) . '" >';
                 }
             }
             $course->setContent($content);

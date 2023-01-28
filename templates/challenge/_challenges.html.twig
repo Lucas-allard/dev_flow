@@ -1,0 +1,132 @@
+<section class="challenges__section">
+    <h2>Les derniers challenges</h2>
+
+    {{ include('./challenge/_search_form.html.twig') }}
+
+
+    {{ include('./commons/_sort.html.twig') }}
+
+    <div class="challenges__container">
+        {% for challenge in challenges %}
+            <article class="challenges__block__background"
+                     style="--clr: {{ challenge.category.color }}; --i: {{ loop.index }} ">
+                <div class="challenges__block">
+                    <div class="challenges__infos">
+                        <h3 style="color: {{ challenge.category.color }}">
+                            <a href="{{ path('challenge_by_category', {category: challenge.category.name}) }}">
+                                {{ challenge.category.name }}
+                            </a>
+                        </h3>
+                        {% if (challenge.startDate < "now"|date_modify("-1 month")) and (challenge.endDate > "now"|date_modify("1 month"))%}
+                            <img src="{{ asset('images/icon_new.png') }}" alt="Nouveau cours" class="courses__new"/>
+                        {% endif %}
+                    </div>
+                    <p>
+                        <em style="color: {{ challenge.level.color }}">
+                            <a href="{{ path('challenge_by_level', {level: challenge.level.name}) }}">
+                                Niveau : {{ challenge.level.name }}
+                            </a>
+                        </em>
+                    </p>
+                    <div class="challenges__awards">
+                        {% if challenge.points %}
+                            <p><em>Points : <span>{{ challenge.points }}</span></em></p>
+                        {% endif %}
+
+                        {% if challenge.trophy is not null %}
+                            <p class="challenges__trophy">Trophée :
+                                <span>
+                                <img src="{{ asset( challenge.trophy.img ) }}" alt="{{ challenge.trophy.name }}">
+                            </span>
+                            </p>
+                        {% endif %}
+                    </div>
+                    <div class="challenges__title">
+                        <h3>
+                            <a href="{{ path('challenge_show', {challenge: challenge.id}) }}">
+                                {{ challenge.name }}
+                            </a>
+                        </h3>
+                    </div>
+                    <p>
+                        {{ challenge.description| striptags | slice(0, 70) }}
+                        <a class="redirect" href="{{ path('challenge_show', {challenge: challenge.id}) }}"> ... </a>
+                    </p>
+                    <p><em>{{ challenge.createdAt|date("d-m-Y", "Europe/Paris") }}</em>
+                        - {{ challenge.completeCount }} complétion(s)
+                        - {{ challenge.likeCount }} like(s)
+                    </p>
+                    <div class="challenges__dates">
+                        {% if challenge.endDate < date('now') %}
+                            <p class="challenges__end">Terminé depuis le :
+                                <span> {{ challenge.endDate|date("d-m-Y", "Europe/Paris") }}</span>
+                            </p>
+
+                        {% else %}
+                            <p class="challenges__start">Date de début :
+                                <span> {{ challenge.startDate|date("d-m-Y", "Europe/Paris") }}</span></p>
+                        {% endif %}
+                    </div>
+                    <div class="links__block">
+                        <a href="{{ path('challenge_show', {challenge: challenge.id}) }}">
+                        <span>
+                            <i class="fa-solid fa-eye"></i>
+                        </span>
+                            Consulter
+                        </a>
+                        {% if app.user %}
+                            {% if not app.user.hasChallenge(challenge) %}
+                                <a href="{{ path("challenge_add", {challenge: challenge.id, }) }}?token={{ csrf_token('challenge' ~ challenge.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-plus"></i>
+                                </span>
+                                    Ajouter</a>
+                                <a href="{{ path("challenge_like", {challenge: challenge.id, }) }}?token={{ csrf_token('challenge' ~ challenge.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                    J'aime</a>
+                            {% endif %}
+                            {% if app.user.hasChallenge(challenge) and not app.user.getUserChallenge(challenge).isIsLiked() %}
+                                <a href="{{ path("challenge_like", {challenge: challenge.id, }) }}?token={{ csrf_token('challenge' ~ challenge.id) }}">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                </span>
+                                    J'aime</a>
+                            {% elseif app.user.hasChallenge(challenge) and app.user.getUserChallenge(challenge).isIsLiked() %}
+                                <span class="links__block__isLiked"><i class="fa-solid fa-check"></i>J'aime</span>
+                            {% endif %}
+                        {% else %}
+                            <a href="{{ path('app_login') }}">
+                            <span>
+                            <i class="fa-solid fa-plus"></i>
+                            </span>
+                                Ajouter
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+    <div class="anim__absolute__right">
+        <div class="bowl__design">
+            <div class="shadow"></div>
+            <div class="bowl">
+                <div class="liquid"></div>
+            </div>
+        </div>
+    </div>
+    <div class="anim__absolute__left">
+        <div class="bowl__design">
+            <div class="shadow"></div>
+            <div class="bowl">
+                <div class="liquid"></div>
+            </div>
+        </div>
+    </div>
+    {{ knp_pagination_render(challenges) }}
+    <div class="topPage__link">
+        <a href="#top-page"><i class="fa-solid fa-arrow-up"></i></a>
+    </div>
+</section>

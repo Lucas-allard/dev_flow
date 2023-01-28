@@ -3,44 +3,12 @@
 
     {{ include('./labo/_search_form.html.twig') }}
 
-    <div class="filter__block">
-        <a href="{{ path('labo_sort', { 'attr': 'createdAt', 'order': app.request.attributes.get('order') == 'ASC' and app.request.attributes.get('attr') == 'createdAt'  ? 'DESC' : 'ASC'}) }}">
-                    <span>
-                        {% if app.request.attributes.get('order') == 'ASC' and app.request.attributes.get('attr') == 'createdAt' %}
-                            <i class="fa-solid fa-arrow-down"> </i>
-                        {% else %}
-                            <i class="fa-solid fa-arrow-up"></i>
-                        {% endif %}
-                    </span>
-            Date
-        </a>
-        <a href="{{ path('labo_sort', {'attr': 'points', 'order': app.request.attributes.get('order') == 'ASC' and app.request.attributes.get('attr') == 'points' ? 'DESC' : 'ASC' }) }}">
-            <span>
-                {% if app.request.attributes.get('order') == 'ASC' and app.request.attributes.get('attr') == 'points' %}
-                    <i class="fa-solid fa-arrow-down"> </i>
-                {% else %}
-                    <i class="fa-solid fa-arrow-up"></i>
-                {% endif %}
-
-            </span>
-            Points
-        </a>
-        <a href="{{ path('labo_sort', { 'attr': 'readCount', 'order': app.request.attributes.get('order') == 'ASC' and  app.request.attributes.get('attr') == 'readCount' ? 'DESC' : 'ASC' }) }}">
-                    <span>
-                      {% if app.request.attributes.get('order') == 'ASC' and app.request.attributes.get('attr') == 'readCount' %}
-                          <i class="fa-solid fa-arrow-down"> </i>
-                        {% else %}
-                          <i class="fa-solid fa-arrow-up"></i>
-                      {% endif %}
-                    </span>
-            Nombre de lectures
-        </a>
-    </div>
+    {{ include('./commons/_sort.html.twig') }}
 
     <div class="courses__container">
         {% for course in courses %}
-            <div class="courses__block" style="--clr: {{ course.category.color }}">
-                <div class="courses__title">
+            <article class="courses__block" style="--clr: {{ course.category.color }}">
+                <div class="courses__infos">
                     <h3 style="color: {{ course.category.color }}">
                         <a href="{{ path('labo_by_category', {category: course.category.name}) }}">
                             {{ course.category.name }}
@@ -50,7 +18,6 @@
                         <img src="{{ asset('images/icon_new.png') }}" alt="Nouveau cours" class="courses__new"/>
                     {% endif %}
                 </div>
-
                 <p>
                     <em style="color: {{ course.level.color }}">
                         <a href="{{ path('labo_by_level', {level: course.level.name}) }}">
@@ -58,13 +25,19 @@
                         </a>
                     </em>
                 </p>
+
                 <p><em> Points : {{ course.points }}</em></p>
-                <h4>{{ course.title }}</h4>
-                <p>{{ course.content| striptags | slice(0, 70) }} ...</p>
+                <div class="courses__title">
+                    <h3><a href="{{ path('labo_course_show', {course: course.id}) }}">{{ course.title }}</a></h3>
+                </div>
+                <p>
+                    {{ course.content| striptags | slice(0, 70) }}
+                    <a class="redirect" href="{{ path('labo_course_show', {course: course.id}) }}"> ...</a>
+                </p>
                 <p><em>{{ course.createdAt|date("d-m-Y", "Europe/Paris") }}</em> - {{ course.readCount }} lectures(s)
                     - {{ course.likeCount }} like(s)</p>
                 </p>
-                <div class="courses__blockLinks">
+                <div class="links__block">
                     <a href={{ path("labo_course_show", {course: course.id}) }}><span><i
                                     class="fa-solid fa-eye"></i></span>Consulter</a>
                     {% if app.user %}
@@ -81,7 +54,7 @@
                                 J'aime</a>
                         {% endif %}
                         {% if app.user.hasCourse(course) and app.user.getUserCourse(course).isIsRead() %}
-                            <span class="courses__isRead"><i class="fa-solid fa-check"></i>Déjà lu</span>
+                            <span class="links__block__isRead"><i class="fa-solid fa-check"></i>Déjà lu</span>
                         {% endif %}
 
                         {% if app.user.hasCourse(course) and not app.user.getUserCourse(course).isIsLiked() %}
@@ -91,14 +64,14 @@
                                 </span>
                                 J'aime</a>
                         {% elseif app.user.hasCourse(course) and app.user.getUserCourse(course).isIsLiked() %}
-                            <span class="courses__isLiked"><i class="fa-solid fa-check"></i>J'aime</span>
+                            <span class="links__block__isLiked"><i class="fa-solid fa-check"></i>J'aime</span>
                         {% endif %}
                     {% else %}
-                        <a href="{{ path('app_login') }}" class="btn btn-primary"><span><i
+                        <a href="{{ path('app_login') }}"><span><i
                                         class="fa-solid fa-plus"></i></span>Ajouter</a>
                     {% endif %}
                 </div>
-            </div>
+            </article>
         {% endfor %}
     </div>
     <div class="anim__absolute__right">

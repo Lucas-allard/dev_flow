@@ -1,0 +1,19 @@
+<section id="{{ id is defined ? id : null }}">
+    <h2>Les levels</h2>
+    <div class="levels__container">
+        {% for level in levels %}
+            {% if 'labo' in app.request.attributes.get('_route') %}
+                <a href="{{ path("labo_by_level", {level: level.name}) }}"
+                   style="background-color: {{ level.color }}">{{ level.name }}</a>
+            {% elseif 'challenge' in app.request.attributes.get('_route') %}
+                <a href="{{ path("challenge_by_level", {level: level.name}) }}"
+                   style="background-color: {{ level.color }}">{{ level.name }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if 'labo' in app.request.attributes.get('_route') %}
+            <a href="{{ path("labo_index") }}">Tous</a>
+        {% elseif 'challenge' in app.request.attributes.get('_route') %}
+            <a href="{{ path("challenge_index") }}">Tous</a>
+        {% endif %}
+    </div>
+</section>

@@ -3,7 +3,6 @@
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
-parameters:
 
 services:
   # default configuration for services in *this* file
@@ -23,19 +22,32 @@ services:
   App\Events\LoginListener:
     tags:
       - { name: kernel.event_listener, event: security.interactive_login }
+
   App\Events\LogoutSubscriber:
     tags:
       - { name: kernel.event_listener, event: security.logout }
+
   App\Events\IdleTimeoutRequestListener:
     tags:
       - { name: kernel.event_listener, event: kernel.request }
+
     arguments:
       - '@security.token_storage'
       - '@security.logout_url_generator'
       - 172800  # Durée d'inactivité avant déconnexion en secondes
+
   App\Events\UserCourseReadSubscriber:
     tags:
       - { name: doctrine.event_subscriber, event: postUpdate }
+
+  App\Events\UserChallengeCompleteSubscriber:
+    tags:
+      - { name: doctrine.event_subscriber, event: postUpdate }
+
+  App\Events\UserSettingPointSubscriber:
+    tags:
+      - { name: doctrine.event_subscriber, event: postUpdate }
+
 
   App\Firestore\FirestoreConnexion:
     arguments:

@@ -8,6 +8,7 @@ use App\Repository\UserRepository;
 use App\Services\AddMessageToCurrentUser;
 use App\Services\FirestoreService;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use MrShan0\PHPFirestore\Fields\FirestoreTimestamp;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,6 +19,7 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 
+#[Route('/chat', name: 'chat_')]
 class ChatController extends AbstractController
 {
 
@@ -37,7 +39,7 @@ class ChatController extends AbstractController
     /**
      * @return Response
      */
-    #[Route('/chat', name: 'chat')]
+    #[Route('/', name: 'index')]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
@@ -77,10 +79,11 @@ class ChatController extends AbstractController
      * @param ChatMessageRepository $chatMessageRepository
      * @return Response
      */
-    #[Route('/chat/send', name: 'chat_send')]
+    #[Route('/send', name: 'send')]
     public function send(
-        Request                 $request,
-        ChatMessageRepository   $chatMessageRepository,
+        Request               $request,
+        ChatMessageRepository $chatMessageRepository,
+        EntityManagerInterface $entityManager
     ): Response
     {
         $messageData = json_decode($request->getContent(), true);
@@ -100,8 +103,12 @@ class ChatController extends AbstractController
                 ->setUser($user)
                 ->setTimestamp(new DateTime());
 
-            $chatMessageRepository->save($chatMessage, true);
+            $user
+                ->setPoints($user->getPoints() + 2)
+                ->setChatMessageCount($user->getChatMessageCount() + 1);
 
+            $chatMessageRepository->save($chatMessage );
+            $this->userRepository->save($user);
             $this->firestoreService->addDocument(
                 $messageData["collection"],
                 [
@@ -110,6 +117,10 @@ class ChatController extends AbstractController
                     "profilPicture" => $messageData["user"]["profilPicture"],
                     "timestamp" => new FirestoreTimestamp(),
                 ]);
+
+
+            $entityManager->flush();
+
 
             return new Response('', Response::HTTP_CREATED);
         } else {
@@ -121,7 +132,7 @@ class ChatController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    #[Route('/chat/send/private', name: 'chat_send_private')]
+    #[Route('/send/private', name: 'send_private')]
     public function sendPrivateMessage(
         Request $request,
     ): Response

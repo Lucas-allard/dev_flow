@@ -3,31 +3,12 @@
 {% block title %}Le Labo{% endblock %}
 
 {% block body %}
-    <main>
-        <section id="top-page">
-            <h2>Les catégories</h2>
-            <div class="categories__container">
-                {% for category in categories %}
-                    <a href="{{ path("labo_by_category", {category: category.name}) }}"
-                       style="background-color: {{ category.color }}">{{ category.name }}</a>
-                {% endfor %}
-                <a href="{{ path("labo_index") }}">Tous</a>
-            </div>
-        </section>
-        <section>
-            <h2>Les levels</h2>
-            <div class="levels__container">
-                {% for level in levels %}
-                    <a href="{{ path("labo_by_level", {level: level.name}) }}"
-                       style="background-color: {{ level.color }}">{{ level.name }}</a>
-                {% endfor %}
-                <a href="{{ path("labo_index") }}">Tous</a>
-            </div>
-        </section>
 
+    {{ include('./commons/_categories.html.twig') }}
 
-        {{ include('./labo/_courses.html.twig') }}
+    {{ include('./commons/_levels.html.twig') }}
 
-    </main>
+    {{ include('./labo/_courses.html.twig') }}
+
 
 {% endblock %}

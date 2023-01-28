@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
-class Category
+class Category implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -28,9 +28,13 @@ class Category
     #[ORM\Column(length: 255)]
     private ?string $color = null;
 
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Challenge::class)]
+    private Collection $challenges;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
+        $this->challenges = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -100,6 +104,36 @@ class Category
     public function setColor(string $color): self
     {
         $this->color = $color;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Challenge>
+     */
+    public function getChallenges(): Collection
+    {
+        return $this->challenges;
+    }
+
+    public function addChallenge(Challenge $challenge): self
+    {
+        if (!$this->challenges->contains($challenge)) {
+            $this->challenges->add($challenge);
+            $challenge->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChallenge(Challenge $challenge): self
+    {
+        if ($this->challenges->removeElement($challenge)) {
+            // set the owning side to null (unless already changed)
+            if ($challenge->getCategory() === $this) {
+                $challenge->setCategory(null);
+            }
+        }
 
         return $this;
     }
