@@ -14,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  *
  * @method Challenge|null find($id, $lockMode = null, $lockVersion = null)
  * @method Challenge|null findOneBy(array $criteria, array $orderBy = null)
- * @method Challenge[]    findAll()
+// * @method Challenge[]    findAll()
  * @method Challenge[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ChallengeRepository extends ServiceEntityRepository implements FilterableRepositoryInterface
@@ -42,7 +42,7 @@ class ChallengeRepository extends ServiceEntityRepository implements FilterableR
         }
     }
 
-    public function findChallenges()
+    public function findAll()
     {
         return $this->createQueryBuilder('c')
             ->select('c', 'ca', 'l', 't')
@@ -162,5 +162,23 @@ class ChallengeRepository extends ServiceEntityRepository implements FilterableR
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function findByCategoryOrLevel(?string $entity)
+    {
+        $query = $this->createQueryBuilder('c')
+            ->select('c', 'ca', 'l')
+            ->join('c.category', 'ca')
+            ->join('c.level', 'l')
+            ->orderBy('c.createdAt', 'DESC');
+
+        if ($entity) {
+            $query = $query
+                ->andWhere('ca.name = :entity')
+                ->orWhere('l.name = :entity')
+                ->setParameter('entity', $entity);
+        }
+
+        return $query->getQuery()->getResult();
     }
 }

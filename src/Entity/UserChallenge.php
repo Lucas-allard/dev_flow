@@ -6,7 +6,7 @@ use App\Repository\UserChallengeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserChallengeRepository::class)]
-class UserChallenge implements EntityInterface
+class UserChallenge implements EntityInterface, UserEntity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

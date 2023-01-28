@@ -12,7 +12,7 @@ class Paginator
     {
     }
 
-    public function getPaginatedData(Request $request, $data, $limit = 10): PaginationInterface
+    public function getPaginatedData(Request $request, $data, $limit = 15): PaginationInterface
     {
         return $this->paginator->paginate(
             $data,

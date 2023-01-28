@@ -2,23 +2,17 @@
 
 namespace App\Controller;
 
-use App\Data\ChallengeFilterData;
 use App\Data\CourseFilterData;
 use App\Entity\Course;
-use App\Entity\User;
 use App\Entity\UserCourse;
 use App\Form\SearchCoursesFormType;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use App\Repository\LevelRepository;
 use App\Repository\UserCourseRepository;
-use App\Repository\UserRepository;
 use App\Services\Paginator;
-use App\Services\SearchFormHandler;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
-use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,15 +20,13 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/labo', name: 'labo_')]
 class LaboController extends ManagerController
 {
-
-
     /**
      * @param CourseRepository $courseRepository
      * @param CategoryRepository $categoryRepository
      * @param LevelRepository $levelRepository
+     * @param Paginator $paginator
      * @param UserCourseRepository $userCourseRepository
-     * @param SearchFormHandler $searchFormHandler
-     * @param EntityManagerInterface $entityManager
+     * @param FormFactoryInterface $formFactory
      */
     public function __construct(
         private CourseRepository       $courseRepository,
@@ -42,22 +34,19 @@ class LaboController extends ManagerController
         private LevelRepository        $levelRepository,
         private Paginator              $paginator,
         private UserCourseRepository   $userCourseRepository,
-        private SearchFormHandler      $searchFormHandler,
-        private EntityManagerInterface $entityManager,
+        FormFactoryInterface           $formFactory,
     )
     {
-        parent::__construct($this->courseRepository);
+        parent::__construct(
+            $this->categoryRepository,
+            $this->levelRepository,
+            $this->paginator,
+            $this->courseRepository,
+            SearchCoursesFormType::class,
+            $formFactory,
+            new CourseFilterData()
+        );
     }
-
-    private function handleSearchForm(Request $request)
-    {
-        $form = $this->searchFormHandler->createForm(SearchCoursesFormType::class, new CourseFilterData());
-        if ($this->searchFormHandler->handleForm($request)) {
-            return $this->courseRepository->findBySearch($form->getData());
-        }
-        return null;
-    }
-
 
     /**
      * @param Request $request
@@ -68,20 +57,11 @@ class LaboController extends ManagerController
         Request $request,
     ): Response
     {
-        $coursesData = $this->handleSearchForm($request);
-
-        if ($coursesData === null) {
-            $coursesData = $this->courseRepository->findCourses();
-        }
-
-        $courses = $this->paginator->getPaginatedData($request, $coursesData, 15);
-
-        return $this->render('labo/labo.html.twig', [
-            "categories" => $this->categoryRepository->findAll(),
-            "searchForm" => $this->searchFormHandler->getSearchForm(),
-            "levels" => $this->levelRepository->findAll(),
-            "courses" => $courses,
-        ]);
+        return $this->getData(
+            request: $request,
+            view: 'labo/labo.html.twig',
+            arg: 'courses'
+        );
     }
 
     /**
@@ -92,20 +72,12 @@ class LaboController extends ManagerController
     #[Route('/catégories/{category}', name: 'by_category')]
     public function category(Request $request, string $category): Response
     {
-        $coursesData = $this->handleSearchForm($request);
-
-        if ($coursesData === null) {
-            $coursesData = $this->courseRepository->findByCategory($category);
-        }
-
-        $courses = $this->paginator->getPaginatedData($request, $coursesData, 15);
-
-        return $this->render('labo/labo_by_category.html.twig', [
-            "categories" => $this->categoryRepository->findAll(),
-            "category" => $category,
-            "courses" => $courses,
-            "searchForm" => $this->searchFormHandler->getSearchForm(),
-        ]);
+        return $this->getData(
+            request: $request,
+            view: 'labo/labo_by_category.html.twig',
+            arg: 'courses',
+            entity: $category
+        );
     }
 
     /**
@@ -116,20 +88,12 @@ class LaboController extends ManagerController
     #[Route('/levels/{level}', name: 'by_level')]
     public function level(Request $request, string $level): Response
     {
-        $coursesData = $this->handleSearchForm($request);
-
-        if ($coursesData === null) {
-            $coursesData = $this->courseRepository->findByLevel($level);
-        }
-
-        $courses = $this->paginator->getPaginatedData($request, $coursesData, 15);
-
-        return $this->render('labo/labo_by_level.html.twig', [
-            "levels" => $this->levelRepository->findAll(),
-            "level" => $level,
-            "courses" => $courses,
-            "searchForm" => $this->searchFormHandler->getSearchForm(),
-        ]);
+        return $this->getData(
+            request: $request,
+            view: 'labo/labo_by_level.html.twig',
+            arg: 'courses',
+            entity: $level
+        );
     }
 
     /**
@@ -141,30 +105,13 @@ class LaboController extends ManagerController
     #[Route('/sort?attr={attr}&order={order}', name: 'sort')]
     public function sortCourse(Request $request, string $attr, string $order): Response
     {
-        $categories = $this->categoryRepository->findAll();
-
-        $levels = $this->levelRepository->findAll();
-
-        $coursesData = $this->searchFormHandler->handleForm($request);
-
-        $searchForm = $this->searchFormHandler->getSearchForm();
-
-        if ($coursesData === null) {
-            $coursesData = $this->courseRepository->findBy([], [$attr => $order]);
-        }
-
-        $courses = $this->paginator->paginate(
-            $coursesData,
-            $request->query->getInt('page', 1),
-            15
+        return $this->getData(
+            request: $request,
+            view: 'labo/labo.html.twig',
+            arg: 'courses',
+            attr: $attr,
+            order: $order
         );
-
-        return $this->render('labo/labo.html.twig', [
-            "categories" => $categories,
-            "searchForm" => $searchForm->createView(),
-            "levels" => $levels,
-            "courses" => $courses,
-        ]);
     }
 
 
@@ -175,25 +122,18 @@ class LaboController extends ManagerController
      */
     #[Route('/add/{course}', name: 'course_add')]
     #[isGranted('ROLE_USER')]
-    public function addToUser(
+    public function addCourseToUser(
         Request $request,
         Course  $course,
     ): Response
     {
-        $user = $this->getUser();
-
-        if ($this->checkToken($request, 'course', $course)) {
-            $userCourse = new UserCourse();
-            $userCourse->setUser($user);
-            $userCourse->setCourse($course);
-            $this->userCourseRepository->save($userCourse, true);
-
-            $this->addFlash('success', 'Le cours a bien été ajouté à votre liste de cours');
-        } else {
-            $this->addFlash('danger', 'Vous avez déjà ajouté ce cours à votre liste de cours');
-        }
-
-        return $this->redirect($request->headers->get('referer'));
+        return $this->addToUser(
+            $request,
+            "course",
+            $course,
+            UserCourse::class,
+            $this->userCourseRepository
+        );
     }
 
     /**
@@ -208,54 +148,27 @@ class LaboController extends ManagerController
         Course  $course,
     ): Response
     {
-
-        $user = $this->getUser();
-
-        if ($this->checkToken($request, 'course', $course)) {
-            if (!$this->userCourseRepository->findOneBy(['user' => $user, 'course' => $course])) {
-                $userCourse = new UserCourse();
-                $userCourse->setUser($user);
-                $userCourse->setCourse($course);
-            } else {
-                $userCourse = $this->userCourseRepository->findOneBy(['user' => $user, 'course' => $course]);
-
-            }
-
-            $userCourse->setIsLiked(true);
-
-            $course->setLikeCount($course->getLikeCount() + 1);
-
-            $this->userCourseRepository->save($userCourse);
-            $this->courseRepository->save($course);
-
-            $this->entityManager->flush();
-
-
-            $this->addFlash('success', 'Le cours a bien été liké');
-        }
-
-        return $this->redirect($request->headers->get('referer'));
+        return $this->like(
+            $request,
+            "course",
+            $course,
+            UserCourse::class,
+            $this->userCourseRepository
+        );
     }
 
-    /**
-     * @throws NonUniqueResultException
-     */
     #[Route('/show/{course}', name: 'course_show')]
-    public function show(Course $course): Response
+    public function show(Course $course, Request $request): Response
     {
-        $hasPrevious = $this->hasPrevious($course->getId());
-        $hasNext = $this->hasNext($course->getId());
-
-        return $this->render('labo/course_show.html.twig', [
-            "course" => $course,
-            "hasPrevious" => $hasPrevious,
-            "hasNext" => $hasNext,
-        ]);
+        return $this->showData(
+            $request,
+            $course,
+            'labo/course_show.html.twig',
+        );
     }
 
     /**
      * @param Course $course
-     * @param UserRepository $userRepository
      * @param Request $request
      * @return Response
      */
@@ -266,34 +179,12 @@ class LaboController extends ManagerController
         Request $request
     ): Response
     {
-
-        /** @var User $user */
-        $user = $this->getUser();
-
-        if ($this->checkToken($request, 'course', $course)) {
-            if (!$this->userCourseRepository->findOneBy(['user' => $user, 'course' => $course])) {
-                $userCourse = new UserCourse();
-                $userCourse->setUser($user);
-                $userCourse->setCourse($course);
-            } else {
-                $userCourse = $this->userCourseRepository->findOneBy(['user' => $user, 'course' => $course]);
-            }
-
-            $userCourse->setIsRead(true);
-            $course->setReadCount($course->getReadCount() + 1);
-
-            $this->userCourseRepository->save($userCourse);
-            $this->courseRepository->save($course);
-
-            $this->entityManager->flush();
-
-
-            $this->addFlash('success', 'Vous avez bien marqué ce cours comme lu');
-        } else {
-            $this->addFlash('danger', 'Vous avez déjà marqué ce cours comme lu');
-        }
-
-        return $this->redirect($request->headers->get('referer'));
+        return $this->updateStatus(
+            $request,
+            "course",
+            $course,
+            UserCourse::class,
+            $this->userCourseRepository
+        );
     }
-
 }

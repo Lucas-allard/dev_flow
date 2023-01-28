@@ -14,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method UserChallenge[]    findAll()
  * @method UserChallenge[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UserChallengeRepository extends ServiceEntityRepository
+class UserChallengeRepository extends ServiceEntityRepository implements UserEntityRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {

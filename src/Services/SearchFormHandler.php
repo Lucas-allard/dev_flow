@@ -52,7 +52,7 @@ class SearchFormHandler
         return false;
     }
 
-    public function getSearchForm(): FormView
+    public function getSearchFormView(): FormView
     {
         return $this->form->createView();
     }

@@ -15,4 +15,6 @@ interface FilterableRepositoryInterface
     public function findPrevious(int $id);
 
     public function findNext(int $id);
+
+    public function findByCategoryOrLevel(?string $entity);
 }

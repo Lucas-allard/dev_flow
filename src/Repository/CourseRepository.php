@@ -153,4 +153,22 @@ class CourseRepository extends ServiceEntityRepository implements FilterableRepo
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function findByCategoryOrLevel(?string $entity)
+    {
+        $query = $this->createQueryBuilder('c')
+            ->select('c', 'ca', 'l')
+            ->join('c.category', 'ca')
+            ->join('c.level', 'l')
+            ->orderBy('c.createdAt', 'DESC');
+
+        if ($entity) {
+            $query = $query
+                ->andWhere('ca.name = :entity')
+                ->orWhere('l.name = :entity')
+                ->setParameter('entity', $entity);
+        }
+
+        return $query->getQuery()->getResult();
+    }
 }
