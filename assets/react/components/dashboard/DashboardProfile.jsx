@@ -10,7 +10,6 @@ function DashboardProfile(props) {
     const user = useSelector(selectUser)
     const {register, handleSubmit, formState: {errors}, setValue} = useForm();
 
-
     const userFields = [
         {
             type: "text",
@@ -42,7 +41,6 @@ function DashboardProfile(props) {
         {
             type: "text",
             name: "job",
-            value: user?.job ?? "",
             label: "Status (Apprenti ou Développeur)",
             register: {
                 ...register("job", {
@@ -55,12 +53,12 @@ function DashboardProfile(props) {
 
         },
         {
-            type: "text",
-            name: "address",
-            value: user?.address ?? "",
-            label: "Adresse",
-            register: {...register("address")},
-
+            type: "file",
+            name: "profilPicture",
+            label: "Photo de profil",
+            register: {
+                ...register("profilPicture")
+            },
         },
         {
             type: "text",

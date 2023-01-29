@@ -16,12 +16,17 @@
     color: #23242a;
     font-size: 1em;
     letter-spacing: 0.05em;
-    z-index: 2;
+    z-index: 1;
     margin-top: 1rem;
 
     div {
       display: none;
     }
+  }
+
+  input[type="file"] {
+    text-align: left;
+    color: $color-white
   }
 
   .error {
@@ -30,6 +35,15 @@
     margin-top: 1rem;
     color: red;
     font-size: 0.75em;
+  }
+
+  button {
+    position: absolute;
+    left: 0;
+    bottom: 10px;
+    background-color: $color-green;
+    color: $color-white;
+    z-index: 1;
   }
 
   span {
@@ -60,8 +74,8 @@
     pointer-events: none;
   }
 
-  input:valid ~ i,
-  input:focus ~ i, {
+  input:not([type="file"]):valid ~ i,
+  input:not([type="file"]):focus ~ i, {
     height: 44px;
   }
 
