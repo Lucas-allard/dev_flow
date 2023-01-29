@@ -3,6 +3,7 @@ import {db} from "../../firebase";
 import axios from "axios";
 
 const getPrivatesMessagesChannels = (user) => {
+
     return query(
         collection(db, `privatesMessages`),
         where('participants', 'array-contains', user),

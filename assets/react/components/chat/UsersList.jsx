@@ -1,7 +1,7 @@
 import './usersList.scss';
-import React, {useMemo, useState} from 'react';
+import React, { useMemo, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {chooseUserProfil, selectUserProfil, selectUsers} from "../features/user/userSlice";
+import {chooseUserProfil, selectUserProfil, selectUsers} from "../../features/user/userSlice";
 import Avatar from "@mui/material/Avatar";
 import ProfilCard from "./ProfilCard";
 
@@ -20,7 +20,6 @@ function UsersList() {
         });
     }, [users]);
 
-
     const handleSelectUser = (user) => {
         dispatch(chooseUserProfil(user))
         setIsActiveProfilCard(true)
@@ -38,10 +37,10 @@ function UsersList() {
                         </span>
                             :
                             <span className="sidebar__avatar">
-                            <p>{user.fullname[0].toUpperCase()}</p>
+                            <p>{user.fullName[0].toUpperCase()}</p>
                         </span>
                         }
-                        <span>{user.fullname}</span>
+                        <span>{user.fullName}</span>
                     </li>
                 )}
             </ul>

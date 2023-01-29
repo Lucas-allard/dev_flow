@@ -10,7 +10,6 @@ export const privateMessageSlice = createSlice({
     initialState,
     reducers: {
         selectPrivateMessage: (state, action) => {
-            console.log(state)
             state.isSelectPrivateMessage = action.payload
             console.log(state)
         }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserChallengeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserChallengeRepository::class)]
 class UserChallenge implements EntityInterface, UserEntity
@@ -19,6 +20,7 @@ class UserChallenge implements EntityInterface, UserEntity
 
     #[ORM\ManyToOne(inversedBy: 'userChallenges')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('user:read')]
     private ?Challenge $challenge = null;
 
     #[ORM\Column]

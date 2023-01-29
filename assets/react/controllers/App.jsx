@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Provider} from "react-redux";
 import {store} from '../store/store';
-import ChatPage from "../layout/ChatPage";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import HomePage from "../components/HomePage";
+import ChatPage from "../layout/ChatPage";
+import HomePage from "../layout/HomePage";
+import DashboardPage from "../layout/DashboardPage";
 
 function App({user, users}) {
     return (
@@ -12,15 +13,25 @@ function App({user, users}) {
                 <Routes>
                     <Route path='/' element={<HomePage/>}/>
                     {user &&
-                        <Route
-                            path='/chat'
-                            element={
-                                <ChatPage
-                                    user={JSON.parse(user)}
-                                    users={JSON.parse(users)}
-                                />
-                            }
-                        />
+                        <>
+                            <Route
+                                path='/chat'
+                                element={
+                                    <ChatPage
+                                        user={user}
+                                        users={users}
+                                    />
+                                }
+                            />
+                            <Route
+                                path='/dashboard'
+                                element={
+                                    <DashboardPage
+                                        user={user}
+                                    />
+                                }
+                            />
+                        </>
                     }
                 </Routes>
             </BrowserRouter>

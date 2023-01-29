@@ -1,16 +1,16 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import './chat.scss'
-import ChatHeader from "../components/ChatHeader";
-import ChatMessage from "../components/ChatMessage";
+import ChatHeader from "./ChatHeader";
+import ChatMessage from "./ChatMessage";
 import {useSelector} from "react-redux";
-import {selectChannel} from "../features/channel/channelSlice";
+import {selectChannel} from "../../features/channel/channelSlice";
 import {onSnapshot} from "firebase/firestore";
-import {selectUser} from "../features/user/userSlice";
-import {selectSearch} from "../features/search/searchSlice";
+import {selectUser} from "../../features/user/userSlice";
+import {selectSearch} from "../../features/search/searchSlice";
 import moment from "moment/moment";
-import ChatInput from "../components/ChatInput";
-import channelMessagesAPI from "../services/channelMessagesAPI";
-import privatesMessagesChannelsAPI from "../services/privatesMessagesChannelsAPI";
+import ChatInput from "./ChatInput";
+import channelMessagesAPI from "../../services/channelMessagesAPI";
+import privatesMessagesChannelsAPI from "../../services/privatesMessagesChannelsAPI";
 
 function Chat() {
     const [messages, setMessages] = useState([]);
@@ -102,9 +102,9 @@ function Chat() {
         e.preventDefault()
 
         const data = {
-            from: user.fullname,
+            from: user.fullName,
             to: channel.sender,
-            participants: [user.fullname, channel.sender],
+            participants: [user.fullName, channel.sender],
             message: input.replace(/\n/g, '<br />'),
             user: user,
             collection: "privatesMessages"
@@ -153,7 +153,7 @@ function Chat() {
                             <ChatMessage
                                 timestamp={message.timestamp}
                                 userPicture={message.userPicture}
-                                fullname={message.fullname}
+                                fullName={message.fullName}
                                 message={message.message}
                                 key={id}
                             />
@@ -161,7 +161,7 @@ function Chat() {
                         {privatesMessages && privatesMessages.map((message, id) =>
                             <ChatMessage
                                 timestamp={message.timestamp}
-                                fullname={message.from}
+                                fullName={message.from}
                                 message={message.message}
                                 key={id}
                             />

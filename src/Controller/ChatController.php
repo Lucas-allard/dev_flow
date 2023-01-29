@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\ChatMessage;
 use App\Repository\ChatMessageRepository;
 use App\Repository\UserRepository;
+use App\Normalizer\UserNormalizer;
 use App\Services\AddMessageToCurrentUser;
 use App\Services\FirestoreService;
 use DateTime;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 
 
 #[Route('/chat', name: 'chat_')]
@@ -31,13 +33,15 @@ class ChatController extends AbstractController
     public function __construct(
         private CsrfTokenManagerInterface $csrfTokenManager,
         private UserRepository            $userRepository,
-        private FirestoreService          $firestoreService
+        private FirestoreService          $firestoreService,
+        private UserNormalizer            $normalizer,
     )
     {
     }
 
     /**
      * @return Response
+     * @throws ExceptionInterface
      */
     #[Route('/', name: 'index')]
     #[IsGranted('ROLE_USER')]
@@ -45,44 +49,28 @@ class ChatController extends AbstractController
     {
         $csrfToken = $this->csrfTokenManager->getToken("send");
 
-        $userData = [
-            "fullname" => $this->getUser()->getFullName(),
-            "id" => $this->getUser()->getId(),
-            "profilPicture" => $this->getUser()->getProfilPicture(),
-            "roles" => $this->getUser()->getRoles(),
-            "csrfToken" => $csrfToken->getValue()
-        ];
+        $user = $this->normalizer->normalize($this->getUser());
 
-        $usersList = $this->userRepository->findAll();
-        $users = [];
+        $user['csrfToken'] = $csrfToken->getValue();
 
-        foreach ($usersList as $user) {
-            $users[] = [
-                'fullname' => $user->getFullName(),
-                "display" => $user->getFullName(),
-                "id" => $user->getId(),
-                'isConnected' => $user->isIsLogged(),
-                'profilPicture' => $user->getProfilPicture(),
-                "createdAt" => $user->getCreatedAt(),
-                "profilColor" => $user->getProfilColor()
-            ];
-        }
+        $users = $this->normalizer->normalize($this->userRepository->findAll());
 
         return $this->render('chat/index.html.twig', [
-            'userData' => json_encode($userData),
-            'users' => json_encode($users)
+            'userData' => $user,
+            'users' => $users
         ]);
     }
 
     /**
      * @param Request $request
      * @param ChatMessageRepository $chatMessageRepository
+     * @param EntityManagerInterface $entityManager
      * @return Response
      */
     #[Route('/send', name: 'send')]
     public function send(
-        Request               $request,
-        ChatMessageRepository $chatMessageRepository,
+        Request                $request,
+        ChatMessageRepository  $chatMessageRepository,
         EntityManagerInterface $entityManager
     ): Response
     {
@@ -107,13 +95,13 @@ class ChatController extends AbstractController
                 ->setPoints($user->getPoints() + 2)
                 ->setChatMessageCount($user->getChatMessageCount() + 1);
 
-            $chatMessageRepository->save($chatMessage );
+            $chatMessageRepository->save($chatMessage);
             $this->userRepository->save($user);
             $this->firestoreService->addDocument(
                 $messageData["collection"],
                 [
                     "message" => $messageData["message"],
-                    "fullname" => $messageData["user"]["fullname"],
+                    "fullName" => $messageData["user"]["fullName"],
                     "profilPicture" => $messageData["user"]["profilPicture"],
                     "timestamp" => new FirestoreTimestamp(),
                 ]);

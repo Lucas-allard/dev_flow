@@ -1,0 +1,72 @@
+@import 'assets/styles/variables';
+
+@import 'assets/styles/variables';
+
+.textareaBox {
+  position: relative;
+  width: 100%;
+  margin-top: 60px;
+  z-index: 1;
+
+  textarea {
+    position: relative;
+    width: 95%;
+    height: 150px;
+    padding: 20px 10px 10px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #23242a;
+    font-size: 1em;
+    letter-spacing: 0.05em;
+    z-index: 2;
+    resize: none;
+    margin-top: 1rem;
+
+
+    div {
+      display: none;
+    }
+  }
+
+  .error {
+    position: absolute;
+    bottom: -45px;
+    margin-top: 1rem;
+    color: red;
+    font-size: 0.75em;
+  }
+
+  span {
+    position: absolute;
+    left: 0;
+    padding: 20px 0 10px;
+    color: #8f8f8f;
+    letter-spacing: 0.05em;
+    transition: 0.5s;
+  }
+
+  textarea:valid ~ span:not(.error),
+  textarea:focus ~ span:not(.error), {
+    color: $color-green;
+    transform: translateY(-34px);
+    font-size: 0.75em;
+  }
+
+  i {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 95%;
+    height: 2px;
+    background: $color-green;
+    border-radius: 4px;
+    transition: 0.5s;
+    pointer-events: none;
+  }
+
+  textarea:valid ~ i,
+  textarea:focus ~ i, {
+    height: 150px;
+  }
+}

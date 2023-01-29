@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category implements EntityInterface
@@ -20,15 +21,18 @@ class Category implements EntityInterface
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups('user:read')]
     private ?string $description = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Course::class, orphanRemoval: true)]
     private Collection $courses;
 
     #[ORM\Column(length: 255)]
+    #[Groups('user:read')]
     private ?string $color = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Challenge::class)]
+
     private Collection $challenges;
 
     public function __construct()

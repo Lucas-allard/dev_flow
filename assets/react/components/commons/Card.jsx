@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import Fade from "./Fade";
-import rank from "../../image/Rank_set1/Rank_High/rank_high_18.png";
+import rank from "../../../image/Rank_set1/Rank_High/rank_high_18.png";
 
 const Card = ({heading, children,}) => {
     const cardRef = useRef();

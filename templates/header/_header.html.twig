@@ -1,7 +1,7 @@
 <header class="header">
     <nav class="header-inner">
         <a href="/" class="nav-icon" aria-label="visiter la page d'accueil" aria-current="page">
-            <img src={{ asset("./images/logo-dev-flow-white.png") }} alt="logo"/>
+            <img src="{{ asset("./images/logo-dev-flow-white.png") }}"     alt="logo"/>
         </a>
         <div class="main-navlinks">
             <input type="checkbox" id="hamburger-button">
@@ -11,11 +11,11 @@
                 <span class="burger"></span>
             </label>
             <div class="navlinks-container">
-                <a href="{{ path("home") }}" aria-current="page">
+                <a href="{{ path('home') }}" aria-current="page">
                     <span {% if app.request.attributes.get('_route') == "home" %}class="active"{% endif %}></span>
                     <span>Accueil</span>
                 </a>
-                <a href="{{ path("labo_index") }}">
+                <a href="{{ path('labo_index') }}">
                     <span {% if 'labo' in app.request.attributes.get('_route') %}class="active"{% endif %}></span>
                     <span>Le Labo</span>
                 </a>
@@ -23,14 +23,14 @@
                     <span {% if 'challenge' in app.request.attributes.get('_route') %}class="active"{% endif %}></span>
                     <span>Challenges</span>
                 </a>
-                <a href="{{ path("chat_index") }}">
+                <a href="{{ path('chat_index') }}">
                     <span {% if 'chat' in app.request.attributes.get('_route') %}class="active"{% endif %}></span>
                     <span>Chat</span>
                 </a>
                 {% if app.user %}
-                    <a href="#">
+                    <a href="{{ path('dashboard_index') }}">
                         <span></span>
-                        <span  {% if 'profile' in app.request.attributes.get('_route') %}class="active"{% endif %}>Profil</span>
+                        <span  {% if 'dashboard' in app.request.attributes.get('_route') %}class="active"{% endif %}>Dashboard</span>
                     </a>
                 {% endif %}
             </div>

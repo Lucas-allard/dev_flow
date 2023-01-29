@@ -7,28 +7,35 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: LevelRepository::class)]
 class Level  implements EntityInterface
 {
+
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups('user:read')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups('user:read')]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups('user:read')]
     private ?int $requiredPoint = null;
 
     #[ORM\OneToMany(mappedBy: 'level', targetEntity: User::class)]
     private Collection $users;
 
     #[ORM\Column(length: 255)]
+    #[Groups('user:read')]
     private ?string $color = null;
 
     #[ORM\OneToMany(mappedBy: 'level', targetEntity: Course::class)]

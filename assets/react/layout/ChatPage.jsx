@@ -1,17 +1,18 @@
 import React, {useEffect} from 'react';
-import Sidebar from "../components/Sidebar";
-import Chat from "./Chat";
+import SidebarChat from "../components/chat/SidebarChat";
+import Chat from "../components/chat/Chat";
 import './chatPage.scss';
-import {isDisplayUsersList, login, logout, selectUsers, setUsersList} from "../features/user/userSlice";
+import {isDisplayUsersList, login, logout, setUsersList} from "../features/user/userSlice";
 import {useDispatch, useSelector} from "react-redux";
-import UsersList from "../components/UsersList";
+import UsersList from "../components/chat/UsersList";
 
 
 const ChatPage = ({user, users}) => {
-    const isUsersList = useSelector(isDisplayUsersList)
+    const isActiveUsersList = useSelector(isDisplayUsersList)
     const dispatch = useDispatch();
 
     useEffect(() => {
+        console.log(user)
         if (!user) {
             dispatch(logout);
         }
@@ -25,9 +26,9 @@ const ChatPage = ({user, users}) => {
 
     return (
         <div className="chat__page">
-            <Sidebar/>
+            <SidebarChat/>
             <Chat/>
-            {isUsersList &&
+            {isActiveUsersList &&
                 <UsersList/>
             }
         </div>

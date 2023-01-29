@@ -1,10 +1,10 @@
 import './heroSection.scss';
 import React from 'react';
-import Button from "../components/Button";
+import Button from "../components/commons/Button";
 import {FaGithub, FaLinkedinIn} from "react-icons/fa";
 import {BiMessageAltDetail} from "@react-icons/all-files/bi/BiMessageAltDetail";
 import logoBlack from "../../image/logo-dev-flow-black.png"
-import ScrollDown from "../components/ScrollDown";
+import ScrollDown from "../components/commons/ScrollDown";
 
 
 const HeroSection = () => {

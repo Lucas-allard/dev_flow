@@ -1,0 +1,63 @@
+@import "assets/styles/variables";
+
+.dashboard__profile {
+  width: 90%;
+  background-color: $color-darklight;
+  border-radius: 5px;
+  border: 1px solid $color-green;
+  padding: 2rem 0 2rem 2rem;
+
+  .profileContent__header {
+    padding-bottom: 2rem;
+
+    h3 {
+      font-size: 2rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      padding-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+      font-weight: 700;
+      font-style: italic;
+      color: $color-green;
+    }
+  }
+
+  .dashboard__profileForm {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+    input[type="submit"], button {
+      margin-right: 2rem;
+      margin-top: 5rem;
+      border: none;
+      outline: none;
+      background: $color-green;
+      color: #fafafa;
+      padding: 11px 25px;
+      min-width: 100px;
+      height: 40px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-family: $font-secondary;
+      cursor: pointer;
+
+      &:active {
+        opacity: 0.8;
+      }
+
+      &:hover {
+        background: $color-sand;
+        color: $color-green;
+      }
+    }
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+    }
+  }
+}

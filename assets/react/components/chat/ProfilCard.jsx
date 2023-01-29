@@ -3,9 +3,9 @@ import React, {useState} from 'react';
 import ChatInput from "./ChatInput";
 import moment from "moment/moment";
 import {useDispatch, useSelector} from "react-redux";
-import {selectUser} from "../features/user/userSlice";
-import privatesMessagesChannelsAPI from "../services/privatesMessagesChannelsAPI";
-import {setChannel} from "../features/channel/channelSlice";
+import {selectUser} from "../../features/user/userSlice";
+import privatesMessagesChannelsAPI from "../../services/privatesMessagesChannelsAPI";
+import {setChannel} from "../../features/channel/channelSlice";
 
 function ProfilCard({userProfil, setIsActiveProfilCard}) {
     const user = useSelector(selectUser)
@@ -14,9 +14,9 @@ function ProfilCard({userProfil, setIsActiveProfilCard}) {
 
     const sendMessage = async () => {
         const data = {
-            from: user.fullname,
-            to: userProfil.fullname,
-            participants: [user.fullname, userProfil.fullname],
+            from: user.fullName,
+            to: userProfil.fullName,
+            participants: [user.fullName, userProfil.fullName],
             message: input,
             user: user,
             collection: "privatesMessages"
@@ -40,7 +40,8 @@ function ProfilCard({userProfil, setIsActiveProfilCard}) {
             <div
                 className="profil__cardHeader"
                 style={{backgroundColor: userProfil.profilColor ? userProfil.profilColor : null}}
-            ></div>
+            >
+            </div>
             <div className="profil__cardContent">
                 <h3>{userProfil.fullname}</h3>
                 <div className="profil__cardCreatedAt">

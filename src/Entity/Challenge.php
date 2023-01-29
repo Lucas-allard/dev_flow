@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ChallengeRepository::class)]
 class Challenge  implements EntityInterface
@@ -17,32 +18,40 @@ class Challenge  implements EntityInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('user:read')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups('user:read')]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups('user:read')]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups('user:read')]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\OneToOne(mappedBy: 'challenge', cascade: ['persist', 'remove'])]
+    #[Groups('user:read')]
     private ?Trophy $trophy = null;
 
     #[ORM\ManyToOne(inversedBy: 'challenges')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups('user:read')]
     private ?Category $category = null;
 
     #[ORM\ManyToOne(inversedBy: 'challenges')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups('user:read')]
     private ?Level $level = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column]
+    #[Groups('user:read')]
     private ?int $points = null;
 
     #[ORM\OneToMany(mappedBy: 'challenge', targetEntity: UserChallenge::class)]

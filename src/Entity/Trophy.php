@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TrophyRepository::class)]
 class Trophy implements EntityInterface
@@ -17,15 +18,19 @@ class Trophy implements EntityInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('user:read')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups('user:read')]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups('user:read')]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups('user:read')]
     private ?int $requiredPoint = null;
 
     #[ORM\OneToOne(inversedBy: 'trophy', cascade: ['persist', 'remove'])]
@@ -35,9 +40,11 @@ class Trophy implements EntityInterface
     private Collection $users;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
     private ?string $img = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups('user:read')]
     private ?int $requiredMessage = null;
 
     public function __construct()

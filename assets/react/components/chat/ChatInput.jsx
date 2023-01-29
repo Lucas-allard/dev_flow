@@ -2,9 +2,9 @@ import React, {useEffect, useRef, useState} from 'react';
 import {useSelector} from 'react-redux';
 import EmojiPicker from 'emoji-picker-react';
 import GifPicker from 'gif-picker-react';
-import {selectUsers} from '../features/user/userSlice';
+import {selectUsers} from '../../features/user/userSlice';
 
-import {TENOR_API_KEY} from '../config/tenorApiKey';
+import {TENOR_API_KEY} from '../../config/tenorApiKey';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import GifIcon from '@mui/icons-material/Gif';

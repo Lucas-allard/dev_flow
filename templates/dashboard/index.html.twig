@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProfileController!{% endblock %}
+
+{% block body %}
+    <div class="position-relative"{{ react_component('App', { 'user': user }) }}></div>
+{% endblock %}

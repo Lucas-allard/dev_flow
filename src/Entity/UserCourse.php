@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserCourseRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserCourseRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -23,6 +24,7 @@ class UserCourse implements EntityInterface, UserEntity
 
     #[ORM\ManyToOne(inversedBy: 'userCourses')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('user:read')]
     private ?Course $course = null;
 
     #[ORM\Column]

@@ -1,10 +1,10 @@
 import './lastContentSection.scss';
 import React from 'react';
-import Button from "../components/Button";
+import Button from "../components/commons/Button";
 import logoJS from '../../image/logo-js.png';
 import logoHTML from '../../image/logo-html.png';
 import logoCSS from '../../image/logo-css.png';
-import ScrollDown from "../components/ScrollDown";
+import ScrollDown from "../components/commons/ScrollDown";
 
 const LastContentSection = () => {
     return (

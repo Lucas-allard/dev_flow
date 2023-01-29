@@ -1,14 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import "./chatHeader.scss";
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import EditLocationIcon from '@mui/icons-material/EditLocation';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import SearchIcon from '@mui/icons-material/Search';
-import SendIcon from '@mui/icons-material/Send';
 import HelpIcon from '@mui/icons-material/Help';
 import {useDispatch, useSelector} from "react-redux";
-import {setSearch} from "../features/search/searchSlice";
-import {displayUsersList, isDisplayUsersList} from "../features/user/userSlice";
+import {setSearch} from "../../features/search/searchSlice";
+import {displayUsersList, isDisplayUsersList} from "../../features/user/userSlice";
 
 
 const ChatHeader = ({channelName}) => {

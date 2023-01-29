@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CourseRepository::class)]
 class Course  implements EntityInterface
@@ -27,24 +28,29 @@ class Course  implements EntityInterface
     private ?int $nextId = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('user:read')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups('user:read')]
     private ?string $content = null;
 
     #[ORM\ManyToOne(inversedBy: 'courses')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('user:read')]
     private ?Category $category = null;
 
     #[ORM\Column]
+    #[Groups('user:read')]
     private ?int $points = null;
 
-
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups('user:read')]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'courses')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('user:read')]
     private ?Level $level = null;
 
     #[ORM\OneToMany(mappedBy: 'course', targetEntity: UserCourse::class)]

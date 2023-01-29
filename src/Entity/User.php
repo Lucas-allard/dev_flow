@@ -12,6 +12,8 @@ use Exception;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'Il y a déjà un compte avec cette adresse email')]
@@ -20,12 +22,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('user:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups('user:read')]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups('user:read')]
     private array $roles = ['ROLE_USER'];
 
     /**
@@ -35,53 +40,87 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
     private ?string $fullName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
     private ?string $profilPicture = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups('user:read')]
     private ?string $googleId = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: ChatMessage::class, orphanRemoval: true)]
+    #[Groups('user:read')]
     private Collection $chatMessages;
 
     #[ORM\Column(nullable: true)]
+    #[Groups('user:read')]
     private ?bool $isLogged = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups('user:read')]
     private ?\DateTimeInterface $lastActivity = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups('user:read')]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
     private ?string $profilColor = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups('user:read')]
     private ?int $points = null;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
+    #[Groups('user:read')]
     private ?Level $level = null;
 
     #[ORM\ManyToMany(targetEntity: Trophy::class, inversedBy: 'users')]
+    #[Groups('user:read')]
     private Collection $trophies;
 
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Payment::class)]
+    #[Groups(['user:read'])]
     private Collection $payments;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserCourse::class, cascade: ['persist'])]
+    #[Groups(['user:read'])]
     private Collection $userCourses;
 
     #[ORM\Column]
     private ?int $readCount = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserChallenge::class)]
+    #[Groups(['user:read'])]
     private Collection $userChallenges;
 
     #[ORM\Column]
     private ?int $chatMessageCount = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
+    private ?string $address = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
+    private ?string $zipCode = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
+    private ?string $city = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups('user:read')]
+    private ?string $bio = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
+    private ?string $job = null;
 
     /**
      * @throws Exception
@@ -552,6 +591,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     public function setChatMessageCount(int $chatMessageCount): self
     {
         $this->chatMessageCount = $chatMessageCount;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): self
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getZipCode(): ?string
+    {
+        return $this->zipCode;
+    }
+
+    public function setZipCode(?string $zipCode): self
+    {
+        $this->zipCode = $zipCode;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getBio(): ?string
+    {
+        return $this->bio;
+    }
+
+    public function setBio(?string $bio): self
+    {
+        $this->bio = $bio;
+
+        return $this;
+    }
+
+    public function getJob(): ?string
+    {
+        return $this->job;
+    }
+
+    public function setJob(?string $job): self
+    {
+        $this->job = $job;
 
         return $this;
     }

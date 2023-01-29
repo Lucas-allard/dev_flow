@@ -1,6 +1,6 @@
 import './gamificationSection.scss';
 import React from 'react';
-import Card from "../components/Card";
+import Card from "../components/commons/Card";
 
 const GamificationSection = () => {
     return (
