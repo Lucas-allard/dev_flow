@@ -1,6 +1,7 @@
 import {collection, orderBy, query} from "firebase/firestore";
 import {db} from "../../firebase";
 import axios from "axios";
+import {API_SEND_MESSAGE} from "../config/apiUrls";
 
 const getChannelsMessages = (categoryId, channelId) => {
     return query(
@@ -9,17 +10,15 @@ const getChannelsMessages = (categoryId, channelId) => {
     );
 }
 
-const addMessage = async (user, data) => {
-    axios.defaults["x-csrf-token"] = user.csrfToken;
-    const options = {
-        method: 'POST',
+const addMessage = async (data) => {
+    return axios
+        .put(API_SEND_MESSAGE, data, {
         headers: {
             'content-type': 'application/json',
-        },
-        data: JSON.stringify(data),
-        url: "https://localhost:8000/chat/send",
-    };
-    return await axios(options);
+        }
+    })
+        .then(response => response)
+        .catch(error => error.response);
 }
 
 export default {

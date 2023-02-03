@@ -81,7 +81,7 @@ const SidebarChat = () => {
     }
 
     return (
-        <div className="sidebar_chat">
+        <div className="sidebar__chat">
 
             <div className="sidebar__middle">
                 <div className="sidebar__top" onClick={() => setExpandPrivateChat(!expandPrivateChat)}>

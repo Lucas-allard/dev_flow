@@ -13,7 +13,7 @@ function InputBox({type, value, label, register, error}) {
                         "image/png, image/jpeg, image/jpg, image/gif"
                         : null}
             />
-            {type === "file" && <button>Choisir un fichier</button>}
+            {type === "file" && <button disabled={true}>Choisir un fichier</button>}
             {error && <span className="error">{error.message}</span>}
             <span>{label}</span>
             <i></i>

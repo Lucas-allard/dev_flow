@@ -20,6 +20,7 @@ function Dashboard({activeSidebar, setActiveSidebar}) {
             <div className="dashboard__content">
                 {selectedRoute === "Profil" && <DashboardProfile/>}
             </div>
+
         </section>
     );
 }

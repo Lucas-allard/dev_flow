@@ -5,10 +5,25 @@ import {selectUser} from "../../features/user/userSlice";
 import {useForm} from "react-hook-form";
 import InputBox from "../commons/InputBox";
 import TextareaBox from "../commons/TextareaBox";
+import dashboardAPI from "../../services/dashboardAPI";
+import {toast, ToastContainer} from "react-toastify";
 
-function DashboardProfile(props) {
+function DashboardProfile() {
     const user = useSelector(selectUser)
     const {register, handleSubmit, formState: {errors}, setValue} = useForm();
+
+    const notify = (type, message) => toast(message[0], {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        type: type
+    });
+
 
     const userFields = [
         {
@@ -55,6 +70,7 @@ function DashboardProfile(props) {
         {
             type: "file",
             name: "profilPicture",
+            value: user?.profilPicture ?? "",
             label: "Photo de profil",
             register: {
                 ...register("profilPicture")
@@ -98,33 +114,19 @@ function DashboardProfile(props) {
         })
     }, [user])
 
-    const row = userFields.map((field, index) => field.type !== "textarea" ?
-        <InputBox
-            key={index}
-            type={field.type}
-            label={field.label}
-            register={{
-                ...register(field.name)
-            }}
-            error={errors[field.name]}
-        />
-        : <TextareaBox
-            key={index}
-            label={field.label}
-            register={{
-                ...register(field.name)
-            }}
-            error={errors[field.name]}
-        />
-    )
-
     const onSubmit = async (data) => {
         console.log(data);
-    }
+        try {
+            const {status} = await dashboardAPI.updateProfile(data);
 
-    useEffect(() => {
-        console.log(errors)
-    }, [errors])
+            if (status === 200) {
+                notify("success", "Votre profil a bien été mis à jour")
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <div className="dashboard__profile">
@@ -133,7 +135,25 @@ function DashboardProfile(props) {
                 <p>Modifier votre profil selon vos besoins</p>
             </div>
             <form className="dashboard__profileForm" onSubmit={handleSubmit(onSubmit)}>
-                {row}
+                {userFields.map((field, index) => field.type !== "textarea" ?
+                    <InputBox
+                        key={index}
+                        type={field.type}
+                        label={field.label}
+                        register={{
+                            ...register(field.name)
+                        }}
+                        error={errors[field.name]}
+                    />
+                    : <TextareaBox
+                        key={index}
+                        label={field.label}
+                        register={{
+                            ...register(field.name)
+                        }}
+                        error={errors[field.name]}
+                    />
+                )}
                 <input type="submit" value="Valider"/>
             </form>
         </div>

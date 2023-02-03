@@ -1,6 +1,7 @@
 import {collection, orderBy, query, where} from "firebase/firestore";
 import {db} from "../../firebase";
 import axios from "axios";
+import {API_SEND_PRIVATE_MESSAGE} from "../config/apiUrls";
 
 const getPrivatesMessagesChannels = (user) => {
 
@@ -19,17 +20,15 @@ const getPrivatesMessages = (user, otherUser) => {
     )
 }
 
-const addMessage = async (user, data) => {
-    axios.defaults["x-csrf-token"] = user.csrfToken;
-    const options = {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json',
-        },
-        data: JSON.stringify(data),
-        url: "https://localhost:8000/chat/send/private",
-    };
-    return await axios(options);
+const addMessage = async (data) => {
+    return axios
+        .post(API_SEND_PRIVATE_MESSAGE, data, {
+            headers: {
+                'content-type': 'application/json',
+            }
+        })
+        .then(response => response)
+        .catch(error => error);
 }
 
 export default {

@@ -47,6 +47,10 @@
   .dashboard__header {
     flex: 0.25;
     padding-bottom: 4rem;
+
+    h2 {
+      text-transform: uppercase;
+    }
   }
 
   .dashboard__content {

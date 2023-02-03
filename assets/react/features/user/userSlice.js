@@ -1,7 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit'
+import axios from "axios";
 
 const initialState = {}
-
 export const userSlice = createSlice({
     name: 'user',
     // `createSlice` will infer the state type from the `initialState` argument
@@ -9,6 +9,10 @@ export const userSlice = createSlice({
     reducers: {
         login: (state, action) => {
             state.user = action.payload
+            axios.defaults["x-csrf-token"] = state.user.csrfToken;
+            console.log(state.user.authenticationToken)
+            axios.defaults["Authorization"] = "Bearer " + state.user.authenticationToken;
+            console.log(axios.defaults)
         },
         logout: (state) => {
             state.user = null
@@ -22,7 +26,7 @@ export const userSlice = createSlice({
         chooseUserProfil: (state, action) => {
             state.selectedUser = action.payload
         }
-    }
+    },
 })
 
 export const {
@@ -37,6 +41,6 @@ export const {
 export const selectUser = (state) => state.user.user
 export const selectUsers = (state) => state.user.users
 export const selectUserProfil = (state) => state.user.selectedUser
-export const isDisplayUsersList = (state) =>  state.user.isDisplayUsersList
+export const isDisplayUsersList = (state) => state.user.isDisplayUsersList
 
 export default userSlice.reducer

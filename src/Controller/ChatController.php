@@ -68,6 +68,7 @@ class ChatController extends AbstractController
      * @return Response
      */
     #[Route('/send', name: 'send')]
+    #[IsGranted('ROLE_USER')]
     public function send(
         Request                $request,
         ChatMessageRepository  $chatMessageRepository,
@@ -121,6 +122,7 @@ class ChatController extends AbstractController
      * @return Response
      */
     #[Route('/send/private', name: 'send_private')]
+    #[IsGranted('ROLE_USER')]
     public function sendPrivateMessage(
         Request $request,
     ): Response

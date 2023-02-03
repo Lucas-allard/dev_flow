@@ -86,7 +86,6 @@ function Chat() {
             id: user.id,
             collection: `categoriesChannels/${channel.categoryId}/channels/${channel.id}/messages`
         };
-        console.log(data)
         try {
             const {status} = await channelMessagesAPI.addMessage(user, data)
             if (status === 201) {

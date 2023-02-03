@@ -3,11 +3,13 @@ import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../features/user/userSlice";
 import {selectRoute, setRoute} from "../../features/dashboard/dashboardSlice";
+import {navItems} from "../../constants/navItems";
 
 function SidebarDashboard({activeSidebar}) {
     const dispatch = useDispatch();
     const user = useSelector(selectUser);
     const selectedRoute = useSelector(selectRoute)
+
 
     const handleSelectRoute = (route) => {
         dispatch(setRoute(route))
@@ -33,36 +35,15 @@ function SidebarDashboard({activeSidebar}) {
             <hr/>
             <nav className="sidebar__nav">
                 <ul>
-                    <li
-                        className={`sidebar__navItem ${selectedRoute === "Profil" ? 'active' : ''}`}
-                        onClick={() => handleSelectRoute("Profil")}
-                    >
-                        <button>Profil</button>
-                    </li>
-                    <li
-                        className={`sidebar__navItem ${selectedRoute === "Cours" ? 'active' : ''}`}
-                        onClick={() => handleSelectRoute("Cours")}
-                    >
-                        <button>Cours</button>
-                    </li>
-                    <li
-                        className={`sidebar__navItem ${selectedRoute  === "Challenges" ? 'active' : ''}`}
-                        onClick={() => handleSelectRoute("Challenges")}
-                    >
-                        <button>Challenges</button>
-                    </li>
-                    <li
-                        className={`sidebar__navItem ${selectedRoute  === "Classement" ? 'active' : ''}`}
-                        onClick={() => handleSelectRoute("Classement")}
-                    >
-                        <button>Classement</button>
-                    </li>
-                    <li
-                        className={`sidebar__navItem ${selectedRoute  === "Trophées" ? 'active' : ''}`}
-                        onClick={() => handleSelectRoute("Trophées")}
-                    >
-                        <button>Trophées</button>
-                    </li>
+                    {navItems.map((item, index) =>
+                        <li
+                            className={`sidebar__navItem ${selectedRoute === item.route ? 'active' : ''}`}
+                            onClick={() => handleSelectRoute(item.route)}
+                            key={index}
+                        >
+                            <button>{item.route}</button>
+                        </li>
+                    )}
                 </ul>
             </nav>
         </div>
