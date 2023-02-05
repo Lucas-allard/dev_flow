@@ -19,7 +19,14 @@ class FirestoreService
 
     public function addDocument(string $collectionName, array $data)
     {
+        // add document to firestore
         $this->firestore->addDocument($collectionName, $data);
+    }
+
+    public function isSuccess(): bool
+    {
+        $response = $this->firestore->getLastResponse();
+        return $response->getStatusCode() === 200;
     }
 
 }
