@@ -1,18 +1,18 @@
 import './dashboardProfile.scss';
 import React, {useEffect} from 'react';
-import {useSelector} from "react-redux";
-import {selectUser} from "../../features/user/userSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {selectUser, updateUserData, updateUserPicture} from "../../features/user/userSlice";
 import {useForm} from "react-hook-form";
 import InputBox from "../commons/InputBox";
 import TextareaBox from "../commons/TextareaBox";
-import dashboardAPI from "../../services/dashboardAPI";
-import {toast, ToastContainer} from "react-toastify";
+import {toast} from "react-toastify";
 
 function DashboardProfile() {
     const user = useSelector(selectUser)
     const {register, handleSubmit, formState: {errors}, setValue} = useForm();
+    const dispatch = useDispatch();
 
-    const notify = (type, message) => toast(message[0], {
+    const notify = (type, message) => toast(message, {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -56,7 +56,7 @@ function DashboardProfile() {
         {
             type: "text",
             name: "job",
-            label: "Status (Apprenti ou Développeur)",
+            label: "Status (Apprenti ou Mentor)",
             register: {
                 ...register("job", {
                     pattern: {
@@ -69,11 +69,11 @@ function DashboardProfile() {
         },
         {
             type: "file",
-            name: "profilPicture",
+            name: "file",
             value: user?.profilPicture ?? "",
             label: "Photo de profil",
             register: {
-                ...register("profilPicture")
+                ...register("file")
             },
         },
         {
@@ -115,9 +115,19 @@ function DashboardProfile() {
     }, [user])
 
     const onSubmit = async (data) => {
-        console.log(data);
         try {
-            const {status} = await dashboardAPI.updateProfile(data);
+            let response = await dispatch(updateUserData({data: data, id: user.id}));
+
+            console.log("response", response)
+            if (data.file[0]) {
+                const formData = new FormData();
+                formData.append("file", data.file[0]);
+                response = await dispatch(updateUserPicture({data: formData, id: user.id}));
+            }
+
+            console.log("response 2", response)
+
+            const {status} = response.payload;
 
             if (status === 200) {
                 notify("success", "Votre profil a bien été mis à jour")
@@ -134,7 +144,7 @@ function DashboardProfile() {
                 <h3>Edition</h3>
                 <p>Modifier votre profil selon vos besoins</p>
             </div>
-            <form className="dashboard__profileForm" onSubmit={handleSubmit(onSubmit)}>
+            <form className="dashboard__profileForm" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
                 {userFields.map((field, index) => field.type !== "textarea" ?
                     <InputBox
                         key={index}
