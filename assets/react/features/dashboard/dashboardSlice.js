@@ -1,14 +1,5 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
-import dashboardAPI from "../../services/dashboardAPI";
+import { createSlice} from '@reduxjs/toolkit'
 
-// Define a type for the slice state
-const updateProfile = createAsyncThunk(
-    'dashboard/updateProfile',
-    async (data) => {
-        const response = await dashboardAPI.updateProfile(data)
-        return response.data
-    }
-)
 
 // Define the initial state using that type
 const initialState = {
@@ -24,17 +15,7 @@ export const dashboardSlice = createSlice({
             state.route = action.payload
         },
     },
-    extraReducers: {
-        [updateProfile.fulfilled]: (state, action) => {
-            state.profile = action.payload
-        },
-        [updateProfile.rejected]: (state, action) => {
-            return {...state, error: action.payload}
-        },
-        [updateProfile.pending]: (state, action) => {
-            return {...state, loading: true}
-        }
-    }
+
 })
 
 export const {setRoute} = dashboardSlice.actions
