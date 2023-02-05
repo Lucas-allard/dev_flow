@@ -14,6 +14,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -33,11 +34,13 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     private LoginListener $loginListener;
 
     public function __construct(
-        ClientRegistry           $clientRegistry,
-        EntityManagerInterface   $entityManager,
-        RouterInterface          $router,
-        EventDispatcherInterface $eventDispatcher,
-        LoginListener            $loginListener
+        ClientRegistry              $clientRegistry,
+        EntityManagerInterface      $entityManager,
+        RouterInterface             $router,
+        EventDispatcherInterface    $eventDispatcher,
+        LoginListener               $loginListener,
+        UserPasswordHasherInterface $passwordHasher
+
     )
     {
         $this->clientRegistry = $clientRegistry;
@@ -45,6 +48,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         $this->router = $router;
         $this->eventDispatcher = $eventDispatcher;
         $this->loginListener = $loginListener;
+        $this->passwordHasher = $passwordHasher;
     }
 
     public function supports(Request $request): ?bool
@@ -85,7 +89,8 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                 $user->setGoogleId($googleUser->getId())
                     ->setEmail($googleUser->getEmail())
                     ->setFullName($googleUser->getName())
-                    ->setProfilPicture($googleUser->getAvatar());
+                    ->setProfilPicture($googleUser->getAvatar())
+                    ->setPassword($this->passwordHasher->hashPassword($user, $this->generateRandomPassword()));
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
 
@@ -131,5 +136,17 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             '/connexion', // might be the site, where users choose their oauth provider
             Response::HTTP_TEMPORARY_REDIRECT
         );
+    }
+
+    public function generateRandomPassword()
+    {
+        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $pass = array(); //remember to declare $pass as an array
+        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        for ($i = 0; $i < 8; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+        return implode($pass); //turn the array into a string
     }
 }
