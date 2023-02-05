@@ -1,7 +1,7 @@
 import './dashboardProfile.scss';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {selectUser, updateUserData, updateUserPicture} from "../../features/user/userSlice";
+import { selectUser, updateUserData, updateUserPicture} from "../../features/user/userSlice";
 import {useForm} from "react-hook-form";
 import InputBox from "../commons/InputBox";
 import TextareaBox from "../commons/TextareaBox";
@@ -9,8 +9,9 @@ import {toast} from "react-toastify";
 
 function DashboardProfile() {
     const user = useSelector(selectUser)
-    const {register, handleSubmit, formState: {errors}, setValue} = useForm();
+    const {register, handleSubmit, setValue} = useForm();
     const dispatch = useDispatch();
+    const [errors, setErrors] = useState([]);
 
     const notify = (type, message) => toast(message, {
         position: "top-right",
@@ -31,40 +32,22 @@ function DashboardProfile() {
             name: "fullName",
             value: user?.fullName,
             label: "Nom d'utilisateur",
-            register: {
-                ...register("fullName", {
-                    required: "Le nom d'utilisateur est requis",
-                })
-            },
+            register: {...register("fullName")},
         },
         {
             type: "email",
             name: "email",
             value: user?.email,
             label: "Email",
-            register: {
-                ...register("email", {
-                    required: "L'email est requis",
-                    pattern: {
-                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                        message: "L'email n'est pas valide"
-                    }
-                })
-            },
+            register: {...register("email")},
 
         },
         {
             type: "text",
             name: "job",
+            value: user?.job,
             label: "Status (Apprenti ou Mentor)",
-            register: {
-                ...register("job", {
-                    pattern: {
-                        value: /^(Apprenti|Mentor)$/,
-                        message: "Le status doit être soit 'Apprenti' soit 'Mentor'"
-                    },
-                })
-            },
+            register: {...register("job")},
 
         },
         {
@@ -72,9 +55,7 @@ function DashboardProfile() {
             name: "file",
             value: user?.profilPicture ?? "",
             label: "Photo de profil",
-            register: {
-                ...register("file")
-            },
+            register: {...register("file")},
         },
         {
             type: "text",
@@ -97,14 +78,7 @@ function DashboardProfile() {
             name: "bio",
             value: user?.bio ?? "",
             label: "Mini Bio",
-            register: {
-                ...register("bio", {
-                    maxLength: {
-                        value: 500,
-                        message: "La mini bio ne doit pas dépasser 500 caractères"
-                    },
-                })
-            },
+            register: {...register("bio")},
         }
     ]
 
@@ -116,25 +90,29 @@ function DashboardProfile() {
 
     const onSubmit = async (data) => {
         try {
-            let response = await dispatch(updateUserData({data: data, id: user.id}));
+            let response = await dispatch(updateUserData({data: data, id: user.id})).unwrap();
 
-            console.log("response", response)
-            if (data.file[0]) {
+            if (Array.isArray(data.file)) {
                 const formData = new FormData();
                 formData.append("file", data.file[0]);
-                response = await dispatch(updateUserPicture({data: formData, id: user.id}));
+                response = await dispatch(updateUserPicture({data: formData, id: user.id})).unwrap();
             }
 
-            console.log("response 2", response)
+            const {status} = response;
 
-            const {status} = response.payload;
-
-            if (status === 200) {
+            if (status === 200 || status === 201) {
                 notify("success", "Votre profil a bien été mis à jour")
+                setErrors([])
             }
-
-        } catch (error) {
-            console.log(error);
+        } catch (e) {
+            if (e.violations) {
+                let apiErrors = {};
+                e.violations.forEach(violation => {
+                    apiErrors[violation.propertyPath] = violation.message
+                })
+                console.log(apiErrors)
+                setErrors(apiErrors)
+            }
         }
     }
 
@@ -144,7 +122,8 @@ function DashboardProfile() {
                 <h3>Edition</h3>
                 <p>Modifier votre profil selon vos besoins</p>
             </div>
-            <form className="dashboard__profileForm" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
+            <form className="dashboard__profileForm" onSubmit={handleSubmit(onSubmit)}
+                  encType="multipart/form-data">
                 {userFields.map((field, index) => field.type !== "textarea" ?
                     <InputBox
                         key={index}
@@ -153,7 +132,7 @@ function DashboardProfile() {
                         register={{
                             ...register(field.name)
                         }}
-                        error={errors[field.name]}
+                        error={errors?.[field.name]}
                     />
                     : <TextareaBox
                         key={index}
@@ -161,13 +140,14 @@ function DashboardProfile() {
                         register={{
                             ...register(field.name)
                         }}
-                        error={errors[field.name]}
+                        error={errors?.[field.name]}
                     />
                 )}
                 <input type="submit" value="Valider"/>
             </form>
         </div>
     );
+
 }
 
 export default DashboardProfile;

@@ -23,6 +23,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[Vich\Uploadable]
@@ -64,6 +65,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
     #[ORM\Column(length: 180, unique: true)]
     #[Groups('user:read')]
+    #[Assert\NotBlank(message: 'L\'adresse email est obligatoire')]
+    #[Assert\Email]
+    #[Assert\Length(max: 180)]
+    #[Assert\Regex(pattern: '/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i', message: 'L\'adresse email n\'est pas valide')]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -79,9 +84,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups('user:read')]
+    #[Assert\NotBlank(message: 'Le nom d\'utilisateur est obligatoire')]
     private ?string $fullName = null;
 
     #[Vich\UploadableField(mapping: 'post_profile_image', fileNameProperty: 'profilPicturePath')]
+    #[Assert\File(maxSize: '5M', mimeTypes: ['image/jpeg', 'image/png', 'image/gif'])]
     #[Ignore]
     private ?File $imageFile = null;
 
@@ -160,10 +167,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups('user:read')]
+    #[Assert\Length(max: 500, maxMessage: 'La mini-bio ne doit pas dépasser 500 caractères')]
     private ?string $bio = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups('user:read')]
+    #[Assert\Regex(pattern: '/^(Apprenti|Mentor)$/i', message: 'Le statut n\'est pas valide')]
     private ?string $job = null;
 
     /**

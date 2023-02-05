@@ -20,7 +20,6 @@ const updateUser = async ({data, id}) => {
         }
     })
         .then(response => response)
-        .catch(error => console.log(error))
 }
 
 const updateUserPicture = async ({data, id}) => {
@@ -31,7 +30,6 @@ const updateUserPicture = async ({data, id}) => {
             }
         })
         .then(response => response)
-        .catch(error => console.log(error))
 }
 
 export default {

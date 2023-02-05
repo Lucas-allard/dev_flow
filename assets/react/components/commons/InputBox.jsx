@@ -14,7 +14,7 @@ function InputBox({type, value, label, register, error}) {
                         : null}
             />
             {type === "file" && <button disabled={true}>Choisir un fichier</button>}
-            {error && <span className="error">{error.message}</span>}
+            {error && <span className="error">{error}</span>}
             <span>{label}</span>
             <i></i>
         </div>

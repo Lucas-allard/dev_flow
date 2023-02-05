@@ -12,16 +12,12 @@ function Router({user}) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log(email, id)
         if (!id || !email) {
             return;
         }
-
         if (authAPI.isAuth()) {
             return;
         }
-
-
         dispatch(loginCheck({email: email, id: id}))
     }, [id, email])
 

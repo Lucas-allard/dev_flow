@@ -26,15 +26,29 @@ export const getUserData = createAsyncThunk(
 
 export const updateUserData = createAsyncThunk(
     'user/updateUserData',
-    async (payload) => {
-        return await userAPI.updateUser(payload)
+    async (payload, {rejectWithValue}) => {
+        try {
+            return await userAPI.updateUser(payload)
+        } catch (error) {
+            if (!error) {
+                throw error
+            }
+            return rejectWithValue(error.response.data)
+        }
     }
 )
 
 export const updateUserPicture = createAsyncThunk(
     'user/updateUserPicture',
-    async (payload) => {
-        return await userAPI.updateUserPicture(payload)
+    async (payload, {rejectWithValue}) => {
+        try {
+            return await userAPI.updateUserPicture(payload)
+        } catch (error) {
+            if (!error) {
+                throw error
+            }
+            return rejectWithValue(error.response.data)
+        }
     }
 )
 
@@ -64,6 +78,8 @@ export const userSlice = createSlice({
             .addCase(updateUserData.fulfilled, (state, action) => {
                 state.user = action.payload.data
             })
+            .addCase(updateUserData.rejected, (state, action) => {
+            })
             .addCase(updateUserPicture.fulfilled, (state, action) => {
                 state.user = action.payload.data
             })
@@ -75,13 +91,14 @@ export const userSlice = createSlice({
 
 export const {
     chooseUserProfil,
-    setUsersList,
     displayUsersList
 } = userSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectUser = (state) => state.user.user
 export const selectUsers = (state) => state.user.users
+
+export const selectErrors = (state) => state.user.errors
 export const selectUserProfil = (state) => state.user.selectedUser
 export const isDisplayUsersList = (state) => state.user.isDisplayUsersList
 
