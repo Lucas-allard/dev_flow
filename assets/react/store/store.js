@@ -13,5 +13,8 @@ export const store = configureStore({
         dashboard: dashboardReducer,
         search: searchReducer,
         privateMessage: privateMessageReducer,
-    }
+    },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: false,
+    })
 })

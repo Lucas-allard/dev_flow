@@ -1,25 +1,51 @@
-import {createSlice} from '@reduxjs/toolkit'
-import axios from "axios";
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
+import userAPI from "../../services/userAPI";
+import authAPI from "../../services/authAPI";
+
+
+export const loginCheck = createAsyncThunk(
+    'user/loginCheck',
+    async (credentials) => {
+        return await authAPI.authenticate(credentials)
+    }
+)
+
+export const getUsersData = createAsyncThunk(
+    'user/getUsersList',
+    async () => {
+        return await userAPI.getUsers()
+    }
+)
+
+export const getUserData = createAsyncThunk(
+    'user/getUserData',
+    async (id) => {
+        return await userAPI.getUser(id)
+    }
+)
+
+export const updateUserData = createAsyncThunk(
+    'user/updateUserData',
+    async (payload) => {
+        return await userAPI.updateUser(payload)
+    }
+)
+
+export const updateUserPicture = createAsyncThunk(
+    'user/updateUserPicture',
+    async (payload) => {
+        return await userAPI.updateUserPicture(payload)
+    }
+)
+
 
 const initialState = {}
+
 export const userSlice = createSlice({
     name: 'user',
     // `createSlice` will infer the state type from the `initialState` argument
     initialState,
     reducers: {
-        login: (state, action) => {
-            state.user = action.payload
-            axios.defaults["x-csrf-token"] = state.user.csrfToken;
-            console.log(state.user.authenticationToken)
-            axios.defaults["Authorization"] = "Bearer " + state.user.authenticationToken;
-            console.log(axios.defaults)
-        },
-        logout: (state) => {
-            state.user = null
-        },
-        setUsersList: (state, action) => {
-            state.users = action.payload
-        },
         displayUsersList: (state, action) => {
             state.isDisplayUsersList = action.payload
         },
@@ -27,11 +53,27 @@ export const userSlice = createSlice({
             state.selectedUser = action.payload
         }
     },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getUserData.fulfilled, (state, action) => {
+                state.user = action.payload
+            })
+            .addCase(getUserData.rejected, (state) => {
+                state.user = null
+            })
+            .addCase(updateUserData.fulfilled, (state, action) => {
+                state.user = action.payload.data
+            })
+            .addCase(updateUserPicture.fulfilled, (state, action) => {
+                state.user = action.payload.data
+            })
+            .addCase(getUsersData.fulfilled, (state, action) => {
+                state.users = action.payload
+            })
+    }
 })
 
 export const {
-    login,
-    logout,
     chooseUserProfil,
     setUsersList,
     displayUsersList
