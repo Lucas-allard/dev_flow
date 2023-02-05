@@ -1,7 +1,14 @@
 controllers:
-    resource: ../src/Controller/
-    type: attribute
+  resource: ../src/Controller/
+  type: attribute
 
 home:
-    path:   /
-    controller: App\Controller\HomeController::index
+  path: /
+  controller: App\Controller\HomeController::index
+
+api_login_check:
+  path: /api/login_check
+
+create_jwt:
+  path: /api/jwt/create
+  controller: App\Controller\JwtController::createToken
