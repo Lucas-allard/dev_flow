@@ -2,7 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\LevelRepository;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Controller\PostImageController;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,14 +17,44 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Serializer\Annotation\Ignore;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+
+#[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'Il y a déjà un compte avec cette adresse email')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityInterface
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(
+            uriTemplate: '/users',
+            name: 'post',
+        ),
+        new Post(
+            uriTemplate: '/users/{id}/image',
+            controller: PostImageController::class,
+            deserialize: false,
+            name: 'post_image',
+        ),
+        new Put(
+            uriTemplate: '/users/{id}/image',
+            controller: PostImageController::class,
+            deserialize: false,
+            name: 'put_image_user',
+        ),
+        new Patch(),
+        new Delete()
+    ],
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ["disable_type_enforcement" => true]
+)]
+class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityInterface, \Serializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -37,13 +74,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
      * @var string The hashed password
      */
     #[ORM\Column(nullable: true)]
+    #[Groups('user:read')]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups('user:read')]
     private ?string $fullName = null;
 
+    #[Vich\UploadableField(mapping: 'post_profile_image', fileNameProperty: 'profilPicturePath')]
+    #[Ignore]
+    private ?File $imageFile = null;
+
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $profilPicturePath = null;
+
     #[Groups('user:read')]
     private ?string $profilPicture = null;
 
@@ -653,5 +697,95 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
         $this->job = $job;
 
         return $this;
+    }
+
+    /**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|null $imageFile
+     */
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+
+        if (null !== $imageFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->lastActivity = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+
+    /**
+     * @return string|null
+     */
+    public function getProfilPicturePath(): ?string
+    {
+        return $this->profilPicturePath;
+    }
+
+    /**
+     * @param string|null $profilPicturePath
+     */
+    public function setProfilPicturePath(?string $profilPicturePath): void
+    {
+        $this->profilPicturePath = $profilPicturePath;
+    }
+
+    public function serialize(): ?string
+    {
+        return serialize([
+            $this->id,
+            $this->email,
+            $this->password,
+            $this->fullName,
+            $this->profilPicturePath,
+            $this->profilPicture,
+            $this->googleId,
+            $this->chatMessages,
+            $this->roles,
+            $this->isLogged,
+            $this->lastActivity,
+            $this->createdAt,
+            $this->profilColor,
+            $this->points,
+            $this->level,
+            $this->trophies,
+            $this->payments,
+            $this->userCourses,
+            $this->readCount,
+            $this->userChallenges,
+            $this->chatMessageCount,
+            $this->address,
+            $this->zipCode,
+            $this->city,
+            $this->bio,
+            $this->job,
+
+        ]);
+    }
+
+    public function unserialize(string $data)
+    {
+        // TODO: Implement unserialize() method.
+        list(
+            $this->id,
+            $this->email,
+            $this->password,
+            $this->fullName,
+            $this->profilPicturePath,
+            $this->profilPicture,
+            $this->googleId,
+            ) = unserialize($data, ['allowed_classes' => false]);
+
     }
 }

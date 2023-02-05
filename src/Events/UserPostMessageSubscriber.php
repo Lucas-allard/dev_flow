@@ -3,7 +3,6 @@
 namespace App\Events;
 
 
-use App\Entity\ChatMessage;
 use App\Entity\Trophy;
 use App\Entity\User;
 use Doctrine\Common\EventSubscriber;
